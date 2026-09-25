@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Enable once per clone: git config core.hooksPath .githooks
+# Rejects commits whose added lines in web/ or app/ carry unregistered identifiers.
+exec python3 "$(git rev-parse --show-toplevel)/scripts/check_testids.py" --staged

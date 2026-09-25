@@ -1,0 +1,4 @@
+# Placeholder. backend-dev fills this in: services `api` (FastAPI) and
+# `web` (Vite), so `docker compose up` brings up both. Mobile is built
+# locally against simulator/emulator and is not part of compose.
+services: {}

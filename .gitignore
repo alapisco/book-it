@@ -1,0 +1,35 @@
+# OS / editors
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Python (api/)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node (web/, app/)
+node_modules/
+dist/
+*.log
+.env
+.env.local
+
+# Expo / React Native (app/)
+.expo/
+app/ios/Pods/
+app/ios/build/
+app/android/.gradle/
+app/android/build/
+app/android/app/build/
+*.jks
+*.keystore
+!debug.keystore
+
+# Claude Code per-user settings
+.claude/settings.local.json
