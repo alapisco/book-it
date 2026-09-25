@@ -7,12 +7,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .errors import error_response, install_error_handlers
 from .models import Health
-from .routes import flags, testsupport
+from .routes import auth, bookings, catalog, flags, testsupport
 from .sessions import SESSION_ID, get_session
 
 app = FastAPI(
     title="BookIt SUT API",
-    version="0.1.0",
+    version="0.2.0",
     description=(
         "System Under Test for the BookIt automation framework. "
         "All state is namespaced by the X-Test-Session header; "
@@ -65,6 +65,9 @@ async def test_context(request: Request, call_next):
 # Added after the middleware above so it wraps it: error responses get CORS headers too.
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+app.include_router(auth.router)
+app.include_router(catalog.router)
+app.include_router(bookings.router)
 app.include_router(flags.router)
 app.include_router(testsupport.router)
 

@@ -1,5 +1,5 @@
 """Pydantic models. These are the contract: docs/api/openapi.json is generated from them."""
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -43,6 +43,46 @@ class StudioClass(BaseModel):
     is_outdoor: bool
     is_anchor: bool
     my_booking_id: str | None = Field(description="The caller's booking on this class, if any")
+
+
+class ScheduleDay(BaseModel):
+    date: date
+    previous_date: date
+    next_date: date
+    now: datetime = Field(description="The session clock at the time of the request")
+    classes: list[StudioClass]
+
+
+class User(BaseModel):
+    id: str
+    email: str
+    name: str
+    booking_limit: int
+    upcoming_booking_count: int
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class LoginResponse(BaseModel):
+    token: str
+    user: User
+
+
+class BookingCreate(BaseModel):
+    class_id: str
+
+
+class Booking(BaseModel):
+    id: str
+    class_id: str
+    user_id: str
+    created_at: datetime
+    can_cancel: bool
+    cancel_deadline: datetime
+    studio_class: StudioClass
 
 
 # --- feature flags ----------------------------------------------------------
