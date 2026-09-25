@@ -5,9 +5,9 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 
 | Milestone | Scope | Gate | Status |
 |---|---|---|---|
-| **M0 Foundations** | ADRs 0001–0006; PRDs + tech specs for `domain-and-seed-data`, `test-support`, `feature-flags`, `app-shell` (+ design) | QA lead approves the documents | in progress |
-| **M1 Walking skeleton** | API with seed data, schedule generator, flags, test-support; web shell with web/wap trees; Expo app prebuilt with tab shell; `docker compose up` | All four platforms build and launch locally | planned |
-| **M2 Core flow** | `login`, `browse-and-book`, `my-bookings-and-cancel` on all four platforms | One test body passes on all four platforms; tag `v0.2` | planned |
+| **M0 Foundations** | ADRs 0001–0006; PRDs + tech specs for `domain-and-seed-data`, `test-support`, `feature-flags`, `app-shell` (+ design) | QA lead approves the documents | done: documents approved under defaults, **pending your review** |
+| **M1 Walking skeleton** | API with seed data, schedule generator, flags, test-support; web shell with web/wap trees; Expo app prebuilt with tab shell; `docker compose up` | All four platforms build and launch locally | done for api/web/wap (Docker); android/ios bundle with Metro and are prebuilt, **native build pending on your machine** |
+| **M2 Core flow** | `login`, `browse-and-book`, `my-bookings-and-cancel` on all four platforms | One test body passes on all four platforms; tag `v0.2` | implemented; **gate open** until the framework runs on android/ios; not tagged |
 | **M3 Divergent features** | `studio-policies`, `waitlist`, `week-calendar`, `ics-export`, `qr-check-in` | Framework's parity matrix artifact equals the matrix in `CLAUDE.md`; tag `v1.0` | not started |
 
 ## Documents by feature

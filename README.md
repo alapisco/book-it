@@ -44,24 +44,62 @@ native apps.
 |---|---|
 | `api/` | FastAPI + pydantic backend, in-memory store, test-support endpoints |
 | `web/` | Vite + React + TS + Tailwind SPA serving `web` and `wap` |
-| `app/` | Expo + React Native app (`expo prebuild`) serving `android` and `ios` |
-| `fixtures/` | Seed data shared by backend, web and mobile |
+| `app/` | Expo + React Native app (`expo prebuild`) serving `android` and `ios` ([app/README.md](app/README.md)) |
+| `fixtures/` | Seed data shared by backend, web and mobile ([fixtures/README.md](fixtures/README.md)) |
 | `docs/prd/` | Feature specs (versioned) |
 | `docs/design/` | Written UI specs; `testids.md` is the identifier registry |
+| `docs/tech/` | Tech specs: contract, rule order, per-platform implementation |
+| `docs/adr/` | Architecture decision records |
 | `docs/api/openapi.json` | Generated from the FastAPI app. Never hand-edited |
+| `docs/ROADMAP.md` | Milestones and document status |
 | `scripts/check_testids.py` | Identifier validator |
 | `CLAUDE.md`, `.claude/` | Conventions, roles, commands and hooks for Claude Code |
 
 ## Running it
 
-> Status: **scaffolding only.** No application code exists yet, so
-> nothing below runs until the features are implemented.
+Status: **M2 implemented.** The core flow (log in → browse → book → My
+bookings → cancel) is built for all four platforms. web and wap are
+verified end to end. The android/ios code typechecks, bundles for both
+OSes, and has been exercised in a browser via react-native-web, but it
+hasn't yet been built on an emulator or simulator. The divergent M3
+features aren't built yet; see [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
-- **API + web:** `docker compose up` (from the repo root)
-- **Mobile:** built locally from `app/` against the iOS simulator and
-  Android emulator, via `expo prebuild` and a native run
-- **Test-support API:** `POST /test/reset`, `X-Test-Session`,
-  `X-Test-Now` / `POST /test/clock`, and chaos toggles (see `CLAUDE.md`)
+**API + web/wap**
+
+```sh
+docker compose up --build
+```
+
+- API at http://localhost:8000. The interactive docs are at `/docs`, and
+  the contract at `docs/api/openapi.json`.
+- Web at http://localhost:5173. It renders `web` at 768 px wide or more,
+  and `wap` below 768 px.
+
+Without Docker, run the two pieces separately:
+- API: `cd api && pip install -r requirements.txt && uvicorn bookit.main:app --port 8000`
+- Web: `cd web && npm ci && npm run dev`
+
+**android / ios:** built locally against the emulator and simulator. See
+[app/README.md](app/README.md).
+
+**Seed users** (password `bookit123`):
+- `ava@bookit.test`: has bookings
+- `ben@bookit.test`: has none
+- `cara@bookit.test`: at the booking limit
+
+**Test support** (`docs/prd/test-support.md`):
+- `POST /test/reset`
+- the `X-Test-Session` header
+- the clock: the `X-Test-Now` header, or `POST /test/clock` and
+  `POST /test/clock/advance`
+- chaos: `PUT /test/chaos`
+- `POST /test/classes/{id}/fill`
+- anchor classes: `anchor-full`, `anchor-last-seat`,
+  `anchor-cancel-closed`, `anchor-cancel-open`
+- the platform matrix: `GET /flags`
+
+A UI joins a test session with `?testSession=<id>` on web, or
+`bookit://login?testSession=<id>` on native.
 
 ## One-time setup per clone
 
