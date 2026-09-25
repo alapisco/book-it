@@ -25,7 +25,8 @@ is needed.
 
 ## Before writing any code
 
-1. Read the feature's PRD in `docs/prd/` and its spec in `docs/design/`.
+1. Read the feature's PRD in `docs/prd/`, its UI spec in `docs/design/`,
+   its tech spec in `docs/tech/` and the ADRs in `docs/adr/`.
 2. Read `docs/design/testids.md`. Every `data-testid` you write must
    already be there, character for character. If one you need is missing,
    **stop** — the registry is updated via `/design`, not by you.

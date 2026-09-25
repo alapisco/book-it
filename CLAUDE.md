@@ -37,6 +37,14 @@ Feature flags vary by **platform only**, never by studio.
 | `app/` | `mobile-dev` |
 | `docs/prd/` | `/prd` command |
 | `docs/design/` (incl. `testids.md`) | `/design` command |
+| `docs/tech/` | `/techspec` command |
+| `docs/adr/` | You (the human) accept; drafted on request, roles only propose |
+
+Documents a role reads before coding: the feature's PRD (`docs/prd/`),
+design spec (`docs/design/`), tech spec (`docs/tech/`) and the ADRs
+(`docs/adr/`). Precedence when they disagree: PRD on behaviour and
+platforms, design on UI and identifiers, tech spec on contract and
+structure. ADRs bind all three.
 
 `web-dev` and `mobile-dev` read `fixtures/` but ask before changing it.
 

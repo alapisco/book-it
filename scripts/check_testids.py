@@ -24,8 +24,10 @@ SKIP_DIRS = {"node_modules", "dist", "build", ".expo", "ios", "android"}
 
 ID_FORMAT = re.compile(r"^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*){1,2}$")
 # data-testid="x" | testID='x' | testID={"x"} | anything else inside {...}
+# plus React Navigation's option key: tabBarButtonTestID: 'x'
 ATTR = re.compile(
     r"""\b(data-testid|testID)\s*=\s*(?:"([^"]*)"|'([^']*)'|\{\s*(?:"([^"]*)"|'([^']*)')\s*\}|(\{))"""
+    r"""|\b(tabBarButtonTestID)\s*:\s*(?:"([^"]*)"|'([^']*)'|(\S))"""
 )
 REGISTRY_ROW = re.compile(r"^\|\s*`([^`]+)`\s*\|")
 
@@ -56,8 +58,8 @@ def check_text(rel, text, registry, line_offset=0):
     problems = []
     for lineno, line in enumerate(text.splitlines(), 1):
         for m in ATTR.finditer(line):
-            attr = m.group(1)
-            value = next((g for g in m.groups()[1:5] if g is not None), None)
+            attr = m.group(1) or m.group(7)
+            value = next((g for g in m.groups()[1:5] + m.groups()[7:9] if g is not None), None)
             where = f"{rel}:{lineno + line_offset}"
             if value is None:
                 problems.append(f"{where}: {attr} value is not a string literal")

@@ -27,7 +27,8 @@ exactly what is needed so the owning role or the user can do it.
 
 ## Before writing any code
 
-1. Read the feature's PRD in `docs/prd/` and its spec in `docs/design/`,
+1. Read the feature's PRD in `docs/prd/`, its UI spec in `docs/design/`,
+   its tech spec in `docs/tech/` and the ADRs in `docs/adr/`,
    plus `docs/design/testids.md` if the work affects screen behaviour.
 2. Read existing code in `api/` so you extend it rather than duplicate it.
 3. If the PRD or design is **silent, ambiguous or contradictory** on

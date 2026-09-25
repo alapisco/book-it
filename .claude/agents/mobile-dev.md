@@ -25,7 +25,8 @@ what is needed.
 
 ## Before writing any code
 
-1. Read the feature's PRD in `docs/prd/` and its spec in `docs/design/`.
+1. Read the feature's PRD in `docs/prd/`, its UI spec in `docs/design/`,
+   its tech spec in `docs/tech/` and the ADRs in `docs/adr/`.
 2. Read `docs/design/testids.md`. Every `testID` must **match the web
    `data-testid` exactly** — same string, same element. If one you need is
    missing, **stop**; the registry is updated via `/design`, not by you.
