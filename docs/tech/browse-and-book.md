@@ -1,6 +1,6 @@
 # Tech spec: Browse and book
 
-- Version: 1
+- Version: 2
 - Status: approved (defaults)
 - Date: 2026-09-25
 - Implements: docs/prd/browse-and-book.md v1, docs/design/browse-and-book.md v1
@@ -86,8 +86,12 @@ spec).
   - The confirmation is `src/Sheet.tsx`: an RN `Modal` wrapper without an
     identifier. The screen puts `testID="booking.confirm.sheet"` on the
     content view.
-  - `class.back.link` calls
-    `router.replace('/schedule?date=<class date>')`.
+  - `class.back.link` calls `router.dismiss()`, which returns to the
+    schedule the class was opened from, on the class's date. After a
+    cold-start deep link it calls
+    `router.replace('/schedule?date=<class date>')` instead (see
+    `app-shell` tech spec v2).
+  - `class.bookings.link` calls `router.dismissTo('/bookings')`.
 - **Refresh:** `useFocusEffect` reloads data when the screen regains
   focus, e.g. after cancelling in My bookings.
 
@@ -117,3 +121,7 @@ spec).
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2: native back link and bookings link pop instead of replacing, so that the tabs aren't stacked twice.

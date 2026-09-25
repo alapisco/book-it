@@ -1,6 +1,6 @@
 # Tech spec: Test support
 
-- Version: 1
+- Version: 2
 - Status: approved (defaults)
 - Date: 2026-09-25
 - Implements: docs/prd/test-support.md v1 (no design spec: no UI)
@@ -82,7 +82,7 @@ The endpoints are as listed in the PRD's API table.
 - **android / ios:** `src/api.ts` holds `testSession` in a module
   variable, initialised from `EXPO_PUBLIC_TEST_SESSION`. The root layout
   reads `testSession` from the incoming URL (`expo-linking`
-  `useURL`) and updates it. A `401` does
+  `useURL`) and updates it. A `401` does `router.dismissAll()`, then
   `router.replace({pathname: "/login", params: {reason: "expired"}})`,
   with the reason only for `TOKEN_EXPIRED`.
 
@@ -108,3 +108,7 @@ This whole spec is test support.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2: the native 401 handling clears the stack before showing login.

@@ -1,6 +1,6 @@
 # Tech spec: App shell and navigation
 
-- Version: 1
+- Version: 2
 - Status: approved (defaults)
 - Date: 2026-09-25
 - Implements: docs/prd/app-shell.md v1, docs/design/app-shell.md v1
@@ -48,14 +48,29 @@ No new endpoints.
 - `(tabs)/_layout.tsx`: `Tabs`, with
   `tabBarButtonTestID: 'nav.schedule.link'` / `'nav.bookings.link'`.
   It redirects to `/login` when there's no token.
-- `(tabs)/index.tsx` (schedule), `(tabs)/bookings.tsx`, `login.tsx`,
-  `classes/[id].tsx`.
+- `(tabs)/schedule.tsx`, `(tabs)/bookings.tsx`, `login.tsx` and
+  `classes/[id].tsx`. `index.tsx` redirects to `/schedule`, so the native
+  route paths equal the web paths.
 - `app.json`: `scheme: "bookit"`, `ios.bundleIdentifier` and
   `android.package` both `com.bookit.sut`.
 - `expo-build-properties` sets `android.usesCleartextTraffic: true`, so
   that the emulator can reach `http://10.0.2.2:8000`.
 - **API base URL:** `EXPO_PUBLIC_API_URL`. If unset, android uses
   `http://10.0.2.2:8000` and ios uses `http://localhost:8000`.
+- **Leaving a pushed screen pops; it never pushes or replaces the tabs
+  again.**
+  - The class detail back link calls `router.dismiss()`, or
+    `router.replace(...)` after a cold-start deep link.
+  - The bookings link calls `router.dismissTo('/bookings')`.
+  - A `401` calls `router.dismissAll()` before
+    `router.replace('/login')`.
+  - Reason: duplicate hidden screens leave duplicate identifiers in the
+    hierarchy, and on iOS XCUITest can match the off-screen copy first.
+- **Nested identifiers on iOS.** A `Pressable` whose children carry
+  `testID`s (schedule cards, and submit buttons with a loading indicator)
+  sets `accessible={false}`. Otherwise iOS merges the children into one
+  accessibility element, and XCUITest can't find the nested identifiers.
+  Android (`resource-id`) is unaffected.
 
 ## Identifiers
 
@@ -79,3 +94,7 @@ Nav identifiers per `docs/design/testids.md` § nav.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2: added the native navigation rule (pop, don't push) and the iOS nested-identifier rule, both found while implementing M2. Corrected the native route file names.

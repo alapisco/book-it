@@ -27,5 +27,12 @@
     "gen:api": "openapi-typescript ../docs/api/openapi.json -o src/api-schema.ts",
     "typecheck": "tsc --noEmit"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "appConfigFieldsNotSyncedCheck": {
+        "enabled": false
+      }
+    }
+  }
 }
