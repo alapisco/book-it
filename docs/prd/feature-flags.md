@@ -1,0 +1,77 @@
+# PRD: Feature flags
+
+- Version: 1
+- Status: approved (defaults)
+- Date: 2026-09-25
+
+## Summary
+
+Which features exist on which platform is data. It lives in one fixture,
+it matches the parity matrix in `CLAUDE.md` exactly, and it varies by
+platform only. The clients read it to decide what to render. The
+framework reads it from the API to build its expected parity matrix.
+
+## Platform support
+
+| Platform | Support | Reason |
+|---|---|---|
+| web | yes | Every platform has a flag set. |
+| wap | yes | Separate flag set from web, despite sharing a build (ADR 0003). |
+| android | yes | Flag set chosen by `Platform.OS`. |
+| ios | yes | Flag set chosen by `Platform.OS`. |
+
+## User stories
+
+- **US-1** As a test author, I want to fetch the platform support matrix from the SUT, so that my framework's skip decisions come from the same source the apps use.
+- **US-2** As a developer, I want one place that decides platform support, so that the apps can't drift from the parity matrix.
+
+## Acceptance criteria
+
+- **AC-1** `GET /flags` returns `200` with one object per platform (`web`, `wap`, `android`, `ios`), each with exactly these keys and values:
+
+  | Key | web | wap | android | ios |
+  |---|---|---|---|---|
+  | `login` | true | true | true | true |
+  | `browse_and_book` | true | true | true | true |
+  | `my_bookings` | true | true | true | true |
+  | `week_calendar` | true | false | false | false |
+  | `ics_export` | true | false | false | false |
+  | `waitlist` | true | true | true | false |
+  | `qr_check_in` | false | false | true | true |
+  | `studio_policies` | `"page"` | `"page"` | `"webview"` | `"webview"` |
+
+- **AC-2** `GET /flags/{platform}` returns that platform's object.
+- **AC-3** The flags don't depend on the test session, the user or the studio.
+- **AC-4** `GET /flags` needs no authentication.
+- **AC-5** A client renders a flagged feature's entry points only where
+  its flag is `true`. Where the flag is `false`, none of the feature's
+  identifiers are present. This applies from M3; every M2 feature is
+  `true` on all platforms.
+
+## Error and edge cases
+
+| ID | Trigger | Expected |
+|---|---|---|
+| EC-1 | `GET /flags/desktop` | `404 UNKNOWN_PLATFORM` |
+
+## API requirements
+
+`GET /flags` → `{web: PlatformFlags, wap: PlatformFlags, android: PlatformFlags, ios: PlatformFlags}`.
+`GET /flags/{platform}` → `PlatformFlags`.
+
+## Test-support needs
+
+None. Flags can't be toggled at runtime, because divergence is fixed by
+design.
+
+## Out of scope
+
+- Changing flags at runtime, per user, or per studio.
+- Remote config services.
+
+## Decisions taken by default (review)
+
+1. The source is `fixtures/feature-flags.json`. The API serves it, and the
+   clients bundle it at build time. Clients bundle rather than fetch, so
+   that flags never have a loading state.
+2. Flag names use snake_case and follow the matrix rows.

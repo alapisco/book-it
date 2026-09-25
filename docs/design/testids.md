@@ -42,3 +42,14 @@ yet. Running `/design login` will write that spec and replace `(example)`.
 | `login.submit` | button | all | (example) | Disabled while either field is empty or request is in flight |
 | `login.submit.loading` | container | all | (example) | Spinner shown inside submit while request is in flight |
 | `login.error.message` | text | all | (example) | Rendered only after a failed attempt; text comes from the API error |
+
+## Screen: nav
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `nav.bar` | container | web | app-shell.md | Top navigation bar on every logged-in screen |
+| `nav.menu.toggle` | button | wap | app-shell.md | Opens the drawer |
+| `nav.menu.drawer` | container | wap | app-shell.md | Present only while open |
+| `nav.menu.close` | button | wap | app-shell.md | Closes the drawer |
+| `nav.schedule.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
+| `nav.bookings.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
