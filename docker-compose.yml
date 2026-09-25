@@ -1,4 +1,24 @@
-# Placeholder. backend-dev fills this in: services `api` (FastAPI) and
-# `web` (Vite), so `docker compose up` brings up both. Mobile is built
-# locally against simulator/emulator and is not part of compose.
-services: {}
+# `docker compose up --build` → API on :8000, web/wap on :5173.
+# Mobile is built locally against the simulator and emulator (see app/README.md).
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      retries: 10
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy

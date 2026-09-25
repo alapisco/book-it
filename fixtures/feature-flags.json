@@ -1,0 +1,6 @@
+{
+  "web":     {"login": true, "browse_and_book": true, "my_bookings": true, "week_calendar": true,  "ics_export": true,  "waitlist": true,  "qr_check_in": false, "studio_policies": "page"},
+  "wap":     {"login": true, "browse_and_book": true, "my_bookings": true, "week_calendar": false, "ics_export": false, "waitlist": true,  "qr_check_in": false, "studio_policies": "page"},
+  "android": {"login": true, "browse_and_book": true, "my_bookings": true, "week_calendar": false, "ics_export": false, "waitlist": true,  "qr_check_in": true,  "studio_policies": "webview"},
+  "ios":     {"login": true, "browse_and_book": true, "my_bookings": true, "week_calendar": false, "ics_export": false, "waitlist": false, "qr_check_in": true,  "studio_policies": "webview"}
+}

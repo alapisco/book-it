@@ -1,0 +1,36 @@
+[
+  {
+    "id": "harbor",
+    "name": "Harbor Yoga",
+    "description": "Waterfront yoga and pilates studio.",
+    "templates": [
+      {"slug": "vinyasa", "name": "Vinyasa Flow", "category": "yoga", "instructors": ["Maya Chen", "Leo Park"], "capacity": 16, "duration_min": 60, "hours": [7, 12, 18], "weekdays": [0, 1, 2, 3, 4, 5, 6], "january_early": true},
+      {"slug": "yin", "name": "Yin Yoga", "category": "yoga", "instructors": ["Maya Chen"], "capacity": 14, "duration_min": 75, "hours": [19], "weekdays": [0, 1, 2, 3, 4]},
+      {"slug": "mat-pilates", "name": "Mat Pilates", "category": "pilates", "instructors": ["Sofia Reyes", "Leo Park"], "capacity": 12, "duration_min": 45, "hours": [9, 17], "weekdays": [0, 2, 4, 5]},
+      {"slug": "beach-yoga", "name": "Beach Yoga", "category": "yoga", "instructors": ["Maya Chen", "Sofia Reyes"], "capacity": 20, "duration_min": 60, "hours": [8], "weekdays": [5, 6], "outdoor": true}
+    ]
+  },
+  {
+    "id": "summit",
+    "name": "Summit Strength",
+    "description": "Strength, conditioning and spin.",
+    "templates": [
+      {"slug": "hiit", "name": "HIIT Circuit", "category": "hiit", "instructors": ["Jonas Berg", "Priya Nair"], "capacity": 18, "duration_min": 45, "hours": [7, 12, 18], "weekdays": [0, 1, 2, 3, 4], "january_early": true},
+      {"slug": "spin", "name": "Power Spin", "category": "spin", "instructors": ["Priya Nair", "Tom Alvarez"], "capacity": 20, "duration_min": 45, "hours": [7, 17, 19], "weekdays": [0, 1, 2, 3, 4, 5, 6], "january_early": true},
+      {"slug": "strength", "name": "Barbell Strength", "category": "strength", "instructors": ["Jonas Berg"], "capacity": 10, "duration_min": 60, "hours": [10, 18], "weekdays": [0, 1, 3, 5]},
+      {"slug": "park-bootcamp", "name": "Park Bootcamp", "category": "hiit", "instructors": ["Tom Alvarez"], "capacity": 25, "duration_min": 60, "hours": [8], "weekdays": [2, 5], "outdoor": true}
+    ]
+  },
+  {
+    "id": "ember",
+    "name": "Ember Dance",
+    "description": "Dance, barre and mobility.",
+    "templates": [
+      {"slug": "salsa", "name": "Salsa Basics", "category": "dance", "instructors": ["Lucia Moreno"], "capacity": 20, "duration_min": 60, "hours": [19], "weekdays": [1, 3, 4]},
+      {"slug": "barre", "name": "Barre Burn", "category": "barre", "instructors": ["Hana Sato", "Lucia Moreno"], "capacity": 14, "duration_min": 50, "hours": [8, 12], "weekdays": [0, 1, 2, 3, 4, 5], "january_early": true},
+      {"slug": "hiphop", "name": "Hip-Hop Cardio", "category": "dance", "instructors": ["Dre Wallace"], "capacity": 18, "duration_min": 45, "hours": [18], "weekdays": [0, 2, 4, 6]},
+      {"slug": "stretch", "name": "Deep Stretch", "category": "mobility", "instructors": ["Hana Sato"], "capacity": 16, "duration_min": 30, "hours": [20], "weekdays": [0, 1, 2, 3, 4, 5, 6]},
+      {"slug": "rooftop-salsa", "name": "Rooftop Salsa", "category": "dance", "instructors": ["Lucia Moreno", "Dre Wallace"], "capacity": 30, "duration_min": 90, "hours": [20], "weekdays": [5], "outdoor": true}
+    ]
+  }
+]

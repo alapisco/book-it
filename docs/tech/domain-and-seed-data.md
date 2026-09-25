@@ -40,7 +40,7 @@ for template in studio.templates:                 # fixture order
           + [rules.january_early_hour] if date.month == 1 and template.january_early
     for hour in sorted(set(hours)):
         keep = rules.august_keep_probability if date.month == 8 else rules.keep_probability
-        if rng.random() >= keep: continue
+        if rng.random() >= keep and not (january and hour == january_early_hour): continue
         instructor = rng.choice(template.instructors)
         filler = capacity if rng.random() < rules.full_probability
                  else rng.randint(0, capacity - 1)

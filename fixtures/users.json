@@ -1,0 +1,5 @@
+[
+  {"id": "u-ava", "email": "ava@bookit.test", "password": "bookit123", "name": "Ava Lopez", "persona": "has existing bookings"},
+  {"id": "u-ben", "email": "ben@bookit.test", "password": "bookit123", "name": "Ben Okafor", "persona": "has no bookings"},
+  {"id": "u-cara", "email": "cara@bookit.test", "password": "bookit123", "name": "Cara Novak", "persona": "at the booking limit"}
+]

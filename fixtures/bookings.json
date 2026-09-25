@@ -1,0 +1,7 @@
+[
+  {"id": "bk-ava-open", "user_id": "u-ava", "class_id": "anchor-cancel-open"},
+  {"id": "bk-ava-closed", "user_id": "u-ava", "class_id": "anchor-cancel-closed"},
+  {"id": "bk-cara-full", "user_id": "u-cara", "class_id": "anchor-full"},
+  {"id": "bk-cara-open", "user_id": "u-cara", "class_id": "anchor-cancel-open"},
+  {"id": "bk-cara-closed", "user_id": "u-cara", "class_id": "anchor-cancel-closed"}
+]
