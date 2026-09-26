@@ -1,9 +1,9 @@
 # Design: Browse and book
 
-- Version: 3
+- Version: 4
 - Status: approved
 - Date: 2026-09-26
-- Implements: docs/prd/browse-and-book.md v3; uses docs/design/visual-language.md
+- Implements: docs/prd/browse-and-book.md v4; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -46,9 +46,12 @@ A card contains:
 - `schedule.class.booked` ("Booked"), only when `my_booking_id` is set
 
 **Class detail.** The BackLink is visible in every state, as
-`class.back.link`. When the class was opened from the week it returns to
-that week (`week-calendar.md`); when opened from My bookings it returns
-there, and on web reads "‹ My bookings" (`my-bookings-and-cancel.md` v3).
+`class.back.link`. It returns to the screen the class was opened from, in
+the state it was in (PRD AC-8), and works in every state including
+loading. On web its label names that screen: "‹ Schedule" or "‹ My
+bookings" (web has no week view). On wap the
+icon-only control's accessible label does the same ("Back to schedule",
+"Back to week", "Back to my bookings").
 
 | State | Visible | Identifiers |
 |---|---|---|
@@ -121,3 +124,4 @@ None.
 
 - v2 (M4): local times without a suffix; availability colours on all platforms; studio accent bar and neighbourhood; class detail icon rows and a sticky action area on wap/native; back control in the pushed app bar.
 - v3: BackLink returns to the week or to My bookings for a class opened from there.
+- v4: BackLink returns to the origin screen and its state in every state, including loading.
