@@ -89,6 +89,10 @@ humans.
 | `class.bookings.link` | link | all | browse-and-book.md | "View my bookings"; with the booked badge |
 | `class.started.badge` | text | all | browse-and-book.md | "Class has started" |
 | `class.full.badge` | text | all | browse-and-book.md | "Class full" |
+| `class.waitlist.join` | button | web, wap, android | waitlist.md | "Join waitlist"; full, not started, not booked, not waitlisted |
+| `class.waitlist.loading` | container | web, wap, android | waitlist.md | Spinner inside the join button |
+| `class.waitlist.error` | text | web, wap, android | waitlist.md | API error `message` after a failed join |
+| `class.waitlist.position` | text | web, wap, android | waitlist.md | "You're #N on the waitlist" |
 
 ## Screen: booking
 
@@ -126,3 +130,20 @@ humans.
 | `bookings.item.time` | text | all | my-bookings-and-cancel.md | "Sat 26 Sep 2026 · 07:00 UTC" |
 | `bookings.item.cancel` | button | all | my-bookings-and-cancel.md | Only when `can_cancel` |
 | `bookings.item.cancel-closed` | text | all | my-bookings-and-cancel.md | "Cancellation closed"; only when not `can_cancel` |
+
+## Screen: waitlist
+
+Rendered inside the bookings screen, only where the `waitlist` flag is true.
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `waitlist.section` | container | web, wap, android | waitlist.md | "Waitlist" section; only when the user has entries |
+| `waitlist.table` | container | web | waitlist.md | Entries container on web |
+| `waitlist.list` | container | wap, android | waitlist.md | Entries container elsewhere |
+| `waitlist.item` | list-item | web, wap, android | waitlist.md | Repeated, one per entry, class `start_at` order |
+| `waitlist.item.name` | text | web, wap, android | waitlist.md | Class name |
+| `waitlist.item.time` | text | web, wap, android | waitlist.md | "Sat 26 Sep 2026 · 07:00 UTC" |
+| `waitlist.item.position` | text | web, wap, android | waitlist.md | "#N on the waitlist" |
+| `waitlist.item.leave` | button | web, wap, android | waitlist.md | "Leave waitlist" |
+| `waitlist.leave.loading` | container | web, wap, android | waitlist.md | Spinner inside the leave button |
+| `waitlist.leave.error` | text | web, wap, android | waitlist.md | API error `message` after a failed leave |

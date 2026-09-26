@@ -1,27 +1,27 @@
 # PRD: Waitlist
 
-- Version: 1
-- Status: draft
-- Date: 2026-09-25
+- Version: 2
+- Status: approved
+- Date: 2026-09-26
 
 ## Summary
 
 When a class has no seats left, a user on a supporting platform can join
 that class's waitlist instead of booking. When a booked seat is cancelled,
-the first user on the waitlist is converted to a booking. Users can see
-and leave their waitlist entries from "My bookings".
+the first eligible user on the waitlist is booked into it immediately.
+Users see their position, and can leave the waitlist, from "My bookings".
 
 ## Platform support
 
 | Platform | Support | Reason |
 |---|---|---|
 | web | yes | Parity matrix. Baseline platform for the feature. |
-| wap | yes | Parity matrix. Same feature as web rendered through the wap component tree (bottom sheet, stacked list), so the framework must abstract the UI, not the behaviour. |
+| wap | yes | Parity matrix. Same feature as web, rendered through the wap component tree (stacked list), so the framework must abstract the UI, not the behaviour. |
 | android | yes | Parity matrix. Proves the native codebase ships the feature on one OS. |
-| ios | **no** | Parity matrix. Deliberate single-platform gap in the shared native codebase: the framework must auto-skip waitlist tests on ios with a stated reason and show `no` in its parity matrix. On ios a full class shows as full, with no waitlist control. |
+| ios | **no** | Parity matrix. A deliberate gap on one platform inside a shared native codebase. The framework must auto-skip waitlist tests on ios with a stated reason and show `no` in its parity matrix. On ios a full class shows as full, with no waitlist control, and the API refuses waitlist calls that identify as ios. |
 
-Support is decided by the platform feature flag `waitlist` (true on web,
-wap, android; false on ios). It never varies by studio.
+Support comes from the platform flag `waitlist` (`fixtures/feature-flags.json`:
+true on web, wap and android; false on ios). It never varies by studio.
 
 ## User stories
 
@@ -30,80 +30,134 @@ wap, android; false on ios). It never varies by studio.
 - **US-3** As a waitlisted user, I want to leave the waitlist, so that I am not booked into a class I no longer want.
 - **US-4** As a waitlisted user, I want to be booked automatically when a seat frees up, so that I don't have to watch the class.
 - **US-5** As a user on ios, I want to see that a class is full, so that I don't try to book it.
+- **US-6** As a test author, I want the API to refuse waitlist calls from ios, so that the gap is observable at the API layer as well as in the UI.
 
 ## Acceptance criteria
 
-Clock times refer to the controllable clock (`X-Test-Now` / `POST /test/clock`).
+Clock times refer to the session clock (`X-Test-Now` / `POST /test/clock`).
+"Seed waitlist" means `anchor-full` holds two entries after reset, for the
+guest users `u-guest-1` (position 1) and `u-guest-2` (position 2). Guests
+exist only in seed data and cannot log in.
 
-- **AC-1** (US-1) Given a class with `spots_left = 0` that has not started, on web, wap and android, the class detail shows a "Join waitlist" control and no "Book" control.
-- **AC-2** (US-1) Given AC-1, when the user joins, the API returns `201` with `position` = (previous `waitlist_count` + 1), and the class's `waitlist_count` increases by exactly 1.
-- **AC-3** (US-1) Given a class with `spots_left >= 1`, no "Join waitlist" control is shown on any platform.
-- **AC-4** (US-2) Given a user on a class's waitlist, "My bookings" lists that entry with status `waitlisted` and its current `position`, separate from confirmed bookings.
-- **AC-5** (US-2) Given three users at positions 1, 2, 3, when the user at position 1 leaves, the remaining users report positions 1 and 2 on their next `GET /me/waitlist`.
-- **AC-6** (US-3) Given a waitlisted user, when they leave, the API returns `204`, the entry no longer appears in `GET /me/waitlist`, and `waitlist_count` decreases by exactly 1.
-- **AC-7** (US-4) Given a full class with a non-empty waitlist, when a booked user cancels, then within the same request the position-1 user has a confirmed booking for that class (visible in `GET /me/bookings`), their waitlist entry is removed, `spots_left` stays `0`, and every remaining entry's position decreases by 1.
-- **AC-8** (US-4) Given a full class with an empty waitlist, when a booked user cancels, `spots_left` becomes `1`.
-- **AC-9** (US-5) Given a class with `spots_left = 0` on ios, the class detail shows a "Class full" indicator, and no waitlist control or waitlist identifier exists in the view hierarchy.
-- **AC-10** (US-5) On ios, "My bookings" shows no waitlist section and no waitlisted entries.
-- **AC-11** (US-1) Given a user viewing a class with `spots_left = 1`, when another session takes the last seat and the user then taps "Book", the API returns `409 CLASS_FULL`. On web, wap and android the UI then shows the "Join waitlist" control without a page reload. On ios it shows "Class full".
+- **AC-1** (US-1) Given a class with `spots_left = 0` that has not started,
+  and a user neither booked nor waitlisted on it, class detail on web, wap
+  and android shows "Class full" and a "Join waitlist" control, and no
+  "Book" control.
+- **AC-2** (US-1) Given AC-1, when `u-ben` joins `anchor-full` after reset,
+  the API returns `201` with `position: 3`. The class's `waitlist_count`
+  goes from 2 to 3, and `my_waitlist_position` is 3.
+- **AC-3** (US-2) After joining, class detail shows "You're #3 on the
+  waitlist" in place of the "Join waitlist" control.
+- **AC-4** (US-1) Given a class with `spots_left >= 1`, no "Join waitlist"
+  control is shown on any platform.
+- **AC-5** (US-2) "My bookings" on web, wap and android shows a "Waitlist"
+  section when the user has at least one entry. Each entry shows the class
+  name, `Sat 26 Sep 2026 · 07:00 UTC` and "#N on the waitlist". The
+  section is separate from confirmed bookings and absent when the user has
+  no entries.
+- **AC-6** (US-3) "Leave waitlist" on an entry sends
+  `DELETE /classes/{id}/waitlist`. On `204` the entry disappears, and
+  `waitlist_count` drops by exactly 1.
+- **AC-7** (US-2) Positions are 1-based and contiguous. When an entry is
+  removed (by leaving or by promotion), every entry behind it moves up by
+  exactly 1.
+- **AC-8** (US-4) After reset, when `u-cara` cancels `bk-cara-full`, then
+  within the same request `u-guest-1` holds a booking for `anchor-full`,
+  their entry is removed, `spots_left` stays `0`, `waitlist_count` goes
+  from 2 to 1, and `u-guest-2` moves to position 1.
+- **AC-9** (US-4) When a seat frees on a class with an empty waitlist,
+  `spots_left` increases by 1 and nobody is booked.
+- **AC-10** (US-5) On ios, class detail for a full class shows "Class
+  full", and no waitlist control or waitlist identifier exists in the view
+  hierarchy.
+- **AC-11** (US-5) On ios, "My bookings" shows no waitlist section, and the
+  app makes no waitlist API calls.
+- **AC-12** (US-1) Given a user viewing `anchor-last-seat` with 1 spot, when
+  the class is filled (`POST /test/classes/anchor-last-seat/fill`) and the
+  user confirms a booking, the confirmation shows "This class is full."
+  After "Not now", class detail shows "Class full" plus "Join waitlist" on
+  web, wap and android, and "Class full" alone on ios, without a page
+  reload.
+- **AC-13** (US-6) A waitlist endpoint called with `X-Platform: ios`
+  returns `403 FEATURE_UNAVAILABLE` "This feature is not available on this
+  platform." The same call with `X-Platform: web`, `wap` or `android`, or
+  with no `X-Platform`, is processed normally.
 
 ## Error and edge cases
 
+Join rules are checked in the order below; the first failing rule wins.
+
 | ID | Trigger | Expected |
 |---|---|---|
-| EC-1 | Join waitlist when `spots_left >= 1` | `409 CLASS_NOT_FULL` |
-| EC-2 | Join waitlist for a class the user has booked | `409 ALREADY_BOOKED` |
-| EC-3 | Join waitlist twice for the same class | `409 ALREADY_WAITLISTED`; `waitlist_count` unchanged |
-| EC-4 | Join waitlist when clock ≥ class start time | `409 CLASS_STARTED` |
-| EC-5 | Join waitlist as the seed user who is at the booking limit | `409 BOOKING_LIMIT_REACHED` |
-| EC-6 | Leave a waitlist the user is not on | `404 NOT_WAITLISTED` |
-| EC-7 | Any waitlist call for an unknown class ID | `404 CLASS_NOT_FOUND` |
-| EC-8 | Any waitlist call with the chaos "expired token" toggle on | `401 TOKEN_EXPIRED`; UI returns to `login.screen` |
-| EC-9 | Class starts while users are still waitlisted | Entries remain listed with status `waitlisted` until the class start time; after start, `GET /me/waitlist` no longer returns them |
+| EC-1 | Any waitlist call with `X-Platform: ios` | `403 FEATURE_UNAVAILABLE` |
+| EC-2 | Any waitlist call for an unknown class id | `404 CLASS_NOT_FOUND` "Class not found." |
+| EC-3 | Join when clock ≥ class start | `409 CLASS_STARTED` "This class has already started." |
+| EC-4 | Join a class the user has booked (`u-cara` on `anchor-full`) | `409 ALREADY_BOOKED` "You have already booked this class." |
+| EC-5 | Join twice | `409 ALREADY_WAITLISTED` "You are already on the waitlist for this class."; `waitlist_count` unchanged |
+| EC-6 | Join at the booking limit | `409 BOOKING_LIMIT_REACHED` "You have reached the limit of 3 upcoming bookings." |
+| EC-7 | Join when `spots_left >= 1` | `409 CLASS_NOT_FULL` "This class still has spots. Book it instead." |
+| EC-8 | Leave a waitlist the user is not on | `404 NOT_WAITLISTED` "You are not on the waitlist for this class." |
+| EC-9 | Any waitlist call with chaos `expire_tokens` on | `401 TOKEN_EXPIRED`; the UI shows `login.screen` with the session-expired message |
+| EC-10 | A seat frees while the position-1 user is at the booking limit | That user is skipped and keeps position 1. The first eligible user behind them is booked. If nobody is eligible, `spots_left` increases by 1. |
+| EC-11 | The class starts while users are waitlisted | Entries stay until `start_at`. From `start_at` on, `GET /me/waitlist` doesn't return them, and they are never promoted. |
+| EC-12 | Any request with `X-Platform: desktop` | `400 INVALID_PLATFORM` |
+
+Waitlist entries never count toward the booking limit.
 
 ## API requirements
 
-The request/response shapes below are the contract. `backend-dev` implements
-them, and `docs/api/openapi.json` is generated from that code.
-
-| Method | Path | Success | Body / fields |
+| Method | Path | Success | Body |
 |---|---|---|---|
 | `POST` | `/classes/{class_id}/waitlist` | `201` | `WaitlistEntry` |
 | `DELETE` | `/classes/{class_id}/waitlist` | `204` | — |
-| `GET` | `/me/waitlist` | `200` | `WaitlistEntry[]`, ordered by class start time |
-| `GET` | `/classes/{class_id}` | `200` | existing class fields plus `waitlist_count: int`, `my_waitlist_position: int \| null` |
-| `DELETE` | `/bookings/{booking_id}` | `204` | existing cancel; now also performs promotion per AC-7 |
+| `GET` | `/me/waitlist` | `200` | `WaitlistEntry[]`, upcoming only, ordered by class `start_at` |
+| `GET` | `/classes/{class_id}`, `/schedule` | `200` | `StudioClass` gains `waitlist_count: int` and `my_waitlist_position: int \| null` |
+| `DELETE` | `/bookings/{booking_id}` | `204` | Unchanged contract; now also promotes per AC-8 and EC-10 |
 
-`WaitlistEntry`: `id: str`, `class_id: str`, `user_id: str`,
-`position: int` (1-based, contiguous), `created_at: datetime`.
+`WaitlistEntry` has these fields:
+- `id`, `class_id`, `user_id: str`
+- `position: int` (1-based, contiguous)
+- `created_at: datetime`
+- `studio_class: StudioClass`
 
-Error body: `{"error": {"code": "<CODE>", "message": "<text>"}}`, using the codes in the table above.
+All waitlist endpoints need authentication. The order is first come,
+first served.
 
-Order: first come, first served by `created_at`, as measured by the controllable clock.
+**`X-Platform` header** (optional on every request): one of `web`, `wap`,
+`android`, `ios`. The web app sends `web` or `wap` depending on the tree
+it renders; the native app sends `Platform.OS`. The header is defined in
+`feature-flags` v2.
 
 ## Test-support needs
 
-- `POST /test/reset` restores waitlists to seed state (empty, apart from any seed entries on the full anchor class).
-- `X-Test-Session` namespaces waitlists, so parallel workers each see their own positions.
-- Controllable clock for EC-4 and EC-9.
-- Anchor classes: **permanently full** (AC-1, AC-2, EC-1–EC-5) and **one seat remaining** (AC-11).
-- Seed users: one with existing bookings (to cancel for AC-7), one with none (joins waitlist), one at the booking limit (EC-5).
-- Chaos toggle for expired tokens (EC-8).
+- `POST /test/reset` restores the seed waitlist (two guests on `anchor-full`) in the caller's session only.
+- `X-Test-Session` namespaces waitlists.
+- The clock, for EC-3 and EC-11.
+- Anchors: `anchor-full` (AC-1, AC-2, AC-8) and `anchor-last-seat` (AC-12).
+- Seed users: `u-ben` joins; `u-cara` cancels (AC-8) and is refused (EC-4, EC-6).
+- `POST /test/classes/{id}/fill` for AC-12 and EC-10.
+- Chaos `expire_tokens` (EC-9).
 
 ## Out of scope
 
-- Notifying promoted users (no email or push). The booking appears in "My bookings".
-- Offer/accept windows for promoted users. Promotion is immediate.
+- Notifying promoted users. The booking just appears in "My bookings".
+- Offer/accept windows. Promotion is immediate.
 - A maximum waitlist length.
+- Joining or leaving from any screen other than class detail (join) and My bookings (leave).
 - Waitlist on ios, including through the policies webview.
 
 ## Open questions
 
-These are proposals made while drafting, because the brief does not settle them. Confirm or change each one before running `/design waitlist`.
+None.
 
-1. **Auto-promote vs. offer.** Proposed: promotion is automatic and immediate (AC-7). The alternative is a timed offer, which needs a clock-driven expiry.
-2. **Booking limit.** Proposed: joining is refused at the limit (EC-5), and waitlist entries do not count toward the limit. Open: if a waitlisted user reaches the limit before promotion, is that user skipped or promoted anyway?
-3. **Server-side platform enforcement.** Proposed: the API does not check the platform; the `waitlist` flag hides the UI on ios. Should `POST /classes/{id}/waitlist` reject ios clients (for example with `403 FEATURE_UNAVAILABLE`) so the API test layer can observe the gap too?
-4. **Feature-flag endpoint.** No PRD defines how clients read platform flags yet. That needs its own PRD (e.g. `/prd feature-flags`), or a decision to hard-code flags per platform in the clients.
-5. **Error body shape.** This is the first PRD, so the `{"error": {code, message}}` shape above becomes the convention for later PRDs unless you change it now.
-6. **Seed waitlist.** Should the permanently-full anchor class start with seed entries (for example two other users), so AC-5 and AC-7 can run without first setting up state?
+## Changelog
+
+- v2 (2026-09-26): resolved the v1 open questions with the QA lead.
+  - Promotion is automatic.
+  - Users at the booking limit are skipped at promotion and keep their place.
+  - The API refuses ios via `X-Platform` (`403 FEATURE_UNAVAILABLE`).
+  - `anchor-full` is seeded with two guest entries.
+  - Flags come from `feature-flags` v1.
+  - The error body follows ADR 0004.
+  - Added `studio_class` to `WaitlistEntry`, fixed the join rule order,
+    and made the ACs concrete against seed data.

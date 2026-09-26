@@ -1,8 +1,8 @@
 # PRD: Feature flags
 
-- Version: 1
+- Version: 2
 - Status: approved (defaults)
-- Date: 2026-09-25
+- Date: 2026-09-26
 
 ## Summary
 
@@ -47,12 +47,21 @@ framework reads it from the API to build its expected parity matrix.
   its flag is `true`. Where the flag is `false`, none of the feature's
   identifiers are present. This applies from M3; every M2 feature is
   `true` on all platforms.
+- **AC-6** Every request may carry `X-Platform: web | wap | android | ios`.
+  The web app sends `wap` while it renders the wap tree and `web`
+  otherwise; the native app sends `Platform.OS`.
+- **AC-7** When `X-Platform` names a platform whose flag for a feature is
+  `false`, that feature's endpoints return `403 FEATURE_UNAVAILABLE`
+  "This feature is not available on this platform." Without
+  `X-Platform`, no platform check is made; API tests use this to reach
+  every feature.
 
 ## Error and edge cases
 
 | ID | Trigger | Expected |
 |---|---|---|
 | EC-1 | `GET /flags/desktop` | `404 UNKNOWN_PLATFORM` |
+| EC-2 | Any request with `X-Platform: desktop` | `400 INVALID_PLATFORM` "X-Platform must be one of web, wap, android, ios." |
 
 ## API requirements
 
@@ -75,3 +84,7 @@ design.
    clients bundle it at build time. Clients bundle rather than fetch, so
    that flags never have a loading state.
 2. Flag names use snake_case and follow the matrix rows.
+
+## Changelog
+
+- v2 (2026-09-26): added the `X-Platform` request header and server-side enforcement (`403 FEATURE_UNAVAILABLE`), first used by `waitlist` v2.
