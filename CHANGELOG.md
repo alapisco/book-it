@@ -16,6 +16,15 @@ framework pins against these versions.
 - **wap: Back from a class opened in the week** now returns to that week
   (`week-calendar` AC-7); it went to the schedule. android and ios were
   already correct.
+- **Back returns to where you were** (`browse-and-book` v4 AC-8,
+  `week-calendar` v3 AC-7), even when pressed before class detail has
+  loaded (it used to fall back to today's schedule or the current week):
+  - web/wap: links into class detail carry `?back=<origin path and query>`,
+    replacing `?from=bookings` / `?from=week`; only `/schedule`, `/week`
+    and `/bookings` are honoured.
+  - wap, android and ios: the week also comes back on the opened class's
+    day, selected and scrolled to (`/week?week=…&day=…` on wap); it used
+    to reset to today or Monday. No identifiers changed.
 
 ## M4: polish
 
