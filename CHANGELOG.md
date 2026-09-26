@@ -3,7 +3,20 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased (M3: all features)
+## Unreleased (developer experience)
+
+### Added
+- `app/`: `npm run build:android`, `build:android:debug` and `build:ios`
+  produce self-contained APK and `.app` files for automation.
+- `app/.env.example` for the `EXPO_PUBLIC_*` settings.
+- `app/README.md`: machine setup (JDK 17, `ANDROID_HOME`, user-level
+  Gradle config), Appium capabilities, troubleshooting.
+
+### Fixed
+- The web app derives the API host from the page's host, so the Android
+  policies webview reaches the API.
+
+## M3: all features
 
 ### Added
 - **Studio policies:**

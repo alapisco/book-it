@@ -80,8 +80,12 @@ Without Docker, run the two pieces separately:
 - API: `cd api && pip install -r requirements.txt && uvicorn bookit.main:app --port 8000`
 - Web: `cd web && npm ci && npm run dev`
 
-**android / ios:** built locally against the emulator and simulator. See
-[app/README.md](app/README.md).
+**android / ios:** built locally against the emulator and simulator.
+[app/README.md](app/README.md) covers:
+- one-time machine setup: JDK 17, `ANDROID_HOME`, Xcode
+- running for development
+- building the release `.apk` / `.app` that Appium uses
+  (`npm run build:android`, `npm run build:ios`)
 
 **Seed users** (password `bookit123`):
 - `ava@bookit.test`: has bookings

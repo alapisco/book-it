@@ -26,6 +26,9 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:android:debug": "cd android && ./gradlew assembleDebug",
+    "build:ios": "cd ios && pod install && xcodebuild -workspace BookIt.xcworkspace -scheme BookIt -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build",
     "prebuild": "expo prebuild --clean --no-install",
     "gen:api": "openapi-typescript ../docs/api/openapi.json -o src/api-schema.ts",
     "typecheck": "tsc --noEmit"
