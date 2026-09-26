@@ -48,6 +48,7 @@ class SessionState:
             WaitlistEntry(w["id"], w["user_id"], w["class_id"], now) for w in SEED_WAITLIST
         ]
         self.next_waitlist_seq = 1
+        self.checkins: dict[str, datetime] = {}  # booking_id -> checked_in_at
         self.filler_overrides: dict[str, int] = {}
         self.chaos = ChaosConfig()
         t0 = now.replace(minute=0, second=0, microsecond=0)

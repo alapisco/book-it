@@ -27,6 +27,7 @@ def booking_model(session: SessionState, booking: StoredBooking, now: datetime) 
         created_at=booking.created_at,
         can_cancel=now < deadline,
         cancel_deadline=deadline,
+        checked_in_at=session.checkins.get(booking.id),
         studio_class=to_model(session, slot, now, booking.user_id),
     )
 

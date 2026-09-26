@@ -72,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/schedule/week": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Schedule Week */
+        get: operations["schedule_week_schedule_week_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/classes/{class_id}": {
         parameters: {
             query?: never;
@@ -140,6 +157,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/bookings/{booking_id}/ics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export Ics */
+        get: operations["export_ics_bookings__booking_id__ics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/classes/{class_id}/waitlist": {
         parameters: {
             query?: never;
@@ -167,6 +201,60 @@ export interface paths {
         };
         /** My Waitlist */
         get: operations["my_waitlist_me_waitlist_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/{booking_id}/checkin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Pass */
+        get: operations["get_pass_bookings__booking_id__checkin_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check In */
+        post: operations["check_in_checkins_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Policies
+         * @description Public: no authentication (docs/prd/studio-policies.md).
+         */
+        get: operations["policies_policies_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -349,6 +437,8 @@ export interface components {
              * Format: date-time
              */
             cancel_deadline: string;
+            /** Checked In At */
+            checked_in_at: string | null;
             studio_class: components["schemas"]["StudioClass"];
         };
         /** BookingCreate */
@@ -379,6 +469,61 @@ export interface components {
             expire_tokens: boolean;
             /** Path Prefix */
             path_prefix?: string | null;
+        };
+        /** CheckinPass */
+        CheckinPass: {
+            /** Booking Id */
+            booking_id: string;
+            /** Class Id */
+            class_id: string;
+            /**
+             * Code
+             * @description XXXX-XXXX, static per booking
+             */
+            code: string;
+            /**
+             * Qr Payload
+             * @description bookit:checkin:<code>
+             */
+            qr_payload: string;
+            /**
+             * Window Opens At
+             * Format: date-time
+             */
+            window_opens_at: string;
+            /**
+             * Window Closes At
+             * Format: date-time
+             */
+            window_closes_at: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "not_open" | "open" | "closed" | "checked_in";
+            /** Checked In At */
+            checked_in_at: string | null;
+        };
+        /** CheckinRequest */
+        CheckinRequest: {
+            /** Code */
+            code: string;
+        };
+        /** CheckinResult */
+        CheckinResult: {
+            /** Booking Id */
+            booking_id: string;
+            /** Class Id */
+            class_id: string;
+            /** Class Name */
+            class_name: string;
+            /** User Name */
+            user_name: string;
+            /**
+             * Checked In At
+             * Format: date-time
+             */
+            checked_in_at: string;
         };
         /** ClockAdvance */
         ClockAdvance: {
@@ -470,6 +615,15 @@ export interface components {
              */
             studio_policies: "page" | "webview";
         };
+        /** PolicyRule */
+        PolicyRule: {
+            /** Id */
+            id: string;
+            /** Title */
+            title: string;
+            /** Text */
+            text: string;
+        };
         /** ResetResult */
         ResetResult: {
             /** Session */
@@ -507,6 +661,38 @@ export interface components {
             now: string;
             /** Classes */
             classes: components["schemas"]["StudioClass"][];
+        };
+        /** ScheduleWeek */
+        ScheduleWeek: {
+            /**
+             * Week Start
+             * Format: date
+             * @description Monday
+             */
+            week_start: string;
+            /**
+             * Week End
+             * Format: date
+             * @description Sunday
+             */
+            week_end: string;
+            /**
+             * Previous Week
+             * Format: date
+             */
+            previous_week: string;
+            /**
+             * Next Week
+             * Format: date
+             */
+            next_week: string;
+            /**
+             * Now
+             * Format: date-time
+             */
+            now: string;
+            /** Days */
+            days: components["schemas"]["ScheduleDay"][];
         };
         /** Studio */
         Studio: {
@@ -567,6 +753,15 @@ export interface components {
              * @description The caller's 1-based waitlist position, if any
              */
             my_waitlist_position: number | null;
+        };
+        /** StudioPolicies */
+        StudioPolicies: {
+            /** Studio Id */
+            studio_id: string;
+            /** Studio Name */
+            studio_name: string;
+            /** Rules */
+            rules: components["schemas"]["PolicyRule"][];
         };
         /** User */
         User: {
@@ -855,6 +1050,82 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ScheduleDay"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    schedule_week_schedule_week_get: {
+        parameters: {
+            query?: {
+                date?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScheduleWeek"];
                 };
             };
             /** @description Bad Request */
@@ -1215,6 +1486,82 @@ export interface operations {
             };
         };
     };
+    export_ics_bookings__booking_id__ics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One VEVENT (docs/prd/ics-export.md) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/calendar": string;
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
     join_waitlist_classes__class_id__waitlist_post: {
         parameters: {
             query?: never;
@@ -1381,6 +1728,236 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WaitlistEntry"][];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    get_pass_bookings__booking_id__checkin_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                booking_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinPass"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    check_in_checkins_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-studio-key"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinResult"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorBody"];
+                };
+            };
+        };
+    };
+    policies_policies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudioPolicies"][];
                 };
             };
             /** @description Bad Request */

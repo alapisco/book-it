@@ -1,0 +1,92 @@
+[
+  {
+    "studio_id": "harbor",
+    "rules": [
+      {
+        "id": "cancellation",
+        "title": "Cancellation",
+        "text": "Cancel at least 12 hours before your class starts. Later cancellations aren't possible."
+      },
+      {
+        "id": "booking-limit",
+        "title": "Booking limit",
+        "text": "You can hold up to 3 upcoming bookings at a time."
+      },
+      {
+        "id": "waitlist",
+        "title": "Waitlist",
+        "text": "When a class is full, join the waitlist on the website, mobile website or Android app. If a spot opens, the first eligible person is booked automatically."
+      },
+      {
+        "id": "check-in",
+        "title": "Check-in",
+        "text": "Check in with the QR code in the Android or iOS app, from 30 minutes before class until 15 minutes after it starts."
+      },
+      {
+        "id": "mats",
+        "title": "Mats",
+        "text": "Bring your own mat for Beach Yoga; studio mats are provided indoors."
+      }
+    ]
+  },
+  {
+    "studio_id": "summit",
+    "rules": [
+      {
+        "id": "cancellation",
+        "title": "Cancellation",
+        "text": "Cancel at least 12 hours before your class starts. Later cancellations aren't possible."
+      },
+      {
+        "id": "booking-limit",
+        "title": "Booking limit",
+        "text": "You can hold up to 3 upcoming bookings at a time."
+      },
+      {
+        "id": "waitlist",
+        "title": "Waitlist",
+        "text": "When a class is full, join the waitlist on the website, mobile website or Android app. If a spot opens, the first eligible person is booked automatically."
+      },
+      {
+        "id": "check-in",
+        "title": "Check-in",
+        "text": "Check in with the QR code in the Android or iOS app, from 30 minutes before class until 15 minutes after it starts."
+      },
+      {
+        "id": "footwear",
+        "title": "Footwear",
+        "text": "Closed-toe training shoes are required on the gym floor."
+      }
+    ]
+  },
+  {
+    "studio_id": "ember",
+    "rules": [
+      {
+        "id": "cancellation",
+        "title": "Cancellation",
+        "text": "Cancel at least 12 hours before your class starts. Later cancellations aren't possible."
+      },
+      {
+        "id": "booking-limit",
+        "title": "Booking limit",
+        "text": "You can hold up to 3 upcoming bookings at a time."
+      },
+      {
+        "id": "waitlist",
+        "title": "Waitlist",
+        "text": "When a class is full, join the waitlist on the website, mobile website or Android app. If a spot opens, the first eligible person is booked automatically."
+      },
+      {
+        "id": "check-in",
+        "title": "Check-in",
+        "text": "Check in with the QR code in the Android or iOS app, from 30 minutes before class until 15 minutes after it starts."
+      },
+      {
+        "id": "floor",
+        "title": "Studio floor",
+        "text": "Socks or clean dance shoes only on the sprung floor."
+      }
+    ]
+  }
+]

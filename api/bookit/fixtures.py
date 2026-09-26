@@ -20,3 +20,5 @@ USERS = _load("users.json")
 SEED_BOOKINGS = _load("bookings.json")
 SEED_WAITLIST = _load("waitlist.json")
 FEATURE_FLAGS = _load("feature-flags.json")
+POLICIES = _load("policies.json")
+STUDIO_BY_SCANNER_KEY = {s["scanner_key"]: s for s in STUDIOS}

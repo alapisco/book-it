@@ -55,6 +55,27 @@ class ScheduleDay(BaseModel):
     classes: list[StudioClass]
 
 
+class ScheduleWeek(BaseModel):
+    week_start: date = Field(description="Monday")
+    week_end: date = Field(description="Sunday")
+    previous_week: date
+    next_week: date
+    now: datetime
+    days: list[ScheduleDay]
+
+
+class PolicyRule(BaseModel):
+    id: str
+    title: str
+    text: str
+
+
+class StudioPolicies(BaseModel):
+    studio_id: str
+    studio_name: str
+    rules: list[PolicyRule]
+
+
 class User(BaseModel):
     id: str
     email: str
@@ -84,7 +105,31 @@ class Booking(BaseModel):
     created_at: datetime
     can_cancel: bool
     cancel_deadline: datetime
+    checked_in_at: datetime | None
     studio_class: StudioClass
+
+
+class CheckinPass(BaseModel):
+    booking_id: str
+    class_id: str
+    code: str = Field(description="XXXX-XXXX, static per booking")
+    qr_payload: str = Field(description="bookit:checkin:<code>")
+    window_opens_at: datetime
+    window_closes_at: datetime
+    status: Literal["not_open", "open", "closed", "checked_in"]
+    checked_in_at: datetime | None
+
+
+class CheckinRequest(BaseModel):
+    code: str
+
+
+class CheckinResult(BaseModel):
+    booking_id: str
+    class_id: str
+    class_name: str
+    user_name: str
+    checked_in_at: datetime
 
 
 class WaitlistEntry(BaseModel):

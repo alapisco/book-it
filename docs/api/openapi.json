@@ -3,7 +3,7 @@
   "info": {
     "title": "BookIt SUT API",
     "description": "System Under Test for the BookIt automation framework. All state is namespaced by the X-Test-Session header; X-Test-Now overrides the clock for one request; X-Platform (web, wap, android, ios) enables server-side feature gating.",
-    "version": "0.3.0"
+    "version": "1.0.0"
   },
   "paths": {
     "/auth/login": {
@@ -312,6 +312,106 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ScheduleDay"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/schedule/week": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Schedule Week",
+        "operationId": "schedule_week_schedule_week_get",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleWeek"
                 }
               }
             }
@@ -732,6 +832,98 @@
         }
       }
     },
+    "/bookings/{booking_id}/ics": {
+      "get": {
+        "tags": [
+          "bookings"
+        ],
+        "summary": "Export Ics",
+        "operationId": "export_ics_bookings__booking_id__ics_get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One VEVENT (docs/prd/ics-export.md)",
+            "content": {
+              "text/calendar": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
     "/classes/{class_id}/waitlist": {
       "post": {
         "tags": [
@@ -925,6 +1117,293 @@
                   },
                   "type": "array",
                   "title": "Response My Waitlist Me Waitlist Get"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/{booking_id}/checkin": {
+      "get": {
+        "tags": [
+          "check-in"
+        ],
+        "summary": "Get Pass",
+        "operationId": "get_pass_bookings__booking_id__checkin_get",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinPass"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/checkins": {
+      "post": {
+        "tags": [
+          "check-in"
+        ],
+        "summary": "Check In",
+        "operationId": "check_in_checkins_post",
+        "parameters": [
+          {
+            "name": "x-studio-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Studio-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckinRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/policies": {
+      "get": {
+        "tags": [
+          "policies"
+        ],
+        "summary": "Policies",
+        "description": "Public: no authentication (docs/prd/studio-policies.md).",
+        "operationId": "policies_policies_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/StudioPolicies"
+                  },
+                  "type": "array",
+                  "title": "Response Policies Policies Get"
                 }
               }
             }
@@ -1998,6 +2477,18 @@
             "format": "date-time",
             "title": "Cancel Deadline"
           },
+          "checked_in_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked In At"
+          },
           "studio_class": {
             "$ref": "#/components/schemas/StudioClass"
           }
@@ -2010,6 +2501,7 @@
           "created_at",
           "can_cancel",
           "cancel_deadline",
+          "checked_in_at",
           "studio_class"
         ],
         "title": "Booking"
@@ -2092,6 +2584,119 @@
         },
         "type": "object",
         "title": "ChaosConfig"
+      },
+      "CheckinPass": {
+        "properties": {
+          "booking_id": {
+            "type": "string",
+            "title": "Booking Id"
+          },
+          "class_id": {
+            "type": "string",
+            "title": "Class Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "description": "XXXX-XXXX, static per booking"
+          },
+          "qr_payload": {
+            "type": "string",
+            "title": "Qr Payload",
+            "description": "bookit:checkin:<code>"
+          },
+          "window_opens_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Window Opens At"
+          },
+          "window_closes_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Window Closes At"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_open",
+              "open",
+              "closed",
+              "checked_in"
+            ],
+            "title": "Status"
+          },
+          "checked_in_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked In At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "booking_id",
+          "class_id",
+          "code",
+          "qr_payload",
+          "window_opens_at",
+          "window_closes_at",
+          "status",
+          "checked_in_at"
+        ],
+        "title": "CheckinPass"
+      },
+      "CheckinRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "CheckinRequest"
+      },
+      "CheckinResult": {
+        "properties": {
+          "booking_id": {
+            "type": "string",
+            "title": "Booking Id"
+          },
+          "class_id": {
+            "type": "string",
+            "title": "Class Id"
+          },
+          "class_name": {
+            "type": "string",
+            "title": "Class Name"
+          },
+          "user_name": {
+            "type": "string",
+            "title": "User Name"
+          },
+          "checked_in_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Checked In At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "booking_id",
+          "class_id",
+          "class_name",
+          "user_name",
+          "checked_in_at"
+        ],
+        "title": "CheckinResult"
       },
       "ClockAdvance": {
         "properties": {
@@ -2300,6 +2905,29 @@
         ],
         "title": "PlatformFlags"
       },
+      "PolicyRule": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "text"
+        ],
+        "title": "PolicyRule"
+      },
       "ResetResult": {
         "properties": {
           "session": {
@@ -2367,6 +2995,54 @@
           "classes"
         ],
         "title": "ScheduleDay"
+      },
+      "ScheduleWeek": {
+        "properties": {
+          "week_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Week Start",
+            "description": "Monday"
+          },
+          "week_end": {
+            "type": "string",
+            "format": "date",
+            "title": "Week End",
+            "description": "Sunday"
+          },
+          "previous_week": {
+            "type": "string",
+            "format": "date",
+            "title": "Previous Week"
+          },
+          "next_week": {
+            "type": "string",
+            "format": "date",
+            "title": "Next Week"
+          },
+          "now": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Now"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleDay"
+            },
+            "type": "array",
+            "title": "Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "week_start",
+          "week_end",
+          "previous_week",
+          "next_week",
+          "now",
+          "days"
+        ],
+        "title": "ScheduleWeek"
       },
       "Studio": {
         "properties": {
@@ -2506,6 +3182,32 @@
           "my_waitlist_position"
         ],
         "title": "StudioClass"
+      },
+      "StudioPolicies": {
+        "properties": {
+          "studio_id": {
+            "type": "string",
+            "title": "Studio Id"
+          },
+          "studio_name": {
+            "type": "string",
+            "title": "Studio Name"
+          },
+          "rules": {
+            "items": {
+              "$ref": "#/components/schemas/PolicyRule"
+            },
+            "type": "array",
+            "title": "Rules"
+          }
+        },
+        "type": "object",
+        "required": [
+          "studio_id",
+          "studio_name",
+          "rules"
+        ],
+        "title": "StudioPolicies"
       },
       "User": {
         "properties": {

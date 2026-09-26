@@ -30,6 +30,12 @@ MESSAGES = {
     "ALREADY_WAITLISTED": "You are already on the waitlist for this class.",
     "CLASS_NOT_FULL": "This class still has spots. Book it instead.",
     "NOT_WAITLISTED": "You are not on the waitlist for this class.",
+    "INVALID_STUDIO_KEY": "Unknown studio scanner.",
+    "CODE_NOT_FOUND": "Check-in code not recognised.",
+    "WRONG_STUDIO": "This booking is for a different studio.",
+    "ALREADY_CHECKED_IN": "Already checked in.",
+    "CHECKIN_NOT_OPEN": "Check-in is not open yet.",
+    "CHECKIN_CLOSED": "Check-in has closed.",
 }
 
 # Declared on routers so the generated OpenAPI documents the error body.

@@ -8,12 +8,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from .errors import error_response, install_error_handlers
 from .models import Health
 from .fixtures import FEATURE_FLAGS
-from .routes import auth, bookings, catalog, flags, testsupport, waitlist
+from .routes import auth, bookings, catalog, checkin, flags, policies, testsupport, waitlist
 from .sessions import SESSION_ID, get_session
 
 app = FastAPI(
     title="BookIt SUT API",
-    version="0.3.0",
+    version="1.0.0",
     description=(
         "System Under Test for the BookIt automation framework. "
         "All state is namespaced by the X-Test-Session header; "
@@ -76,6 +76,8 @@ app.include_router(auth.router)
 app.include_router(catalog.router)
 app.include_router(bookings.router)
 app.include_router(waitlist.router)
+app.include_router(checkin.router)
+app.include_router(policies.router)
 app.include_router(flags.router)
 app.include_router(testsupport.router)
 
