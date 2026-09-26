@@ -59,23 +59,36 @@ Record user-visible changes in `CHANGELOG.md` and tag each milestone.
 
 ## Worked example: `waitlist` (web, wap, android — not ios)
 
-1. `/prd waitlist` produced `docs/prd/waitlist.md` (v1 draft). Resolve its
-   six open questions, set `Status: approved`, commit.
-2. `/design waitlist` (not yet run) → will write `docs/design/waitlist.md`
-   and add the waitlist identifiers to `docs/design/testids.md` with
-   `platforms` = `web, wap, android`. Check that ios renders **no**
-   waitlist identifier (AC-9, AC-10). Commit.
-3. `/techspec waitlist` (not yet run) → will write `docs/tech/waitlist.md`:
-   the endpoints, promotion on cancel, the `waitlist` flag in
-   `fixtures/feature-flags.json`. Commit.
-4. "Use the backend-dev agent to implement docs/tech/waitlist.md", then
-   the web-dev agent (modal vs bottom sheet to join) and the mobile-dev
-   agent (the control is hidden where the `waitlist` flag is false, i.e.
-   on ios). Commit.
-5. In the framework: one test marked for `web, wap, android` joins the
-   waitlist on `anchor-full` and asserts the position. On ios it is
-   auto-skipped with the reason "Waitlist not supported on ios (PRD
-   waitlist v1)", and the parity matrix artifact shows `no`.
+This is how waitlist was actually built.
+
+1. `/prd waitlist` → `docs/prd/waitlist.md` v1 draft, with six open
+   questions. The QA lead answered them, giving v2 `approved`. One answer
+   (the API refuses ios) changed a cross-cutting contract, so
+   `docs/prd/feature-flags.md` went to v2 (`X-Platform`) in the same
+   commit.
+2. `/design waitlist` → `docs/design/waitlist.md` plus 14 rows in
+   `docs/design/testids.md`, with `platforms` = `web, wap, android`. On
+   ios, no waitlist identifier exists (AC-10, AC-11).
+3. `/techspec waitlist` → `docs/tech/waitlist.md`: the join rule order,
+   promotion on cancel (skipping users at the limit), `require_flag`
+   placed after authentication, and the seed guests in
+   `fixtures/waitlist.json`.
+4. Implementation:
+   - backend-dev: the endpoints and promotion, then
+     `python api/export_openapi.py`.
+   - web-dev: the join button on class detail, and the waitlist table
+     (web) or list (wap).
+   - mobile-dev: the same UI, gated by `flags.waitlist`, so ios renders
+     none of it.
+   - One commit per role.
+5. In the framework:
+   - One test marked for `web, wap, android` joins `anchor-full` and
+     asserts "You're #3 on the waitlist".
+   - On ios it is auto-skipped with the reason "Waitlist not supported on
+     ios (PRD waitlist v2)".
+   - An API test sends `X-Platform: ios` and asserts
+     `403 FEATURE_UNAVAILABLE`.
+   - The parity matrix artifact shows `no`.
 
 ## Adding a new element — checklist
 

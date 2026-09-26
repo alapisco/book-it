@@ -3,7 +3,25 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased (M0–M2)
+## Unreleased (M3: waitlist)
+
+### Added
+- **Waitlist** (`docs/prd/waitlist.md` v2) on web, wap and android; absent on ios.
+  - Join from class detail, and see and leave entries in My bookings.
+  - Cancelling promotes the first eligible entry automatically; users at
+    the booking limit are skipped.
+  - Seed: two guest users on the `anchor-full` waitlist.
+- **`X-Platform` request header** (`feature-flags` v2). Waitlist
+  endpoints return `403 FEATURE_UNAVAILABLE` for ios, and an unknown
+  value gives `400 INVALID_PLATFORM`.
+- **API contract v0.3.0:** `StudioClass.waitlist_count` and
+  `my_waitlist_position`, and the `WaitlistEntry` model.
+
+### Changed
+- Both clients bundle `fixtures/feature-flags.json`. The web Docker build
+  context is now the repository root.
+
+## M0–M2
 
 ### Added
 - **M0 documents:** ADRs 0001–0006; PRD and tech spec for `domain-and-seed-data`,

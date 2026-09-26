@@ -57,12 +57,17 @@ native apps.
 
 ## Running it
 
-Status: **M2 implemented.** The core flow (log in → browse → book → My
-bookings → cancel) is built for all four platforms. web and wap are
-verified end to end. The android/ios code typechecks, bundles for both
-OSes, and has been exercised in a browser via react-native-web, but it
-hasn't yet been built on an emulator or simulator. The divergent M3
-features aren't built yet; see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Status: **M2 implemented; M3 in progress** (`waitlist` done).
+- **Core flow** (log in → browse → book → My bookings → cancel): built
+  for all four platforms.
+- **Waitlist:** built for web, wap and android, and deliberately absent
+  on ios.
+- **Verification:** web and wap are verified end to end. The android/ios
+  code typechecks, bundles for both OSes, and has been exercised in a
+  browser via react-native-web, but it hasn't yet been built on an
+  emulator or simulator.
+- **Still to build:** `studio-policies`, `week-calendar`, `ics-export`
+  and `qr-check-in`. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 **API + web/wap**
 
@@ -97,6 +102,9 @@ Without Docker, run the two pieces separately:
 - anchor classes: `anchor-full`, `anchor-last-seat`,
   `anchor-cancel-closed`, `anchor-cancel-open`
 - the platform matrix: `GET /flags`
+- the `X-Platform` header: server-side feature gating, e.g. waitlist
+  returns `403` for `ios`
+- the seed waitlist: two guests on `anchor-full`
 
 A UI joins a test session with `?testSession=<id>` on web, or
 `bookit://login?testSession=<id>` on native.
