@@ -5,7 +5,7 @@ Specified in `docs/prd/domain-and-seed-data.md`, `docs/prd/feature-flags.md` and
 
 | File | Contents |
 |---|---|
-| `studios.json` | Studios, their class templates (weekdays: 0 = Monday; hours are UTC) and QR scanner keys |
+| `studios.json` | Studios (name, neighbourhood, accent colour, `timezone`), their class templates (weekdays: 0 = Monday; hours are studio local time, Europe/Madrid, per ADR 0007) and QR scanner keys |
 | `schedule-rules.json` | Seasonal rules for the schedule generator |
 | `anchors.json` | Anchor classes; `offset_hours` from the session clock floored to the hour at seed time |
 | `users.json` | Seed users (passwords `bookit123`); guests (`"guest": true`) have no password and exist only to hold waitlist places |
