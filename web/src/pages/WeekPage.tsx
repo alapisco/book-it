@@ -127,7 +127,7 @@ function WeekView() {
                 <Link
                   key={c.id}
                   data-testid="week.class.card"
-                  to={`/classes/${c.id}`}
+                  to={`/classes/${c.id}?from=week`}
                   style={{ borderLeftColor: c.studio_accent }}
                   className="flex items-center gap-3 rounded-xl border-l-4 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200"
                 >
