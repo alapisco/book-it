@@ -3,7 +3,7 @@
   "info": {
     "title": "BookIt SUT API",
     "description": "System Under Test for the BookIt automation framework. All state is namespaced by the X-Test-Session header; X-Test-Now overrides the clock for one request; X-Platform (web, wap, android, ios) enables server-side feature gating.",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "paths": {
     "/auth/login": {
