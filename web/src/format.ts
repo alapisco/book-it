@@ -29,3 +29,15 @@ export function spotsLabel(c: Schemas['StudioClass']): string {
   if (c.is_full) return 'Full'
   return c.spots_left === 1 ? '1 spot left' : `${c.spots_left} spots left`
 }
+
+/** "Mon 21 Sep – Sun 27 Sep 2026" from two YYYY-MM-DD dates. */
+export function formatWeek(start: string, end: string): string {
+  const s = parse(start)
+  return `${DAYS[s.getUTCDay()]} ${s.getUTCDate()} ${MONTHS[s.getUTCMonth()]} – ${formatDate(end)}`
+}
+
+/** "Mon 21" */
+export function formatDayHeader(date: string): string {
+  const d = parse(date)
+  return `${DAYS[d.getUTCDay()]} ${d.getUTCDate()}`
+}

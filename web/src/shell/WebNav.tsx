@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router'
+import { flagsFor } from '../flags'
 
 const link = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'font-semibold text-indigo-700' : 'text-slate-600 hover:text-slate-900'
@@ -10,7 +11,11 @@ export function WebNav() {
         <span className="text-lg font-bold text-indigo-700">BookIt</span>
         <div className="ml-auto flex gap-6">
           <NavLink data-testid="nav.schedule.link" to="/schedule" className={link}>Schedule</NavLink>
+          {flagsFor(false).week_calendar && (
+            <NavLink data-testid="nav.calendar.link" to="/calendar" className={link}>Calendar</NavLink>
+          )}
           <NavLink data-testid="nav.bookings.link" to="/bookings" className={link}>My bookings</NavLink>
+          <NavLink data-testid="nav.policies.link" to="/policies" className={link}>Policies</NavLink>
         </div>
       </nav>
     </header>

@@ -20,7 +20,20 @@ if (sessionFromUrl) localStorage.setItem(SESSION_KEY, sessionFromUrl)
 export const getToken = () => localStorage.getItem(TOKEN_KEY)
 export const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token)
 
-export async function request<T>(method: string, path: string, body?: unknown): Promise<Result<T>> {
+// Saves an authenticated GET as a file: a plain link can't carry the bearer token.
+export async function download(path: string, filename: string): Promise<Result<void>> {
+  const r = await request<string>('GET', path, undefined, 'text')
+  if (!r.ok) return r
+  const url = URL.createObjectURL(new Blob([r.data], { type: 'text/calendar' }))
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+  return { ok: true, data: undefined }
+}
+
+export async function request<T>(method: string, path: string, body?: unknown, as: 'json' | 'text' = 'json'): Promise<Result<T>> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   const session = localStorage.getItem(SESSION_KEY)
   if (session) headers['X-Test-Session'] = session
@@ -40,6 +53,7 @@ export async function request<T>(method: string, path: string, body?: unknown): 
     return { ok: false, error: { status: 0, code: 'NETWORK_ERROR', message: 'Could not reach the server.' } }
   }
   if (res.status === 204) return { ok: true, data: undefined as T }
+  if (res.ok && as === 'text') return { ok: true, data: (await res.text()) as T }
   const json = await res.json().catch(() => null)
   if (res.ok) return { ok: true, data: json as T }
   const error = {

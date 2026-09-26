@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { request, type Load, type Schemas } from '../api'
+import { download, request, type Load, type Schemas } from '../api'
 import { BookingsList, BookingsTable } from '../components/Bookings'
 import { CancelConfirm } from '../components/CancelConfirm'
 import { WaitlistList, WaitlistTable } from '../components/Waitlist'
@@ -18,6 +18,8 @@ export function BookingsPage() {
   const [state, setState] = useState<Load<Data>>({ status: 'loading' })
   const [cancelling, setCancelling] = useState<Booking | null>(null)
   const [version, setVersion] = useState(0) // bump to reload
+  const [exporting, setExporting] = useState<string | null>(null)
+  const [exportError, setExportError] = useState<string | null>(null)
 
   // Bookings and waitlist load together and share one loading/error state.
   useEffect(() => {
@@ -39,6 +41,13 @@ export function BookingsPage() {
   const bookings = state.status === 'ready' ? state.data.bookings : null
   const waitlist = state.status === 'ready' ? state.data.waitlist : []
   const reload = () => setVersion((v) => v + 1)
+  const exportIcs = async (b: Booking) => {
+    setExporting(b.id)
+    setExportError(null)
+    const r = await download(`/bookings/${b.id}/ics`, `bookit-${b.id}.ics`)
+    setExporting(null)
+    if (!r.ok) setExportError(r.error.message)
+  }
   const dismiss = () => setCancelling(null)
   const cancelled = () => {
     setCancelling(null)
@@ -60,7 +69,12 @@ export function BookingsPage() {
       )}
       {bookings && bookings.length > 0 && (isWap
         ? <BookingsList bookings={bookings} onCancel={setCancelling} />
-        : <BookingsTable bookings={bookings} onCancel={setCancelling} />)}
+        : (
+          <>
+            {exportError && <p data-testid="bookings.export.error" className="text-sm text-red-600">{exportError}</p>}
+            <BookingsTable bookings={bookings} onCancel={setCancelling} exporting={exporting} onExport={exportIcs} />
+          </>
+        ))}
 
       {waitlistOn && waitlist.length > 0 && (isWap
         ? <WaitlistList entries={waitlist} onChanged={reload} />

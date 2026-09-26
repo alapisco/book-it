@@ -2,6 +2,7 @@ import type { Schemas } from '../api'
 import { formatDate, formatTime } from '../format'
 
 type Props = { bookings: Schemas['Booking'][]; onCancel: (b: Schemas['Booking']) => void }
+type TableProps = Props & { exporting: string | null; onExport: (b: Schemas['Booking']) => void }
 
 const when = (b: Schemas['Booking']) =>
   `${formatDate(b.studio_class.start_at)} · ${formatTime(b.studio_class.start_at)} UTC`
@@ -16,8 +17,8 @@ function CancelAction({ booking, onCancel }: { booking: Schemas['Booking']; onCa
   )
 }
 
-// web: table.
-export function BookingsTable({ bookings, onCancel }: Props) {
+// web: table (with .ics export, web only: docs/design/ics-export.md).
+export function BookingsTable({ bookings, onCancel, exporting, onExport }: TableProps) {
   return (
     <table data-testid="bookings.table" className="w-full overflow-hidden rounded-xl bg-white text-left ring-1 ring-slate-200">
       <thead className="bg-slate-100 text-sm text-slate-600">
@@ -34,7 +35,19 @@ export function BookingsTable({ bookings, onCancel }: Props) {
             <td data-testid="bookings.item.name" className="px-4 py-3 font-medium">{b.studio_class.name}</td>
             <td data-testid="bookings.item.studio" className="px-4 py-3 text-slate-700">{b.studio_class.studio_name}</td>
             <td data-testid="bookings.item.time" className="px-4 py-3 text-slate-700">{when(b)}</td>
-            <td className="px-4 py-3 text-right"><CancelAction booking={b} onCancel={onCancel} /></td>
+            <td className="px-4 py-3 text-right">
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  data-testid="bookings.item.export"
+                  disabled={exporting === b.id}
+                  onClick={() => onExport(b)}
+                  className="rounded px-3 py-1 text-sm font-medium text-slate-700 ring-1 ring-slate-300 disabled:opacity-50"
+                >
+                  {exporting === b.id ? 'Exporting…' : 'Export .ics'}
+                </button>
+                <CancelAction booking={b} onCancel={onCancel} />
+              </div>
+            </td>
           </tr>
         ))}
       </tbody>

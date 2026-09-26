@@ -22,6 +22,7 @@ export function WapNav() {
             </button>
             <NavLink data-testid="nav.schedule.link" to="/schedule" onClick={close} className={link}>Schedule</NavLink>
             <NavLink data-testid="nav.bookings.link" to="/bookings" onClick={close} className={link}>My bookings</NavLink>
+            <NavLink data-testid="nav.policies.link" to="/policies" onClick={close} className={link}>Policies</NavLink>
           </nav>
         </div>
       )}
