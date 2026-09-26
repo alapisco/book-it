@@ -1,6 +1,6 @@
 import { ChevronLeft, Clock, ListOrdered, MapPin, User, Users } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import { request, type Load, type Schemas } from '../api'
 import { availabilityTone, toneClass } from '../availability'
 import { BookingConfirm } from '../components/BookingConfirm'
@@ -16,6 +16,7 @@ type StudioClass = Schemas['StudioClass']
 
 export function ClassPage() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const isWap = useMediaQuery(WAP_QUERY)
   const [state, setState] = useState<Load<StudioClass>>({ status: 'loading' })
   const [confirming, setConfirming] = useState(false)
@@ -37,7 +38,9 @@ export function ClassPage() {
     setVersion((v) => v + 1)
   }
   const confirm = c && <BookingConfirm studioClass={c} onBooked={close} onDismiss={close} />
-  const backTo = c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule'
+  // Opened from My bookings (my-bookings-and-cancel v3): Back returns there.
+  const fromBookings = searchParams.get('from') === 'bookings'
+  const backTo = fromBookings ? '/bookings' : c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule'
   const action = c && (
     <ClassAction
       studioClass={c}
@@ -55,7 +58,7 @@ export function ClassPage() {
           <AppBar
             title="Class"
             back={
-              <Link data-testid="class.back.link" to={backTo} aria-label="Back to schedule" className="-ml-1 flex items-center">
+              <Link data-testid="class.back.link" to={backTo} aria-label={fromBookings ? 'Back to my bookings' : 'Back to schedule'} className="-ml-1 flex items-center">
                 <BackIcon />
               </Link>
             }
@@ -63,7 +66,7 @@ export function ClassPage() {
         </div>
       ) : (
         <Link data-testid="class.back.link" to={backTo} className="flex items-center gap-0.5 text-sm font-medium text-indigo-700">
-          <ChevronLeft size={16} aria-hidden />Schedule
+          <ChevronLeft size={16} aria-hidden />{fromBookings ? 'My bookings' : 'Schedule'}
         </Link>
       )}
 

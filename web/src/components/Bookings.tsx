@@ -1,4 +1,6 @@
 import { CalendarPlus } from 'lucide-react'
+import type { MouseEvent } from 'react'
+import { useNavigate } from 'react-router'
 import type { Schemas } from '../api'
 import { dayNumber, formatDateTime } from '../format'
 
@@ -7,11 +9,18 @@ type Props = { bookings: Booking[]; onCancel: (b: Booking) => void }
 type TableProps = Props & { exporting: string | null; onExport: (b: Booking) => void }
 
 const when = (b: Booking) => formatDateTime(b.studio_class.start_local)
+// The item opens its class (design v3); `from` tells class detail where Back goes.
+const classPath = (b: Booking) => `/classes/${b.studio_class.id}?from=bookings`
+// Buttons inside an item keep their own action and don't open the class.
+const own = (action: () => void) => (e: MouseEvent) => {
+  e.stopPropagation()
+  action()
+}
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
 function CancelAction({ booking, onCancel }: { booking: Booking; onCancel: Props['onCancel'] }) {
   return booking.can_cancel ? (
-    <button data-testid="bookings.item.cancel" onClick={() => onCancel(booking)} className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-700 ring-1 ring-red-200">
+    <button data-testid="bookings.item.cancel" onClick={own(() => onCancel(booking))} className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-700 ring-1 ring-red-200">
       Cancel
     </button>
   ) : (
@@ -21,6 +30,7 @@ function CancelAction({ booking, onCancel }: { booking: Booking; onCancel: Props
 
 // web: table (with .ics export, web only: docs/design/ics-export.md).
 export function BookingsTable({ bookings, onCancel, exporting, onExport }: TableProps) {
+  const navigate = useNavigate()
   return (
     <table data-testid="bookings.table" className="w-full overflow-hidden rounded-xl bg-white text-left ring-1 ring-slate-200">
       <thead className="bg-slate-100 text-sm text-slate-600">
@@ -33,7 +43,7 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
       </thead>
       <tbody className="divide-y divide-slate-200">
         {bookings.map((b) => (
-          <tr key={b.id} data-testid="bookings.item">
+          <tr key={b.id} data-testid="bookings.item" onClick={() => navigate(classPath(b))} className="cursor-pointer hover:bg-slate-50">
             <td className="px-4 py-3">
               <span className="flex items-center gap-2 font-medium">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: b.studio_class.studio_accent }} aria-hidden />
@@ -47,7 +57,7 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
                 <button
                   data-testid="bookings.item.export"
                   disabled={exporting === b.id}
-                  onClick={() => onExport(b)}
+                  onClick={own(() => onExport(b))}
                   className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 ring-1 ring-slate-300 disabled:opacity-50"
                 >
                   <CalendarPlus size={16} aria-hidden />{exporting === b.id ? 'Exporting…' : 'Export .ics'}
@@ -64,6 +74,7 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
 
 // wap: cards with a date block and the studio accent (same as the native apps).
 export function BookingsList({ bookings, onCancel }: Props) {
+  const navigate = useNavigate()
   return (
     <ul data-testid="bookings.list" className="flex flex-col gap-3">
       {bookings.map((b) => {
@@ -72,8 +83,9 @@ export function BookingsList({ bookings, onCancel }: Props) {
           <li
             key={b.id}
             data-testid="bookings.item"
+            onClick={() => navigate(classPath(b))}
             style={{ borderLeftColor: c.studio_accent }}
-            className="flex gap-4 rounded-xl border-l-4 bg-white p-4 shadow-sm ring-1 ring-slate-200"
+            className="flex cursor-pointer gap-4 rounded-xl border-l-4 bg-white p-4 shadow-sm ring-1 ring-slate-200"
           >
             <div className="flex w-12 shrink-0 flex-col items-center rounded-lg bg-indigo-50 py-1.5 text-indigo-700" aria-hidden>
               <span className="text-xl font-bold leading-none">{dayNumber(c.start_local.slice(0, 10))}</span>
