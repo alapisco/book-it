@@ -85,7 +85,7 @@ These identifiers were removed from the registry, so the validator rejects them.
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
 | `class.screen` | container | all | browse-and-book.md | Root; present in every state |
-| `class.back.link` | link | all | browse-and-book.md | "← Schedule"; returns to the class's date. Opened from the week: returns to that week. Opened from My bookings: returns there (web label "← My bookings") |
+| `class.back.link` | link | all | browse-and-book.md | Returns to the screen the class was opened from, in its state (schedule date; week and day; My bookings), even while loading. No origin: schedule on the class's date. Web label names the origin ("← Schedule" / "← My bookings") |
 | `class.loading` | container | all | browse-and-book.md | Loading state |
 | `class.error` | text | all | browse-and-book.md | API error `message`, e.g. "Class not found." |
 | `class.name.text` | text | all | browse-and-book.md | |
@@ -189,7 +189,7 @@ On android and ios, the page identifiers (all except `policies.webview*`) appear
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
 | `checkin.screen` | container | android, ios | qr-check-in.md | Root; present in every state |
-| `checkin.back.link` | link | android, ios | qr-check-in.md | "← Back" |
+| `checkin.back.link` | link | android, ios | qr-check-in.md | "← Back"; returns to the previous screen (class detail) |
 | `checkin.loading` | container | android, ios | qr-check-in.md | Initial load only |
 | `checkin.error` | text | android, ios | qr-check-in.md | API error `message` |
 | `checkin.class.name` | text | android, ios | qr-check-in.md | Class name |

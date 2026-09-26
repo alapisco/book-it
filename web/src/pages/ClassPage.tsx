@@ -2,6 +2,7 @@ import { ChevronLeft, Clock, ListOrdered, MapPin, User, Users } from 'lucide-rea
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { request, type Load, type Schemas } from '../api'
+import { backLabel, parseBack } from '../back'
 import { availabilityTone, toneClass } from '../availability'
 import { BookingConfirm } from '../components/BookingConfirm'
 import { flagsFor } from '../flags'
@@ -38,14 +39,11 @@ export function ClassPage() {
     setVersion((v) => v + 1)
   }
   const confirm = c && <BookingConfirm studioClass={c} onBooked={close} onDismiss={close} />
-  // Back returns to where the class was opened: My bookings (my-bookings-and-cancel v3),
-  // the week containing the class (week-calendar AC-7), otherwise the schedule on its date.
-  const from = searchParams.get('from')
-  const fromBookings = from === 'bookings'
-  const date = c?.start_local.slice(0, 10)
-  const backTo = fromBookings ? '/bookings'
-    : from === 'week' ? (date ? `/week?week=${date}` : '/week')
-    : date ? `/schedule?date=${date}` : '/schedule'
+  // Back returns to the origin as it was, whether or not the class has loaded (PRD AC-8).
+  // No origin (typed or shared link): the schedule on the class's date.
+  const back = parseBack(searchParams.get('back'))
+  const origin = back?.origin ?? 'schedule'
+  const backTo = back?.to ?? (c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule')
   const action = c && (
     <ClassAction
       studioClass={c}
@@ -63,7 +61,7 @@ export function ClassPage() {
           <AppBar
             title="Class"
             back={
-              <Link data-testid="class.back.link" to={backTo} aria-label={fromBookings ? 'Back to my bookings' : from === 'week' ? 'Back to week' : 'Back to schedule'} className="-ml-1 flex items-center">
+              <Link data-testid="class.back.link" to={backTo} aria-label={`Back to ${backLabel(origin)}`} className="-ml-1 flex items-center">
                 <BackIcon />
               </Link>
             }
@@ -71,7 +69,7 @@ export function ClassPage() {
         </div>
       ) : (
         <Link data-testid="class.back.link" to={backTo} className="flex items-center gap-0.5 text-sm font-medium text-indigo-700">
-          <ChevronLeft size={16} aria-hidden />{fromBookings ? 'My bookings' : 'Schedule'}
+          <ChevronLeft size={16} aria-hidden />{origin === 'bookings' ? 'My bookings' : 'Schedule'}
         </Link>
       )}
 

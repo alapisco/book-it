@@ -1,5 +1,6 @@
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import type { Schemas } from '../api'
+import { classPath } from '../back'
 import { availabilityTone, toneClass } from '../availability'
 import { spotsLabel, timeRange } from '../format'
 
@@ -7,6 +8,7 @@ type Classes = Schemas['StudioClass'][]
 
 // web: 3-column grid of tiles.
 export function ScheduleGrid({ classes }: { classes: Classes }) {
+  const { pathname, search } = useLocation()
   return (
     <div data-testid="schedule.grid" role="list" className="grid grid-cols-3 gap-4">
       {classes.map((c) => (
@@ -14,7 +16,7 @@ export function ScheduleGrid({ classes }: { classes: Classes }) {
           key={c.id}
           data-testid="schedule.class.card"
           role="listitem"
-          to={`/classes/${c.id}`}
+          to={classPath(c.id, pathname + search)}
           style={{ borderLeftColor: c.studio_accent }}
           className="flex flex-col gap-1 rounded-xl border-l-4 bg-white p-4 shadow-sm ring-1 ring-slate-200 hover:ring-indigo-400"
         >
@@ -35,13 +37,14 @@ export function ScheduleGrid({ classes }: { classes: Classes }) {
 
 // wap: stacked, separated cards (same pattern as the native apps).
 export function ScheduleList({ classes }: { classes: Classes }) {
+  const { pathname, search } = useLocation()
   return (
     <ul data-testid="schedule.list" className="flex flex-col gap-3">
       {classes.map((c) => (
         <li key={c.id}>
           <Link
             data-testid="schedule.class.card"
-            to={`/classes/${c.id}`}
+            to={classPath(c.id, pathname + search)}
             style={{ borderLeftColor: c.studio_accent }}
             className="flex items-center gap-3 rounded-xl border-l-4 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200"
           >

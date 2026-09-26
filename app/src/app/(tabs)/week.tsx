@@ -11,8 +11,10 @@ import { colors, ui } from '../../theme'
 
 type Week = Schemas['ScheduleWeek']
 
-// Selected day per PRD AC-4: today in the current week, otherwise Monday.
-const initialDay = (w: Week) => (w.today >= w.week_start && w.today <= w.week_end ? w.today : w.week_start)
+// Selected day per PRD AC-4: today in the current week, otherwise Monday; or, coming
+// back from class detail, the opened class's day (AC-7).
+const inWeek = (w: Week, d: string | null) => d !== null && d >= w.week_start && d <= w.week_end
+const initialDay = (w: Week, day: string | null) => (inWeek(w, day) ? day! : inWeek(w, w.today) ? w.today : w.week_start)
 
 // Week view: day strip + list, tap jumps without filtering (docs/design/week-calendar.md v2).
 export default function WeekScreen() {
@@ -25,17 +27,22 @@ export default function WeekScreen() {
   const offsets = useRef<Record<string, number>>({})
   const listY = useRef(0) // week.list's y inside the ScrollView content; section ys are relative to it
   const pendingJump = useRef<string | null>(null)
+  const returnDay = useRef<string | null>(null) // set by a card press, used by the next focus reload
 
   useFocusEffect(
     useCallback(() => {
       let current = true
       request<Week>('GET', week ? `/schedule/week?date=${week}` : '/schedule/week').then((r) => {
         if (!current) return
+        const back = returnDay.current
+        returnDay.current = null
         setResult({ week, load: r.ok ? { status: 'ready', data: r.data } : { status: 'error', error: r.error } })
         if (r.ok) {
-          const day = initialDay(r.data)
+          const day = initialDay(r.data, back)
           setSelected(day)
-          pendingJump.current = day // scroll once its section has been laid out
+          // Back from class detail: the sections are already laid out, so jump now.
+          if (back === day && offsets.current[day] !== undefined) jump(day, false)
+          else pendingJump.current = day // scroll once its section has been laid out
         }
       })
       return () => {
@@ -120,7 +127,10 @@ export default function WeekScreen() {
                     key={c.id}
                     testID="week.class.card"
                     accessible={false}
-                    onPress={() => router.push(`/classes/${c.id}`)}
+                    onPress={() => {
+                      returnDay.current = d.date
+                      router.push(`/classes/${c.id}`)
+                    }}
                     style={[ui.card, ui.accentCard, styles.row, { borderLeftColor: c.studio_accent }]}
                   >
                     <Text testID="week.class.time" style={styles.time}>{timeRange(c)}</Text>

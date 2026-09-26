@@ -1,9 +1,9 @@
 # Design: Week view
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
-- Implements: docs/prd/week-calendar.md v2; uses docs/design/visual-language.md
+- Date: 2026-09-26
+- Implements: docs/prd/week-calendar.md v3; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -99,7 +99,9 @@
   `accessible={false}` (app-shell tech spec v2, the iOS nested-identifier
   rule).
 - The route is `/week`, a tab. Tapping a card pushes `/classes/{id}`, and
-  Back pops to the week.
+  Back pops to the week. The week reloads on focus, and then selects the
+  opened class's day and scrolls to its section (PRD AC-7) instead of the
+  AC-4 default.
 
 ## Acceptance criteria mapping
 
@@ -110,7 +112,7 @@
 | AC-3 | `week.section`, `week.section.header`, `week.class.card`, `week.class.*` |
 | AC-4, AC-5 | `week.day.pill` selected state; `week.section.header` visible after the tap |
 | AC-6 | `week.range.prev`, `week.range.next` |
-| AC-7 | `week.class.card` → `class.screen` → `class.back.link` → `week.screen` |
+| AC-7, EC-7 | `week.class.card` → `class.screen` → `class.back.link` → `week.screen`, `week.range.text` unchanged, the class's `week.day.pill` selected |
 | AC-8 | absence of `nav.week.link` and `week.*` on web |
 | EC-4, EC-5 | `week.error`, `week.empty` |
 
@@ -121,3 +123,4 @@ None.
 ## Changelog
 
 - v2 (M4): replaces the web-only 7-column grid (v1) with a mobile day strip + list on wap, android and ios. All `calendar.*` identifiers are retired.
+- v3: returning from class detail selects the opened class's day on wap and native (PRD v3 AC-7).

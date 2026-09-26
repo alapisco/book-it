@@ -1,9 +1,9 @@
 # Tech spec: Week view
 
-- Version: 3
+- Version: 4
 - Status: approved
 - Date: 2026-09-26
-- Implements: docs/prd/week-calendar.md v2, docs/design/week-calendar.md v2
+- Implements: docs/prd/week-calendar.md v3, docs/design/week-calendar.md v3
 
 ## Overview
 
@@ -58,12 +58,18 @@ All dates are studio local (ADR 0007).
   - tapping a pill runs `section.scrollIntoView({ block: 'start' })`
 - **Cards:** the same markup and availability helper as the Schedule card,
   but under `week.*` identifiers.
-- **Open and back (AC-7, v3):** a card links to
-  `/classes/<id>?from=week`. `ClassPage` sends `class.back.link` with
-  `from=week` to `/week?week=<class date>`, the week that contains the
-  class. (v2 sent it to the schedule, which broke AC-7 on wap.)
+- **Open and back (AC-7, v4):** a card links to
+  `/classes/<id>?back=<encoded /week?week=<week_start>&day=<class date>>`
+  (`browse-and-book` tech spec v5). `WeekPage` reads `day`: when it falls
+  inside the loaded week it is the initial selection (and the list scrolls
+  to it); otherwise AC-4 applies. Changing week with prev/next replaces
+  the params with `{week}`, so `day` is dropped and AC-4 applies.
 
 **android / ios** (`(tabs)/week.tsx`):
+- **Back (AC-7, v4):** a card press stores the class's date in a
+  `returnDay` ref before `router.push`. The focus reload uses it (when it
+  is inside the loaded week) instead of `initialDay`, jumps to it, and
+  clears it, so a plain tab switch still resets per AC-4.
 - **List:** a `ScrollView` with `stickyHeaderIndices` for the strip.
 - **Offsets:** each section records `y` via `onLayout` into a `useRef`
   map. Tapping a pill calls `scrollRef.current.scrollTo({ y: offset[date] })`.
@@ -109,3 +115,4 @@ None.
 
 - v2 (M4): replaces the web-only grid (v1) with a mobile day strip + list; flag flip; `today` field.
 - v3: wap class detail opened from the week returns to that week (`?from=week`).
+- v4: Back restores the week and the opened class's day on wap (`?back=…&day=`) and native (`returnDay` ref).

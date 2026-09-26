@@ -1,8 +1,8 @@
 # PRD: Week view
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
+- Date: 2026-09-26
 
 ## Summary
 
@@ -59,7 +59,8 @@ All dates and times are in studio local time (ADR 0007).
 **Jump (US-2)**
 - **AC-4** Initially, the selected button is today's in the current week,
   or Monday in any other week. The list starts at the top of the
-  selected day's section.
+  selected day's section. Returning from class detail (AC-7) is the
+  exception.
 - **AC-5** Tapping a day button selects it (and only it) and scrolls the
   list so that the day's section heading is visible at the top. It
   doesn't filter: the other days' sections stay in the list.
@@ -71,7 +72,10 @@ All dates and times are in studio local time (ADR 0007).
 
 **Open (US-4)**
 - **AC-7** Tapping a class card opens class detail. Back returns to the
-  week view on the same week.
+  week view on the same week, with the opened class's day selected and
+  its section at the top of the list, on wap, android and ios. This holds
+  even when Back is pressed before class detail has finished loading
+  (`browse-and-book` AC-8).
 
 **Absence on web**
 - **AC-8** On web (768 px or more):
@@ -96,6 +100,7 @@ All dates and times are in studio local time (ADR 0007).
 | EC-4 | Chaos `error_status: 500` on `/schedule/week` | The error state shows "Something went wrong."; there's no strip |
 | EC-5 | Every day has no classes | The strip shows 0 on every day, and the list shows "No classes this week." |
 | EC-6 | A week containing a daylight-saving change (e.g. the week of 26 Oct 2026) | Every class shows its template local time; counts are unaffected |
+| EC-7 | Chaos `{"latency_ms": 3000, "path_prefix": "/classes/"}`; on the next week, tap Thursday then a Thursday card, press Back at once | Next week, Thursday selected, Thursday's section at the top |
 
 ## API requirements
 
@@ -138,3 +143,4 @@ The class count is `len(day.classes)`. The booked dot is any class with
   ios, and absent on web. The 7-column grid is replaced by a day strip +
   list suited to phones. The `calendar.*` identifiers are retired in
   favour of `week.*`. `ScheduleWeek` gains `today`.
+- v3: Back from class detail restores the week and the opened class's day (AC-4, AC-7, EC-7).

@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router'
 import { request, type Load, type Schemas } from '../api'
+import { classPath } from '../back'
 import { availabilityTone, toneClass } from '../availability'
 import { flagsFor } from '../flags'
 import { dayName, dayNumber, formatSectionHeader, formatWeekRange, spotsLabel, timeRange } from '../format'
@@ -16,12 +17,15 @@ export function WeekPage() {
   return <WeekView />
 }
 
-// Selected day per PRD AC-4: today in the current week, otherwise Monday.
-const initialDay = (w: Week) => (w.today >= w.week_start && w.today <= w.week_end ? w.today : w.week_start)
+// Selected day per PRD AC-4: today in the current week, otherwise Monday; or, coming
+// back from class detail, the opened class's day (`day`, AC-7).
+const inWeek = (w: Week, d: string | null) => d !== null && d >= w.week_start && d <= w.week_end
+const initialDay = (w: Week, day: string | null) => (inWeek(w, day) ? day! : inWeek(w, w.today) ? w.today : w.week_start)
 
 function WeekView() {
   const [params, setParams] = useSearchParams()
   const week = params.get('week')
+  const day = params.get('day')
   // Each result remembers which week it was for, so a week change reads as loading.
   const [result, setResult] = useState<{ week: string | null; load: Load<Week> }>()
   const [selected, setSelected] = useState<string | null>(null)
@@ -32,12 +36,12 @@ function WeekView() {
     request<Week>('GET', week ? `/schedule/week?date=${week}` : '/schedule/week').then((r) => {
       if (!current) return
       setResult({ week, load: r.ok ? { status: 'ready', data: r.data } : { status: 'error', error: r.error } })
-      setSelected(r.ok ? initialDay(r.data) : null)
+      setSelected(r.ok ? initialDay(r.data, day) : null)
     })
     return () => {
       current = false
     }
-  }, [week])
+  }, [week, day])
 
   const data = state.status === 'ready' ? state.data : null
   const empty = data !== null && data.days.every((d) => d.classes.length === 0)
@@ -127,7 +131,7 @@ function WeekView() {
                 <Link
                   key={c.id}
                   data-testid="week.class.card"
-                  to={`/classes/${c.id}?from=week`}
+                  to={classPath(c.id, `/week?week=${data.week_start}&day=${d.date}`)}
                   style={{ borderLeftColor: c.studio_accent }}
                   className="flex items-center gap-3 rounded-xl border-l-4 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-200"
                 >
