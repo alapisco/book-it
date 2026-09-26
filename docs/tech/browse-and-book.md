@@ -138,4 +138,4 @@ None.
     - native: a `View` outside the `ScrollView`, above the safe-area inset
   - The web inline back link stays. wap/native move `class.back.link` into
     the pushed AppBar.
-- v4: web/wap `class.back.link` honours `?from=bookings` (`my-bookings-and-cancel` tech spec v3).
+- v4: web/wap `class.back.link` honours `?from=bookings` (`my-bookings-and-cancel` tech spec v3) and `?from=week` (`week-calendar` tech spec v3).
