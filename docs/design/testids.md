@@ -50,6 +50,8 @@ humans.
 | `nav.menu.close` | button | wap | app-shell.md | Closes the drawer |
 | `nav.schedule.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
 | `nav.bookings.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
+| `nav.calendar.link` | link | web | week-calendar.md | In `nav.bar` only |
+| `nav.policies.link` | link | all | studio-policies.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
 
 ## Screen: schedule
 
@@ -87,6 +89,7 @@ humans.
 | `class.book.button` | button | all | browse-and-book.md | Only when bookable |
 | `class.booked.badge` | text | all | browse-and-book.md | "You're booked" |
 | `class.bookings.link` | link | all | browse-and-book.md | "View my bookings"; with the booked badge |
+| `class.checkin.link` | link | android, ios | qr-check-in.md | "Show check-in code"; with the booked badge |
 | `class.started.badge` | text | all | browse-and-book.md | "Class has started" |
 | `class.full.badge` | text | all | browse-and-book.md | "Class full" |
 | `class.waitlist.join` | button | web, wap, android | waitlist.md | "Join waitlist"; full, not started, not booked, not waitlisted |
@@ -130,6 +133,9 @@ humans.
 | `bookings.item.time` | text | all | my-bookings-and-cancel.md | "Sat 26 Sep 2026 · 07:00 UTC" |
 | `bookings.item.cancel` | button | all | my-bookings-and-cancel.md | Only when `can_cancel` |
 | `bookings.item.cancel-closed` | text | all | my-bookings-and-cancel.md | "Cancellation closed"; only when not `can_cancel` |
+| `bookings.item.export` | button | web | ics-export.md | "Export .ics"; in every table row |
+| `bookings.export.error` | text | web | ics-export.md | API error `message` above the table |
+| `bookings.item.checked-in` | text | android, ios | qr-check-in.md | "Checked in"; only when `checked_in_at` is set |
 
 ## Screen: waitlist
 
@@ -147,3 +153,58 @@ Rendered inside the bookings screen, only where the `waitlist` flag is true.
 | `waitlist.item.leave` | button | web, wap, android | waitlist.md | "Leave waitlist" |
 | `waitlist.leave.loading` | container | web, wap, android | waitlist.md | Spinner inside the leave button |
 | `waitlist.leave.error` | text | web, wap, android | waitlist.md | API error `message` after a failed leave |
+
+## Screen: policies
+
+On android and ios, the page identifiers (all except `policies.webview*`) appear inside the webview's web context, because the native app embeds the wap page.
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `policies.screen` | container | web, wap | studio-policies.md | Root; present in every state |
+| `policies.loading` | container | web, wap | studio-policies.md | Loading state |
+| `policies.empty` | text | web, wap | studio-policies.md | "No policies published." |
+| `policies.error` | text | web, wap | studio-policies.md | API error `message` |
+| `policies.tabs` | container | web | studio-policies.md | Tab list |
+| `policies.studio.tab` | button | web | studio-policies.md | Repeated, one per studio; selected has `aria-selected="true"` |
+| `policies.accordion` | container | wap | studio-policies.md | Accordion |
+| `policies.studio.toggle` | button | wap | studio-policies.md | Repeated, one per studio; expanded has `aria-expanded="true"` |
+| `policies.panel` | container | web, wap | studio-policies.md | The selected or expanded studio's rules |
+| `policies.studio.name` | text | web, wap | studio-policies.md | Studio name inside the panel |
+| `policies.rule.item` | list-item | web, wap | studio-policies.md | Repeated, one per rule |
+| `policies.rule.title` | text | web, wap | studio-policies.md | Rule title |
+| `policies.rule.text` | text | web, wap | studio-policies.md | Rule text |
+| `policies.webview` | container | android, ios | studio-policies.md | Native webview root |
+| `policies.webview.loading` | container | android, ios | studio-policies.md | Webview loading |
+| `policies.webview.error` | text | android, ios | studio-policies.md | "Could not load the policies page." |
+
+## Screen: calendar
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `calendar.screen` | container | web | week-calendar.md | Root; present in every state |
+| `calendar.week.prev` | button | web | week-calendar.md | "‹ Previous week" |
+| `calendar.week.text` | text | web | week-calendar.md | "Mon 21 Sep – Sun 27 Sep 2026" |
+| `calendar.week.next` | button | web | week-calendar.md | "Next week ›" |
+| `calendar.loading` | container | web | week-calendar.md | Loading state |
+| `calendar.empty` | text | web | week-calendar.md | "No classes this week." |
+| `calendar.error` | text | web | week-calendar.md | API error `message` |
+| `calendar.grid` | container | web | week-calendar.md | 7-column grid |
+| `calendar.day.column` | container | web | week-calendar.md | Repeated ×7, Mon→Sun; today has `aria-current="date"` |
+| `calendar.day.header` | text | web | week-calendar.md | "Mon 21" |
+| `calendar.class.block` | link | web | week-calendar.md | Repeated per class; opens class detail |
+| `calendar.class.time` | text | web | week-calendar.md | "07:00" |
+| `calendar.class.name` | text | web | week-calendar.md | Class name |
+| `calendar.class.booked` | text | web | week-calendar.md | "Booked"; only when booked |
+
+## Screen: checkin
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `checkin.screen` | container | android, ios | qr-check-in.md | Root; present in every state |
+| `checkin.back.link` | link | android, ios | qr-check-in.md | "← Back" |
+| `checkin.loading` | container | android, ios | qr-check-in.md | Initial load only |
+| `checkin.error` | text | android, ios | qr-check-in.md | API error `message` |
+| `checkin.class.name` | text | android, ios | qr-check-in.md | Class name |
+| `checkin.qr.image` | container | android, ios | qr-check-in.md | QR of `bookit:checkin:<code>` |
+| `checkin.code.text` | text | android, ios | qr-check-in.md | "XXXX-XXXX" |
+| `checkin.status.text` | text | android, ios | qr-check-in.md | Status sentence (PRD AC-4) |
