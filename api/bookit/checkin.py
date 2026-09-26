@@ -3,6 +3,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 from .catalog import find_slot
+from .localtime import to_local
 from .models import CheckinPass
 from .sessions import Booking, SessionState
 
@@ -46,6 +47,9 @@ def pass_model(session: SessionState, booking: Booking, now: datetime) -> Checki
         qr_payload=f"bookit:checkin:{code}",
         window_opens_at=opens,
         window_closes_at=closes,
+        window_opens_local=to_local(opens),
+        window_closes_local=to_local(closes),
         status=status,
         checked_in_at=checked_in_at,
+        checked_in_local=to_local(checked_in_at) if checked_in_at else None,
     )

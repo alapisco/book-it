@@ -8,7 +8,7 @@ def _stamp(t: datetime) -> str:
     return t.strftime("%Y%m%dT%H%M%SZ")
 
 
-def render(session_name: str, booking_id: str, slot: ClassSlot, studio_name: str, now: datetime) -> str:
+def render(session_name: str, booking_id: str, slot: ClassSlot, location: str, now: datetime) -> str:
     lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -21,7 +21,7 @@ def render(session_name: str, booking_id: str, slot: ClassSlot, studio_name: str
         f"DTSTART:{_stamp(slot.start_at)}",
         f"DTEND:{_stamp(slot.end_at)}",
         f"SUMMARY:{slot.name}",
-        f"LOCATION:{studio_name}",
+        f"LOCATION:{location}",
         f"DESCRIPTION:with {slot.instructor}",
         "END:VEVENT",
         "END:VCALENDAR",

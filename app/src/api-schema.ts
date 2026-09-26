@@ -496,6 +496,10 @@ export interface components {
              * Format: date-time
              */
             window_closes_at: string;
+            /** Window Opens Local */
+            window_opens_local: string;
+            /** Window Closes Local */
+            window_closes_local: string;
             /**
              * Status
              * @enum {string}
@@ -503,6 +507,8 @@ export interface components {
             status: "not_open" | "open" | "closed" | "checked_in";
             /** Checked In At */
             checked_in_at: string | null;
+            /** Checked In Local */
+            checked_in_local: string | null;
         };
         /** CheckinRequest */
         CheckinRequest: {
@@ -687,6 +693,12 @@ export interface components {
              */
             next_week: string;
             /**
+             * Today
+             * Format: date
+             * @description Studio local date
+             */
+            today: string;
+            /**
              * Now
              * Format: date-time
              */
@@ -702,6 +714,15 @@ export interface components {
             name: string;
             /** Description */
             description: string;
+            /** Neighborhood */
+            neighborhood: string;
+            /**
+             * Accent
+             * @description Hex colour, decoration only
+             */
+            accent: string;
+            /** Timezone */
+            timezone: string;
         };
         /** StudioClass */
         StudioClass: {
@@ -711,6 +732,10 @@ export interface components {
             studio_id: string;
             /** Studio Name */
             studio_name: string;
+            /** Studio Neighborhood */
+            studio_neighborhood: string;
+            /** Studio Accent */
+            studio_accent: string;
             /** Name */
             name: string;
             /** Category */
@@ -727,6 +752,13 @@ export interface components {
              * Format: date-time
              */
             end_at: string;
+            /**
+             * Start Local
+             * @description Studio local wall-clock time, YYYY-MM-DDTHH:MM:SS (ADR 0007)
+             */
+            start_local: string;
+            /** End Local */
+            end_local: string;
             /** Duration Min */
             duration_min: number;
             /** Capacity */
@@ -760,6 +792,10 @@ export interface components {
             studio_id: string;
             /** Studio Name */
             studio_name: string;
+            /** Neighborhood */
+            neighborhood: string;
+            /** Accent */
+            accent: string;
             /** Rules */
             rules: components["schemas"]["PolicyRule"][];
         };

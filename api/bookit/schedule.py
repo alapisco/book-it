@@ -1,4 +1,4 @@
-"""The schedule as a pure function of (studio_id, date).
+"""The schedule as a pure function of (studio_id, local date).
 
 Rules: docs/tech/domain-and-seed-data.md. The PRNG is seeded with
 "<studio_id>:<YYYY-MM-DD>", so a date always yields the same classes.
@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 
 from .fixtures import RULES, STUDIOS_BY_ID
+from .localtime import TZ
 
 
 @dataclass(frozen=True)
@@ -58,7 +59,8 @@ def generate_day(studio_id: str, day: date) -> list[ClassSlot]:
                 name=template["name"],
                 category=template["category"],
                 instructor=instructor,
-                start_at=datetime.combine(day, time(hour), tzinfo=timezone.utc),
+                # Template hours are studio local time; stored in UTC (ADR 0007).
+                start_at=datetime.combine(day, time(hour), tzinfo=TZ).astimezone(timezone.utc),
                 duration_min=template["duration_min"],
                 capacity=capacity,
                 filler=filler,

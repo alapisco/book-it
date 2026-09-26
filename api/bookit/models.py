@@ -24,17 +24,24 @@ class Studio(BaseModel):
     id: str
     name: str
     description: str
+    neighborhood: str
+    accent: str = Field(description="Hex colour, decoration only")
+    timezone: str
 
 
 class StudioClass(BaseModel):
     id: str
     studio_id: str
     studio_name: str
+    studio_neighborhood: str
+    studio_accent: str
     name: str
     category: str
     instructor: str
     start_at: datetime
     end_at: datetime
+    start_local: str = Field(description="Studio local wall-clock time, YYYY-MM-DDTHH:MM:SS (ADR 0007)")
+    end_local: str
     duration_min: int
     capacity: int
     spots_left: int
@@ -60,6 +67,7 @@ class ScheduleWeek(BaseModel):
     week_end: date = Field(description="Sunday")
     previous_week: date
     next_week: date
+    today: date = Field(description="Studio local date")
     now: datetime
     days: list[ScheduleDay]
 
@@ -73,6 +81,8 @@ class PolicyRule(BaseModel):
 class StudioPolicies(BaseModel):
     studio_id: str
     studio_name: str
+    neighborhood: str
+    accent: str
     rules: list[PolicyRule]
 
 
@@ -116,8 +126,11 @@ class CheckinPass(BaseModel):
     qr_payload: str = Field(description="bookit:checkin:<code>")
     window_opens_at: datetime
     window_closes_at: datetime
+    window_opens_local: str
+    window_closes_local: str
     status: Literal["not_open", "open", "closed", "checked_in"]
     checked_in_at: datetime | None
+    checked_in_local: str | None
 
 
 class CheckinRequest(BaseModel):

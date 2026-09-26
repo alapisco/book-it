@@ -2,6 +2,6 @@
   {"id": "u-ava", "email": "ava@bookit.test", "password": "bookit123", "name": "Ava Lopez", "persona": "has existing bookings"},
   {"id": "u-ben", "email": "ben@bookit.test", "password": "bookit123", "name": "Ben Okafor", "persona": "has no bookings"},
   {"id": "u-cara", "email": "cara@bookit.test", "password": "bookit123", "name": "Cara Novak", "persona": "at the booking limit"},
-  {"id": "u-guest-1", "email": "guest1@bookit.test", "name": "Guest One", "guest": true, "persona": "seed waitlist entry; cannot log in"},
-  {"id": "u-guest-2", "email": "guest2@bookit.test", "name": "Guest Two", "guest": true, "persona": "seed waitlist entry; cannot log in"}
+  {"id": "u-guest-1", "email": "lucia.ortega@bookit.test", "name": "Lucía Ortega", "guest": true, "persona": "seed waitlist entry; cannot log in"},
+  {"id": "u-guest-2", "email": "marco.silva@bookit.test", "name": "Marco Silva", "guest": true, "persona": "seed waitlist entry; cannot log in"}
 ]

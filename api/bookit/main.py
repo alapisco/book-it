@@ -13,7 +13,7 @@ from .sessions import SESSION_ID, get_session
 
 app = FastAPI(
     title="BookIt SUT API",
-    version="1.0.0",
+    version="1.1.0",
     description=(
         "System Under Test for the BookIt automation framework. "
         "All state is namespaced by the X-Test-Session header; "

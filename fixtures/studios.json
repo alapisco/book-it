@@ -4,11 +4,14 @@
     "name": "Harbor Yoga",
     "description": "Waterfront yoga and pilates studio.",
     "scanner_key": "scan-harbor",
+    "timezone": "Europe/Madrid",
+    "neighborhood": "Chamberí",
+    "accent": "#0F766E",
     "templates": [
       {"slug": "vinyasa", "name": "Vinyasa Flow", "category": "yoga", "instructors": ["Maya Chen", "Leo Park"], "capacity": 16, "duration_min": 60, "hours": [7, 12, 18], "weekdays": [0, 1, 2, 3, 4, 5, 6], "january_early": true},
       {"slug": "yin", "name": "Yin Yoga", "category": "yoga", "instructors": ["Maya Chen"], "capacity": 14, "duration_min": 75, "hours": [19], "weekdays": [0, 1, 2, 3, 4]},
       {"slug": "mat-pilates", "name": "Mat Pilates", "category": "pilates", "instructors": ["Sofia Reyes", "Leo Park"], "capacity": 12, "duration_min": 45, "hours": [9, 17], "weekdays": [0, 2, 4, 5]},
-      {"slug": "beach-yoga", "name": "Beach Yoga", "category": "yoga", "instructors": ["Maya Chen", "Sofia Reyes"], "capacity": 20, "duration_min": 60, "hours": [8], "weekdays": [5, 6], "outdoor": true}
+      {"slug": "park-yoga", "name": "Park Yoga", "category": "yoga", "instructors": ["Maya Chen", "Sofia Reyes"], "capacity": 20, "duration_min": 60, "hours": [8], "weekdays": [5, 6], "outdoor": true}
     ]
   },
   {
@@ -16,6 +19,9 @@
     "name": "Summit Strength",
     "description": "Strength, conditioning and spin.",
     "scanner_key": "scan-summit",
+    "timezone": "Europe/Madrid",
+    "neighborhood": "Salamanca",
+    "accent": "#C2410C",
     "templates": [
       {"slug": "hiit", "name": "HIIT Circuit", "category": "hiit", "instructors": ["Jonas Berg", "Priya Nair"], "capacity": 18, "duration_min": 45, "hours": [7, 12, 18], "weekdays": [0, 1, 2, 3, 4], "january_early": true},
       {"slug": "spin", "name": "Power Spin", "category": "spin", "instructors": ["Priya Nair", "Tom Alvarez"], "capacity": 20, "duration_min": 45, "hours": [7, 17, 19], "weekdays": [0, 1, 2, 3, 4, 5, 6], "january_early": true},
@@ -28,6 +34,9 @@
     "name": "Ember Dance",
     "description": "Dance, barre and mobility.",
     "scanner_key": "scan-ember",
+    "timezone": "Europe/Madrid",
+    "neighborhood": "Malasaña",
+    "accent": "#BE185D",
     "templates": [
       {"slug": "salsa", "name": "Salsa Basics", "category": "dance", "instructors": ["Lucia Moreno"], "capacity": 20, "duration_min": 60, "hours": [19], "weekdays": [1, 3, 4]},
       {"slug": "barre", "name": "Barre Burn", "category": "barre", "instructors": ["Hana Sato", "Lucia Moreno"], "capacity": 14, "duration_min": 50, "hours": [8, 12], "weekdays": [0, 1, 2, 3, 4, 5], "january_early": true},

@@ -2615,6 +2615,14 @@
             "format": "date-time",
             "title": "Window Closes At"
           },
+          "window_opens_local": {
+            "type": "string",
+            "title": "Window Opens Local"
+          },
+          "window_closes_local": {
+            "type": "string",
+            "title": "Window Closes Local"
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -2636,6 +2644,17 @@
               }
             ],
             "title": "Checked In At"
+          },
+          "checked_in_local": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked In Local"
           }
         },
         "type": "object",
@@ -2646,8 +2665,11 @@
           "qr_payload",
           "window_opens_at",
           "window_closes_at",
+          "window_opens_local",
+          "window_closes_local",
           "status",
-          "checked_in_at"
+          "checked_in_at",
+          "checked_in_local"
         ],
         "title": "CheckinPass"
       },
@@ -3020,6 +3042,12 @@
             "format": "date",
             "title": "Next Week"
           },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "title": "Today",
+            "description": "Studio local date"
+          },
           "now": {
             "type": "string",
             "format": "date-time",
@@ -3039,6 +3067,7 @@
           "week_end",
           "previous_week",
           "next_week",
+          "today",
           "now",
           "days"
         ],
@@ -3057,13 +3086,29 @@
           "description": {
             "type": "string",
             "title": "Description"
+          },
+          "neighborhood": {
+            "type": "string",
+            "title": "Neighborhood"
+          },
+          "accent": {
+            "type": "string",
+            "title": "Accent",
+            "description": "Hex colour, decoration only"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
           }
         },
         "type": "object",
         "required": [
           "id",
           "name",
-          "description"
+          "description",
+          "neighborhood",
+          "accent",
+          "timezone"
         ],
         "title": "Studio"
       },
@@ -3080,6 +3125,14 @@
           "studio_name": {
             "type": "string",
             "title": "Studio Name"
+          },
+          "studio_neighborhood": {
+            "type": "string",
+            "title": "Studio Neighborhood"
+          },
+          "studio_accent": {
+            "type": "string",
+            "title": "Studio Accent"
           },
           "name": {
             "type": "string",
@@ -3102,6 +3155,15 @@
             "type": "string",
             "format": "date-time",
             "title": "End At"
+          },
+          "start_local": {
+            "type": "string",
+            "title": "Start Local",
+            "description": "Studio local wall-clock time, YYYY-MM-DDTHH:MM:SS (ADR 0007)"
+          },
+          "end_local": {
+            "type": "string",
+            "title": "End Local"
           },
           "duration_min": {
             "type": "integer",
@@ -3165,11 +3227,15 @@
           "id",
           "studio_id",
           "studio_name",
+          "studio_neighborhood",
+          "studio_accent",
           "name",
           "category",
           "instructor",
           "start_at",
           "end_at",
+          "start_local",
+          "end_local",
           "duration_min",
           "capacity",
           "spots_left",
@@ -3193,6 +3259,14 @@
             "type": "string",
             "title": "Studio Name"
           },
+          "neighborhood": {
+            "type": "string",
+            "title": "Neighborhood"
+          },
+          "accent": {
+            "type": "string",
+            "title": "Accent"
+          },
           "rules": {
             "items": {
               "$ref": "#/components/schemas/PolicyRule"
@@ -3205,6 +3279,8 @@
         "required": [
           "studio_id",
           "studio_name",
+          "neighborhood",
+          "accent",
           "rules"
         ],
         "title": "StudioPolicies"

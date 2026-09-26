@@ -11,6 +11,12 @@ router = APIRouter(tags=["policies"], responses=ERROR_RESPONSES)
 async def policies():
     """Public: no authentication (docs/prd/studio-policies.md)."""
     return [
-        StudioPolicies(studio_id=p["studio_id"], studio_name=STUDIOS_BY_ID[p["studio_id"]]["name"], rules=p["rules"])
+        StudioPolicies(
+            studio_id=p["studio_id"],
+            studio_name=STUDIOS_BY_ID[p["studio_id"]]["name"],
+            neighborhood=STUDIOS_BY_ID[p["studio_id"]]["neighborhood"],
+            accent=STUDIOS_BY_ID[p["studio_id"]]["accent"],
+            rules=p["rules"],
+        )
         for p in POLICIES
     ]

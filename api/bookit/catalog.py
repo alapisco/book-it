@@ -3,6 +3,7 @@ import re
 from datetime import date, datetime
 
 from .fixtures import STUDIOS_BY_ID
+from .localtime import local_date, to_local
 from .models import StudioClass
 from .schedule import ClassSlot, generate_day
 from .sessions import SessionState
@@ -29,7 +30,7 @@ def classes_on(session: SessionState, day: date, studio_id: str | None = None) -
     studio_ids = [studio_id] if studio_id else list(STUDIOS_BY_ID)
     slots = [s for sid in studio_ids for s in generate_day(sid, day)]
     slots += [a for a in session.anchors.values()
-              if a.start_at.date() == day and (studio_id is None or a.studio_id == studio_id)]
+              if local_date(a.start_at) == day and (studio_id is None or a.studio_id == studio_id)]
     return sorted(slots, key=lambda s: (s.start_at, s.studio_id, s.name))
 
 
@@ -57,11 +58,15 @@ def to_model(session: SessionState, slot: ClassSlot, now: datetime,
         id=slot.id,
         studio_id=slot.studio_id,
         studio_name=STUDIOS_BY_ID[slot.studio_id]["name"],
+        studio_neighborhood=STUDIOS_BY_ID[slot.studio_id]["neighborhood"],
+        studio_accent=STUDIOS_BY_ID[slot.studio_id]["accent"],
         name=slot.name,
         category=slot.category,
         instructor=slot.instructor,
         start_at=slot.start_at,
         end_at=slot.end_at,
+        start_local=to_local(slot.start_at),
+        end_local=to_local(slot.end_at),
         duration_min=slot.duration_min,
         capacity=slot.capacity,
         spots_left=left,

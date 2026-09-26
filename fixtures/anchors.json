@@ -1,6 +1,6 @@
 [
-  {"id": "anchor-full", "studio_id": "summit", "name": "Full House Spin", "category": "spin", "instructor": "Priya Nair", "capacity": 10, "filler": 9, "duration_min": 45, "offset_hours": 72},
-  {"id": "anchor-last-seat", "studio_id": "harbor", "name": "Last Seat Pilates", "category": "pilates", "instructor": "Sofia Reyes", "capacity": 8, "filler": 7, "duration_min": 45, "offset_hours": 48},
-  {"id": "anchor-cancel-closed", "studio_id": "ember", "name": "Late Cancel Barre", "category": "barre", "instructor": "Hana Sato", "capacity": 12, "filler": 4, "duration_min": 50, "offset_hours": 6},
-  {"id": "anchor-cancel-open", "studio_id": "harbor", "name": "Early Cancel Yoga", "category": "yoga", "instructor": "Leo Park", "capacity": 12, "filler": 4, "duration_min": 60, "offset_hours": 96}
+  {"id": "anchor-full", "studio_id": "summit", "name": "Sunset Spin", "category": "spin", "instructor": "Priya Nair", "capacity": 10, "filler": 9, "duration_min": 45, "offset_hours": 72},
+  {"id": "anchor-last-seat", "studio_id": "harbor", "name": "Reformer Pilates", "category": "pilates", "instructor": "Sofia Reyes", "capacity": 8, "filler": 7, "duration_min": 45, "offset_hours": 48},
+  {"id": "anchor-cancel-closed", "studio_id": "ember", "name": "Barre Sculpt", "category": "barre", "instructor": "Hana Sato", "capacity": 12, "filler": 4, "duration_min": 50, "offset_hours": 6},
+  {"id": "anchor-cancel-open", "studio_id": "harbor", "name": "Slow Flow", "category": "yoga", "instructor": "Leo Park", "capacity": 12, "filler": 4, "duration_min": 60, "offset_hours": 96}
 ]

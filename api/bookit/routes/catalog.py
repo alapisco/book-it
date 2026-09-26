@@ -7,6 +7,7 @@ from ..catalog import classes_on, find_slot, to_model
 from ..errors import ERROR_RESPONSES, ApiError
 from ..fixtures import STUDIOS, STUDIOS_BY_ID
 from ..flags import require_flag
+from ..localtime import local_date
 from ..models import ScheduleDay, ScheduleWeek, Studio, StudioClass
 
 router = APIRouter(tags=["catalog"], responses=ERROR_RESPONSES)
@@ -14,7 +15,9 @@ router = APIRouter(tags=["catalog"], responses=ERROR_RESPONSES)
 
 @router.get("/studios", response_model=list[Studio])
 async def studios(_=Depends(current_user)):
-    return [Studio(id=s["id"], name=s["name"], description=s["description"]) for s in STUDIOS]
+    return [Studio(id=s["id"], name=s["name"], description=s["description"],
+                   neighborhood=s["neighborhood"], accent=s["accent"], timezone=s["timezone"])
+            for s in STUDIOS]
 
 
 @router.get("/schedule", response_model=ScheduleDay)
@@ -23,20 +26,22 @@ async def schedule(date: date | None = None, studio_id: str | None = None,
     c, user = auth
     if studio_id is not None and studio_id not in STUDIOS_BY_ID:
         raise ApiError(404, "NOT_FOUND")
-    return schedule_day(c, user, date or c.now.date(), studio_id)
+    return schedule_day(c, user, date or local_date(c.now), studio_id)
 
 
 @router.get("/schedule/week", response_model=ScheduleWeek,
             dependencies=[Depends(require_flag("week_calendar"))])
 async def schedule_week(date: date | None = None, auth=Depends(current_user)):
     c, user = auth
-    day = date or c.now.date()
+    today = local_date(c.now)
+    day = date or today
     start = day - timedelta(days=day.weekday())
     return ScheduleWeek(
         week_start=start,
         week_end=start + timedelta(days=6),
         previous_week=start - timedelta(days=7),
         next_week=start + timedelta(days=7),
+        today=today,
         now=c.now,
         days=[schedule_day(c, user, start + timedelta(days=i)) for i in range(7)],
     )

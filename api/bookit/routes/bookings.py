@@ -76,7 +76,8 @@ async def export_ics(booking_id: str, auth=Depends(current_user)):
     if booking is None or booking.user_id != user["id"]:
         raise ApiError(404, "BOOKING_NOT_FOUND")
     slot = find_slot(c.session, booking.class_id)
-    body = ics.render(c.session.name, booking.id, slot, STUDIOS_BY_ID[slot.studio_id]["name"], c.now)
+    studio = STUDIOS_BY_ID[slot.studio_id]
+    body = ics.render(c.session.name, booking.id, slot, f"{studio['name']}, {studio['neighborhood']}", c.now)
     return Response(
         content=body,
         media_type="text/calendar; charset=utf-8",
