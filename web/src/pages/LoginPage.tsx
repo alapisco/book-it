@@ -1,3 +1,4 @@
+import { Dumbbell } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { request, setToken, type Schemas } from '../api'
@@ -27,13 +28,20 @@ export function LoginPage() {
   }
 
   return (
-    <div data-platform={isWap ? 'wap' : 'web'} className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+    <div data-platform={isWap ? 'wap' : 'web'} className="flex min-h-screen flex-col items-center bg-slate-50">
+      {/* Brand block (docs/design/login.md v2). */}
+      <div className={`flex w-full flex-col items-center gap-2 bg-indigo-700 text-white ${isWap ? 'pb-16 pt-14' : 'pb-20 pt-16'}`}>
+        <span className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+          <Dumbbell size={30} aria-hidden />BookIt
+        </span>
+        <span className="text-sm text-indigo-100">Log in to book your classes</span>
+      </div>
       <form
         data-testid="login.screen"
         onSubmit={submit}
-        className="flex w-full max-w-sm flex-col gap-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
+        className="-mt-10 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-xl bg-white p-6 shadow-md ring-1 ring-slate-200"
       >
-        <h1 className="text-xl font-semibold">Log in to BookIt</h1>
+        <h1 className="text-xl font-semibold">Log in</h1>
         <label className="flex flex-col gap-1 text-sm font-medium">
           Email
           <input
@@ -59,7 +67,7 @@ export function LoginPage() {
           data-testid="login.submit"
           type="submit"
           disabled={!email || !password || submitting}
-          className="rounded bg-indigo-600 px-4 py-2 font-medium text-white disabled:opacity-50"
+          className="rounded-lg bg-indigo-700 px-4 py-2.5 font-semibold text-white disabled:opacity-50"
         >
           {submitting ? <span data-testid="login.submit.loading"><Spinner /></span> : 'Log in'}
         </button>

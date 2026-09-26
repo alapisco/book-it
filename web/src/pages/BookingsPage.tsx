@@ -57,7 +57,7 @@ export function BookingsPage() {
 
   return (
     <section data-testid="bookings.screen" className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">My bookings</h1>
+      {!isWap && <h1 className="text-2xl font-semibold">My bookings</h1>}
 
       {state.status === 'loading' && <p data-testid="bookings.loading" className="text-slate-500">Loading bookings…</p>}
       {state.status === 'error' && <p data-testid="bookings.error" className="text-red-600">{state.error.message}</p>}

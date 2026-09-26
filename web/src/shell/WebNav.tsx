@@ -1,21 +1,27 @@
+import { CalendarDays, Dumbbell, ScrollText, Ticket } from 'lucide-react'
 import { NavLink } from 'react-router'
-import { flagsFor } from '../flags'
 
 const link = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'font-semibold text-indigo-700' : 'text-slate-600 hover:text-slate-900'
+  `flex items-center gap-1.5 ${isActive ? 'font-semibold text-indigo-700' : 'text-slate-600 hover:text-slate-900'}`
 
+// Desktop web: the outlier (ADR 0008). No Week link: the week view is not on web.
 export function WebNav() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <nav data-testid="nav.bar" className="mx-auto flex max-w-6xl items-center gap-8 px-6 py-4">
-        <span className="text-lg font-bold text-indigo-700">BookIt</span>
+        <span className="flex items-center gap-2 text-lg font-bold text-indigo-700">
+          <Dumbbell size={22} aria-hidden />BookIt
+        </span>
         <div className="ml-auto flex gap-6">
-          <NavLink data-testid="nav.schedule.link" to="/schedule" className={link}>Schedule</NavLink>
-          {flagsFor(false).week_calendar && (
-            <NavLink data-testid="nav.calendar.link" to="/calendar" className={link}>Calendar</NavLink>
-          )}
-          <NavLink data-testid="nav.bookings.link" to="/bookings" className={link}>My bookings</NavLink>
-          <NavLink data-testid="nav.policies.link" to="/policies" className={link}>Policies</NavLink>
+          <NavLink data-testid="nav.schedule.link" to="/schedule" className={link}>
+            <CalendarDays size={18} aria-hidden />Schedule
+          </NavLink>
+          <NavLink data-testid="nav.bookings.link" to="/bookings" className={link}>
+            <Ticket size={18} aria-hidden />My bookings
+          </NavLink>
+          <NavLink data-testid="nav.policies.link" to="/policies" className={link}>
+            <ScrollText size={18} aria-hidden />Policies
+          </NavLink>
         </div>
       </nav>
     </header>

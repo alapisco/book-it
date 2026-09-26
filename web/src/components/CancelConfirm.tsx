@@ -26,7 +26,7 @@ export function CancelConfirm({ booking, onCancelled, onDismiss }: {
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold">Cancel booking?</h2>
       <p data-testid="booking.cancel.summary" className="text-slate-700">
-        {c.name} · {formatDate(c.start_at)} · {formatTime(c.start_at)} UTC
+        {c.name} · {formatDate(c.start_local)} · {formatTime(c.start_local)}
       </p>
       {error && <p data-testid="booking.cancel.error" className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-3">

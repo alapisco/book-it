@@ -25,7 +25,7 @@ export function BookingConfirm({ studioClass: c, onBooked, onDismiss }: {
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold">Confirm booking</h2>
       <p data-testid="booking.confirm.summary" className="text-slate-700">
-        {c.name} · {formatDate(c.start_at)} · {formatTime(c.start_at)} UTC · {c.studio_name}
+        {c.name} · {formatDate(c.start_local)} · {formatTime(c.start_local)} · {c.studio_name}
       </p>
       {error && <p data-testid="booking.confirm.error" className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-3">

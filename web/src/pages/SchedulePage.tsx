@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useSearchParams } from 'react-router'
 import { request, type Load, type Schemas } from '../api'
 import { ScheduleGrid, ScheduleList } from '../components/Schedule'
@@ -35,9 +36,9 @@ export function SchedulePage() {
           data-testid="schedule.date.prev"
           disabled={!day}
           onClick={() => day && go(day.previous_date)}
-          className="rounded px-2 py-1 text-sm text-indigo-700 disabled:opacity-40"
+          className="flex items-center gap-0.5 rounded px-1 py-1 text-sm font-medium text-indigo-700 disabled:opacity-40"
         >
-          ‹ Previous day
+          <ChevronLeft size={18} aria-hidden />Previous day
         </button>
         <h1 data-testid="schedule.date.text" className="text-lg font-semibold">
           {shownDate ? formatDate(shownDate) : ''}
@@ -46,9 +47,9 @@ export function SchedulePage() {
           data-testid="schedule.date.next"
           disabled={!day}
           onClick={() => day && go(day.next_date)}
-          className="rounded px-2 py-1 text-sm text-indigo-700 disabled:opacity-40"
+          className="flex items-center gap-0.5 rounded px-1 py-1 text-sm font-medium text-indigo-700 disabled:opacity-40"
         >
-          Next day ›
+          Next day<ChevronRight size={18} aria-hidden />
         </button>
       </div>
 

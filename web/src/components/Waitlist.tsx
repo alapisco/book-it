@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { request, type Schemas } from '../api'
-import { formatDate, formatTime } from '../format'
+import { formatDateTime } from '../format'
 import { Spinner } from '../ui/Spinner'
 
 type Entry = Schemas['WaitlistEntry']
 type Props = { entries: Entry[]; onChanged: () => void }
 
-const when = (e: Entry) => `${formatDate(e.studio_class.start_at)} · ${formatTime(e.studio_class.start_at)} UTC`
+const when = (e: Entry) => formatDateTime(e.studio_class.start_local)
 
 // Leaving is immediate (no confirmation); errors surface at the top of the section.
 function useLeave(onChanged: () => void) {

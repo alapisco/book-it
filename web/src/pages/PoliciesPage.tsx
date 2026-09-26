@@ -21,7 +21,7 @@ export function PoliciesPage() {
   const studios = state.status === 'ready' ? state.data : null
   return (
     <section data-testid="policies.screen" className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Studio policies</h1>
+      {!isWap && <h1 className="text-2xl font-semibold">Studio policies</h1>}
       {state.status === 'loading' && <p data-testid="policies.loading" className="text-slate-500">Loading policies…</p>}
       {state.status === 'error' && <p data-testid="policies.error" className="text-red-600">{state.error.message}</p>}
       {studios && studios.length === 0 && <p data-testid="policies.empty" className="text-slate-500">No policies published.</p>}
@@ -45,11 +45,14 @@ function StudioTabs({ studios }: { studios: Studio[] }) {
             onClick={() => setSelected(i)}
             className={`-mb-px border-b-2 px-4 py-2 ${i === selected ? 'border-indigo-600 font-semibold text-indigo-700' : 'border-transparent text-slate-600'}`}
           >
-            {s.studio_name}
+            <span className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.accent }} aria-hidden />
+              {s.studio_name}
+            </span>
           </button>
         ))}
       </div>
-      <PolicyPanel studio={studios[selected]} />
+      <PolicyPanel studio={studios[selected]} showName />
     </div>
   )
 }
@@ -67,7 +70,13 @@ function StudioAccordion({ studios }: { studios: Studio[] }) {
             onClick={() => setExpanded(expanded === s.studio_id ? null : s.studio_id)}
             className="flex w-full items-center justify-between px-4 py-3 text-left font-medium"
           >
-            {s.studio_name}
+            <span className="flex items-center gap-2.5">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.accent }} aria-hidden />
+              <span className="flex flex-col">
+                {s.studio_name}
+                <span className="text-xs font-normal text-slate-500">{s.neighborhood}</span>
+              </span>
+            </span>
             <span className="text-slate-400">{expanded === s.studio_id ? '−' : '+'}</span>
           </button>
           {expanded === s.studio_id && <div className="px-4 pb-4"><PolicyPanel studio={s} /></div>}
@@ -77,10 +86,17 @@ function StudioAccordion({ studios }: { studios: Studio[] }) {
   )
 }
 
-function PolicyPanel({ studio }: { studio: Studio }) {
+// The studio name heading is web-only: on wap the expanded toggle already names
+// the studio right above the rules (docs/design/studio-policies.md v2).
+function PolicyPanel({ studio, showName = false }: { studio: Studio; showName?: boolean }) {
   return (
     <div data-testid="policies.panel" className="flex flex-col gap-3">
-      <h2 data-testid="policies.studio.name" className="text-lg font-semibold">{studio.studio_name}</h2>
+      {showName && (
+        <h2 className="text-lg font-semibold">
+          <span data-testid="policies.studio.name">{studio.studio_name}</span>{' '}
+          <span className="font-normal text-slate-500">· {studio.neighborhood}</span>
+        </h2>
+      )}
       <ul className="flex flex-col gap-3">
         {studio.rules.map((r) => (
           <li key={r.id} data-testid="policies.rule.item">

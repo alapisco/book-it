@@ -1,15 +1,17 @@
+import { CalendarPlus } from 'lucide-react'
 import type { Schemas } from '../api'
-import { formatDate, formatTime } from '../format'
+import { dayNumber, formatDateTime } from '../format'
 
-type Props = { bookings: Schemas['Booking'][]; onCancel: (b: Schemas['Booking']) => void }
-type TableProps = Props & { exporting: string | null; onExport: (b: Schemas['Booking']) => void }
+type Booking = Schemas['Booking']
+type Props = { bookings: Booking[]; onCancel: (b: Booking) => void }
+type TableProps = Props & { exporting: string | null; onExport: (b: Booking) => void }
 
-const when = (b: Schemas['Booking']) =>
-  `${formatDate(b.studio_class.start_at)} · ${formatTime(b.studio_class.start_at)} UTC`
+const when = (b: Booking) => formatDateTime(b.studio_class.start_local)
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
-function CancelAction({ booking, onCancel }: { booking: Schemas['Booking']; onCancel: Props['onCancel'] }) {
+function CancelAction({ booking, onCancel }: { booking: Booking; onCancel: Props['onCancel'] }) {
   return booking.can_cancel ? (
-    <button data-testid="bookings.item.cancel" onClick={() => onCancel(booking)} className="rounded px-3 py-1 text-sm font-medium text-red-700 ring-1 ring-red-200">
+    <button data-testid="bookings.item.cancel" onClick={() => onCancel(booking)} className="rounded-lg px-3 py-1.5 text-sm font-medium text-red-700 ring-1 ring-red-200">
       Cancel
     </button>
   ) : (
@@ -32,8 +34,13 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
       <tbody className="divide-y divide-slate-200">
         {bookings.map((b) => (
           <tr key={b.id} data-testid="bookings.item">
-            <td data-testid="bookings.item.name" className="px-4 py-3 font-medium">{b.studio_class.name}</td>
-            <td data-testid="bookings.item.studio" className="px-4 py-3 text-slate-700">{b.studio_class.studio_name}</td>
+            <td className="px-4 py-3">
+              <span className="flex items-center gap-2 font-medium">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: b.studio_class.studio_accent }} aria-hidden />
+                <span data-testid="bookings.item.name">{b.studio_class.name}</span>
+              </span>
+            </td>
+            <td data-testid="bookings.item.studio" className="px-4 py-3 text-slate-700">{b.studio_class.studio_name} · {b.studio_class.studio_neighborhood}</td>
             <td data-testid="bookings.item.time" className="px-4 py-3 text-slate-700">{when(b)}</td>
             <td className="px-4 py-3 text-right">
               <div className="flex items-center justify-end gap-3">
@@ -41,9 +48,9 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
                   data-testid="bookings.item.export"
                   disabled={exporting === b.id}
                   onClick={() => onExport(b)}
-                  className="rounded px-3 py-1 text-sm font-medium text-slate-700 ring-1 ring-slate-300 disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-700 ring-1 ring-slate-300 disabled:opacity-50"
                 >
-                  {exporting === b.id ? 'Exporting…' : 'Export .ics'}
+                  <CalendarPlus size={16} aria-hidden />{exporting === b.id ? 'Exporting…' : 'Export .ics'}
                 </button>
                 <CancelAction booking={b} onCancel={onCancel} />
               </div>
@@ -55,18 +62,32 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
   )
 }
 
-// wap: stacked cards.
+// wap: cards with a date block and the studio accent (same as the native apps).
 export function BookingsList({ bookings, onCancel }: Props) {
   return (
     <ul data-testid="bookings.list" className="flex flex-col gap-3">
-      {bookings.map((b) => (
-        <li key={b.id} data-testid="bookings.item" className="flex flex-col gap-1 rounded-xl bg-white p-4 ring-1 ring-slate-200">
-          <span data-testid="bookings.item.name" className="font-medium">{b.studio_class.name}</span>
-          <span data-testid="bookings.item.studio" className="text-sm text-slate-600">{b.studio_class.studio_name}</span>
-          <span data-testid="bookings.item.time" className="text-sm text-slate-600">{when(b)}</span>
-          <div className="mt-2"><CancelAction booking={b} onCancel={onCancel} /></div>
-        </li>
-      ))}
+      {bookings.map((b) => {
+        const c = b.studio_class
+        return (
+          <li
+            key={b.id}
+            data-testid="bookings.item"
+            style={{ borderLeftColor: c.studio_accent }}
+            className="flex gap-4 rounded-xl border-l-4 bg-white p-4 shadow-sm ring-1 ring-slate-200"
+          >
+            <div className="flex w-12 shrink-0 flex-col items-center rounded-lg bg-indigo-50 py-1.5 text-indigo-700" aria-hidden>
+              <span className="text-xl font-bold leading-none">{dayNumber(c.start_local.slice(0, 10))}</span>
+              <span className="text-[11px] font-semibold">{MONTHS[Number(c.start_local.slice(5, 7)) - 1]}</span>
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span data-testid="bookings.item.name" className="font-semibold">{c.name}</span>
+              <span data-testid="bookings.item.studio" className="text-sm text-slate-600">{c.studio_name} · {c.studio_neighborhood}</span>
+              <span data-testid="bookings.item.time" className="text-sm text-slate-600">{when(b)}</span>
+              <div className="mt-2"><CancelAction booking={b} onCancel={onCancel} /></div>
+            </div>
+          </li>
+        )
+      })}
     </ul>
   )
 }

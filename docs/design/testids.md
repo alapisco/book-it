@@ -29,6 +29,15 @@ humans.
 | `spec` | Design spec that introduced it (`docs/design/<feature>.md`) |
 | `notes` | State it belongs to, repetition, anything a test author needs |
 
+## Retired identifiers
+
+These identifiers were removed from the registry, so the validator rejects them.
+
+| Identifier(s) | Retired in | Replaced by |
+|---|---|---|
+| `nav.menu.toggle`, `nav.menu.drawer`, `nav.menu.close` | M4 (ADR 0008) | `nav.tabs` and its tab links |
+| `nav.calendar.link`, `calendar.*` (14) | M4 (`week-calendar` v2) | `nav.week.link`, `week.*` |
+
 ## Screen: login
 
 | id | element | platforms | spec | notes |
@@ -46,12 +55,8 @@ humans.
 |---|---|---|---|---|
 | `nav.bar` | container | web | app-shell.md | Top navigation bar on every logged-in screen |
 | `nav.tabs` | container | wap | app-shell.md | Bottom tab bar (M4); native tab bars have no container identifier |
-| `nav.menu.toggle` | button | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Opens the drawer |
-| `nav.menu.drawer` | container | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Present only while open |
-| `nav.menu.close` | button | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Closes the drawer |
 | `nav.schedule.link` | link | all | app-shell.md | web: in `nav.bar`; wap: tab in `nav.tabs`; native: tab button |
 | `nav.bookings.link` | link | all | app-shell.md | web: in `nav.bar` ("My bookings"); wap: tab "Bookings"; native: tab button |
-| `nav.calendar.link` | link | web | week-calendar.md | **Retiring (M4)**: replaced by `nav.week.link` |
 | `nav.week.link` | link | wap, android, ios | week-calendar.md | Week tab (M4); absent on web |
 | `nav.policies.link` | link | all | studio-policies.md | web: in `nav.bar`; wap: tab in `nav.tabs`; native: tab button |
 
@@ -178,27 +183,6 @@ On android and ios, the page identifiers (all except `policies.webview*`) appear
 | `policies.webview` | container | android, ios | studio-policies.md | Native webview root |
 | `policies.webview.loading` | container | android, ios | studio-policies.md | Webview loading |
 | `policies.webview.error` | text | android, ios | studio-policies.md | "Could not load the policies page." |
-
-## Screen: calendar (retiring in M4)
-
-The web-only grid is replaced by the week view (`week.*`, wap, android and ios). These rows are removed in the same change that removes them from `web/`.
-
-| id | element | platforms | spec | notes |
-|---|---|---|---|---|
-| `calendar.screen` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Root; present in every state |
-| `calendar.week.prev` | button | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "‹ Previous week" |
-| `calendar.week.text` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Mon 21 Sep – Sun 27 Sep 2026" |
-| `calendar.week.next` | button | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Next week ›" |
-| `calendar.loading` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Loading state |
-| `calendar.empty` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "No classes this week." |
-| `calendar.error` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. API error `message` |
-| `calendar.grid` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. 7-column grid |
-| `calendar.day.column` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Repeated ×7, Mon→Sun; today has `aria-current="date"` |
-| `calendar.day.header` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Mon 21" |
-| `calendar.class.block` | link | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Repeated per class; opens class detail |
-| `calendar.class.time` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "07:00" |
-| `calendar.class.name` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Class name |
-| `calendar.class.booked` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Booked"; only when booked |
 
 ## Screen: checkin
 
