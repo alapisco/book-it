@@ -1,9 +1,9 @@
 # Tech spec: My bookings and cancel
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
-- Implements: docs/prd/my-bookings-and-cancel.md v2, docs/design/my-bookings-and-cancel.md v2
+- Date: 2026-09-26
+- Implements: docs/prd/my-bookings-and-cancel.md v3, docs/design/my-bookings-and-cancel.md v3
 
 ## Overview
 
@@ -48,12 +48,29 @@ the seat.
 - **Confirmation:** `components/CancelConfirm.tsx` is the body, wrapped
   as `booking.cancel.modal` (web) or `booking.cancel.sheet` (wap). On
   `204` the confirmation closes and the list reloads.
+- **Opening a booking (v3):** the `<tr>` (web) and the `<li>` card (wap)
+  navigate on click to `/classes/<studio_class.id>?from=bookings`. They
+  use `onClick` + `useNavigate`, not a wrapping `<Link>`, because an
+  `<a>` can't contain the Cancel / Export buttons. Those buttons call
+  `stopPropagation()`.
+- **Back (`ClassPage`):** reads `from` from the query string. With
+  `from=bookings`, `class.back.link` goes to `/bookings` (web label
+  "My bookings", wap `aria-label` "Back to my bookings"); otherwise it's
+  unchanged (`/schedule?date=<class date>`). A query parameter rather than
+  router state so a deep link or reload keeps the origin.
 
 **android / ios:**
 - **`(tabs)/bookings.tsx`:** `useFocusEffect` reloads on focus, with a
   `ScrollView` list.
 - **Confirmation:** `Sheet`, with content view `booking.cancel.sheet`.
 - **`bookings.empty.browse`:** `router.navigate('/schedule')`.
+- **Opening a booking (v3):** `bookings.item` is a `Pressable` with
+  `accessible={false}` (app-shell tech spec v2, the iOS nested-identifier
+  rule) and `onPress={() => router.push('/classes/<studio_class.id>')}`.
+  The nested `bookings.item.cancel` `Pressable` takes its own touches.
+- **Back:** no change. `classes/[id].tsx` already calls `router.dismiss()`,
+  which pops to the Bookings tab it was pushed from; the tab reloads on
+  focus.
 
 ## Identifiers
 
@@ -75,6 +92,7 @@ the seat.
 |---|---|
 | AC-1–AC-4, AC-9, EC-6 | `GET /me/bookings`, `BookingsPage` / `bookings.tsx` |
 | AC-5–AC-8, EC-1–EC-5 | `DELETE /bookings/{id}` rules, `CancelConfirm` |
+| AC-10, AC-11 | `components/Bookings.tsx`, `ClassPage` (`from=bookings`) / `bookings.tsx`, `router.dismiss()` |
 
 ## Open questions
 
@@ -83,3 +101,4 @@ None.
 ## Changelog
 
 - v2 (M4): local time fields; wap/native cards with the accent bar and a date block; web table rows with icon buttons (`CalendarPlus` for export).
+- v3: booking items open class detail (`?from=bookings` on web/wap, `router.push` on native); no API change.

@@ -1,9 +1,9 @@
 # Tech spec: Browse and book
 
-- Version: 3
+- Version: 4
 - Status: approved
-- Date: 2026-09-27
-- Implements: docs/prd/browse-and-book.md v2, docs/design/browse-and-book.md v2; docs/design/visual-language.md
+- Date: 2026-09-26
+- Implements: docs/prd/browse-and-book.md v3, docs/design/browse-and-book.md v3; docs/design/visual-language.md
 
 ## Overview
 
@@ -138,3 +138,4 @@ None.
     - native: a `View` outside the `ScrollView`, above the safe-area inset
   - The web inline back link stays. wap/native move `class.back.link` into
     the pushed AppBar.
+- v4: web/wap `class.back.link` honours `?from=bookings` (`my-bookings-and-cancel` tech spec v3).
