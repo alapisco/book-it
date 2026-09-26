@@ -1,8 +1,17 @@
 import { router, useLocalSearchParams } from 'expo-router'
-import { useEffect, useState } from 'react'
+// Per-icon imports: Metro does not tree-shake, so the barrel would bundle every icon.
+import Clock from 'lucide-react-native/icons/clock'
+import ListOrdered from 'lucide-react-native/icons/list-ordered'
+import MapPin from 'lucide-react-native/icons/map-pin'
+import QrCode from 'lucide-react-native/icons/qr-code'
+import User from 'lucide-react-native/icons/user'
+import Users from 'lucide-react-native/icons/users'
+import { useEffect, useState, type ReactNode } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { request, type Load, type Schemas } from '../../api'
+import { AppBar, BackIcon, backStyle } from '../../AppBar'
+import { availabilityTone, toneColor } from '../../availability'
 import { flags } from '../../flags'
 import { formatDate, formatTime, timeRange } from '../../format'
 import { Sheet } from '../../Sheet'
@@ -14,6 +23,7 @@ type StudioClass = Schemas['StudioClass']
 // duplicate hidden screens confuse Appium on iOS.
 export default function ClassScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
+  const insets = useSafeAreaInsets()
   const [state, setState] = useState<Load<StudioClass>>({ status: 'loading' })
   const [confirming, setConfirming] = useState(false)
   const [version, setVersion] = useState(0) // bump to reload
@@ -35,37 +45,57 @@ export default function ClassScreen() {
   }
 
   return (
-    <SafeAreaView style={ui.screen}>
+    <View style={ui.screen}>
+      <AppBar
+        title="Class"
+        back={
+          <Pressable
+            testID="class.back.link"
+            accessibilityRole="button"
+            accessibilityLabel="Back"
+            hitSlop={12}
+            style={backStyle}
+            onPress={() => {
+              // Pop back to the screen we came from (schedule or week, on this class's date).
+              // After a cold-start deep link there is nothing to pop, so replace instead.
+              if (router.canDismiss()) router.dismiss()
+              else router.replace(c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule')
+            }}
+          >
+            <BackIcon />
+          </Pressable>
+        }
+      />
       <ScrollView testID="class.screen" contentContainerStyle={ui.content}>
-        <Pressable
-          testID="class.back.link"
-          onPress={() => {
-            // Pop back to the schedule we came from (it shows this class's date). After a
-            // cold-start deep link there is nothing to pop, so replace instead.
-            if (router.canDismiss()) router.dismiss()
-            else router.replace(c ? `/schedule?date=${c.start_at.slice(0, 10)}` : '/schedule')
-          }}
-        >
-          <Text style={ui.link}>← Schedule</Text>
-        </Pressable>
-
         {state.status === 'loading' && <Text testID="class.loading" style={ui.muted}>Loading class…</Text>}
         {state.status === 'error' && <Text testID="class.error" style={ui.error}>{state.error.message}</Text>}
         {c && (
-          <View style={ui.card}>
+          <View style={[ui.card, styles.details, { borderTopColor: c.studio_accent }]}>
             <Text testID="class.name.text" style={ui.title}>{c.name}</Text>
-            <Text testID="class.studio.text" style={ui.body}>{c.studio_name}</Text>
-            <Text testID="class.instructor.text" style={ui.body}>with {c.instructor}</Text>
-            <Text testID="class.time.text" style={ui.body}>{formatDate(c.start_at)} · {timeRange(c)}</Text>
-            <Text testID="class.spots.text" style={[ui.body, styles.spots]}>
-              {c.is_full ? 'Full' : `${c.spots_left} of ${c.capacity} spots left`}
-            </Text>
-            <View style={styles.action}>
-              <ClassAction studioClass={c} onBook={() => setConfirming(true)} onChanged={() => setVersion((v) => v + 1)} />
-            </View>
+            <InfoRow icon={<MapPin color={colors.subtle} size={18} />}>
+              <Text testID="class.studio.text" style={ui.body}>{c.studio_name} · {c.studio_neighborhood}</Text>
+            </InfoRow>
+            <InfoRow icon={<User color={colors.subtle} size={18} />}>
+              <Text testID="class.instructor.text" style={ui.body}>with {c.instructor}</Text>
+            </InfoRow>
+            <InfoRow icon={<Clock color={colors.subtle} size={18} />}>
+              <Text testID="class.time.text" style={ui.body}>{formatDate(c.start_local)} · {timeRange(c)}</Text>
+            </InfoRow>
+            <InfoRow icon={<Users color={colors.subtle} size={18} />}>
+              <Text testID="class.spots.text" style={[ui.body, styles.spots, { color: toneColor[availabilityTone(c)] }]}>
+                {c.is_full ? 'Full' : `${c.spots_left} of ${c.capacity} spots left`}
+              </Text>
+            </InfoRow>
           </View>
         )}
       </ScrollView>
+
+      {/* The action area is pinned to the bottom above the safe area (browse-and-book design v2). */}
+      {c && (
+        <View style={[styles.actionBar, { paddingBottom: Math.max(12, insets.bottom) }]}>
+          <ClassAction studioClass={c} onBook={() => setConfirming(true)} onChanged={() => setVersion((v) => v + 1)} />
+        </View>
+      )}
 
       {confirming && c && (
         <Sheet onClose={close}>
@@ -74,7 +104,16 @@ export default function ClassScreen() {
           </View>
         </Sheet>
       )}
-    </SafeAreaView>
+    </View>
+  )
+}
+
+function InfoRow({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <View style={styles.infoRow}>
+      {icon}
+      <View style={styles.infoText}>{children}</View>
+    </View>
   )
 }
 
@@ -92,7 +131,8 @@ function ClassAction({ studioClass: c, onBook, onChanged }: {
           <Text style={ui.link}>View my bookings</Text>
         </Pressable>
         {flags.qr_check_in && (
-          <Pressable testID="class.checkin.link" onPress={() => router.push(`/checkin/${c.my_booking_id}`)}>
+          <Pressable testID="class.checkin.link" accessible={false} onPress={() => router.push(`/checkin/${c.my_booking_id}`)} style={styles.inlineIcon}>
+            <QrCode color={colors.primary} size={18} />
             <Text style={ui.link}>Show check-in code</Text>
           </Pressable>
         )}
@@ -110,7 +150,7 @@ function ClassAction({ studioClass: c, onBook, onChanged }: {
     )
   }
   return (
-    <Pressable testID="class.book.button" onPress={onBook} style={[ui.button, styles.bookButton]}>
+    <Pressable testID="class.book.button" onPress={onBook} style={ui.button}>
       <Text style={ui.buttonText}>Book</Text>
     </Pressable>
   )
@@ -121,7 +161,12 @@ function WaitlistAction({ studioClass: c, onChanged }: { studioClass: StudioClas
   const [error, setError] = useState<string | null>(null)
 
   if (c.my_waitlist_position) {
-    return <Text testID="class.waitlist.position" style={styles.position}>You're #{c.my_waitlist_position} on the waitlist</Text>
+    return (
+      <View style={styles.inlineIcon}>
+        <ListOrdered color={colors.primary} size={18} />
+        <Text testID="class.waitlist.position" style={styles.position}>You're #{c.my_waitlist_position} on the waitlist</Text>
+      </View>
+    )
   }
 
   async function join() {
@@ -141,12 +186,15 @@ function WaitlistAction({ studioClass: c, onChanged }: { studioClass: StudioClas
         accessible={false}
         disabled={joining}
         onPress={join}
-        style={[ui.button, styles.bookButton, joining && ui.buttonDisabled]}
+        style={[ui.button, joining && ui.buttonDisabled]}
       >
         {joining ? (
           <ActivityIndicator testID="class.waitlist.loading" color={colors.primaryText} />
         ) : (
-          <Text style={ui.buttonText}>Join waitlist</Text>
+          <>
+            <ListOrdered color={colors.primaryText} size={18} />
+            <Text style={ui.buttonText}>Join waitlist</Text>
+          </>
         )}
       </Pressable>
       {error && <Text testID="class.waitlist.error" style={ui.error}>{error}</Text>}
@@ -171,7 +219,7 @@ function BookingConfirm({ studioClass: c, onDone }: { studioClass: StudioClass; 
     <View style={styles.sheetBody}>
       <Text style={styles.sheetTitle}>Confirm booking</Text>
       <Text testID="booking.confirm.summary" style={ui.body}>
-        {c.name} · {formatDate(c.start_at)} · {formatTime(c.start_at)} UTC · {c.studio_name}
+        {c.name} · {formatDate(c.start_local)} · {formatTime(c.start_local)} · {c.studio_name}
       </Text>
       {error && <Text testID="booking.confirm.error" style={ui.error}>{error}</Text>}
       <View style={styles.sheetButtons}>
@@ -198,11 +246,14 @@ function BookingConfirm({ studioClass: c, onDone }: { studioClass: StudioClass; 
 }
 
 const styles = StyleSheet.create({
+  details: { borderTopWidth: 4, gap: 12, padding: 20 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  infoText: { flex: 1 },
   spots: { fontWeight: '600' },
-  action: { marginTop: 16 },
+  actionBar: { backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.border, paddingHorizontal: 16, paddingTop: 12 },
   bookedRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 16 },
-  bookButton: { alignSelf: 'flex-start' },
-  fullColumn: { gap: 10, alignItems: 'flex-start' },
+  inlineIcon: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  fullColumn: { gap: 10 },
   position: { fontSize: 15, fontWeight: '600', color: colors.primary },
   sheetBody: { gap: 14 },
   sheetTitle: { fontSize: 18, fontWeight: '600', color: colors.text },

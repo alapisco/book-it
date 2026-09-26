@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { request, type Load, type Schemas } from '../../api'
 import { flags } from '../../flags'
-import { formatDate, formatTime } from '../../format'
+import { dayNumber, formatDate, formatDateTime, formatTime } from '../../format'
 import { Sheet } from '../../Sheet'
 import { colors, ui } from '../../theme'
 
@@ -11,7 +11,8 @@ type Booking = Schemas['Booking']
 type Entry = Schemas['WaitlistEntry']
 type Data = { bookings: Booking[]; waitlist: Entry[] }
 
-const when = (b: Booking | Entry) => `${formatDate(b.studio_class.start_at)} · ${formatTime(b.studio_class.start_at)} UTC`
+const when = (b: Booking | Entry) => formatDateTime(b.studio_class.start_local)
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
 export default function BookingsScreen() {
   const [state, setState] = useState<Load<Data>>({ status: 'loading' })
@@ -63,21 +64,28 @@ export default function BookingsScreen() {
         {bookings && bookings.length > 0 && (
           <View testID="bookings.list" style={styles.list}>
             {bookings.map((b) => (
-              <View key={b.id} testID="bookings.item" style={ui.card}>
-                <Text testID="bookings.item.name" style={styles.name}>{b.studio_class.name}</Text>
-                <Text testID="bookings.item.studio" style={ui.muted}>{b.studio_class.studio_name}</Text>
-                <Text testID="bookings.item.time" style={ui.muted}>{when(b)}</Text>
-                {flags.qr_check_in && b.checked_in_at && (
-                  <Text testID="bookings.item.checked-in" style={ui.badge}>Checked in</Text>
-                )}
-                <View style={styles.action}>
-                  {b.can_cancel ? (
-                    <Pressable testID="bookings.item.cancel" onPress={() => setCancelling(b)} style={styles.cancel}>
-                      <Text style={styles.cancelText}>Cancel</Text>
-                    </Pressable>
-                  ) : (
-                    <Text testID="bookings.item.cancel-closed" style={ui.muted}>Cancellation closed</Text>
+              <View key={b.id} testID="bookings.item" style={[ui.card, ui.accentCard, styles.item, { borderLeftColor: b.studio_class.studio_accent }]}>
+                {/* Date block (my-bookings design v2); decorative, no identifier. */}
+                <View style={styles.dateBlock}>
+                  <Text style={styles.dateDay}>{dayNumber(b.studio_class.start_local.slice(0, 10))}</Text>
+                  <Text style={styles.dateMonth}>{MONTHS[Number(b.studio_class.start_local.slice(5, 7)) - 1]}</Text>
+                </View>
+                <View style={styles.itemBody}>
+                  <Text testID="bookings.item.name" style={styles.name}>{b.studio_class.name}</Text>
+                  <Text testID="bookings.item.studio" style={ui.muted}>{b.studio_class.studio_name} · {b.studio_class.studio_neighborhood}</Text>
+                  <Text testID="bookings.item.time" style={ui.muted}>{when(b)}</Text>
+                  {flags.qr_check_in && b.checked_in_at && (
+                    <Text testID="bookings.item.checked-in" style={ui.badge}>Checked in</Text>
                   )}
+                  <View style={styles.action}>
+                    {b.can_cancel ? (
+                      <Pressable testID="bookings.item.cancel" onPress={() => setCancelling(b)} style={styles.cancel}>
+                        <Text style={styles.cancelText}>Cancel</Text>
+                      </Pressable>
+                    ) : (
+                      <Text testID="bookings.item.cancel-closed" style={ui.muted}>Cancellation closed</Text>
+                    )}
+                  </View>
                 </View>
               </View>
             ))}
@@ -166,7 +174,7 @@ function CancelConfirm({ booking, onCancelled, onDismiss }: {
     <View style={styles.sheetBody}>
       <Text style={styles.sheetTitle}>Cancel booking?</Text>
       <Text testID="booking.cancel.summary" style={ui.body}>
-        {c.name} · {formatDate(c.start_at)} · {formatTime(c.start_at)} UTC
+        {c.name} · {formatDate(c.start_local)} · {formatTime(c.start_local)}
       </Text>
       {error && <Text testID="booking.cancel.error" style={ui.error}>{error}</Text>}
       <View style={styles.sheetButtons}>
@@ -194,6 +202,11 @@ function CancelConfirm({ booking, onCancelled, onDismiss }: {
 
 const styles = StyleSheet.create({
   empty: { gap: 8 },
+  item: { flexDirection: 'row', gap: 14 },
+  itemBody: { flex: 1, gap: 2 },
+  dateBlock: { width: 48, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start', backgroundColor: colors.primarySoft, borderRadius: 10, paddingVertical: 6 },
+  dateDay: { fontSize: 20, fontWeight: '800', color: colors.primary },
+  dateMonth: { fontSize: 11, fontWeight: '700', color: colors.primary },
   section: { gap: 10, marginTop: 8 },
   sectionTitle: { fontSize: 17, fontWeight: '600', color: colors.text },
   leave: { borderWidth: 1, borderColor: colors.border, borderRadius: 6, paddingHorizontal: 12, paddingVertical: 6 },

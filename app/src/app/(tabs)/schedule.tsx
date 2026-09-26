@@ -1,7 +1,11 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
+// Per-icon imports: Metro does not tree-shake, so the barrel would bundle every icon.
+import ChevronLeft from 'lucide-react-native/icons/chevron-left'
+import ChevronRight from 'lucide-react-native/icons/chevron-right'
 import { useCallback, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { request, type Load, type Schemas } from '../../api'
+import { availabilityTone, toneColor } from '../../availability'
 import { formatDate, spotsLabel, timeRange } from '../../format'
 import { colors, ui } from '../../theme'
 
@@ -31,12 +35,14 @@ export default function ScheduleScreen() {
   return (
     <ScrollView testID="schedule.screen" style={ui.screen} contentContainerStyle={ui.content}>
       <View style={styles.dateBar}>
-        <Pressable testID="schedule.date.prev" disabled={!day} onPress={() => day && router.setParams({ date: day.previous_date })}>
-          <Text style={[ui.link, !day && ui.buttonDisabled]}>‹ Previous day</Text>
+        <Pressable testID="schedule.date.prev" disabled={!day} onPress={() => day && router.setParams({ date: day.previous_date })} style={[styles.dateButton, !day && ui.buttonDisabled]}>
+          <ChevronLeft color={colors.primary} size={18} />
+          <Text style={ui.link}>Previous day</Text>
         </Pressable>
         <Text testID="schedule.date.text" style={styles.date}>{shownDate ? formatDate(shownDate) : ''}</Text>
-        <Pressable testID="schedule.date.next" disabled={!day} onPress={() => day && router.setParams({ date: day.next_date })}>
-          <Text style={[ui.link, !day && ui.buttonDisabled]}>Next day ›</Text>
+        <Pressable testID="schedule.date.next" disabled={!day} onPress={() => day && router.setParams({ date: day.next_date })} style={[styles.dateButton, !day && ui.buttonDisabled]}>
+          <Text style={ui.link}>Next day</Text>
+          <ChevronRight color={colors.primary} size={18} />
         </Pressable>
       </View>
 
@@ -52,15 +58,15 @@ export default function ScheduleScreen() {
               testID="schedule.class.card"
               accessible={false}
               onPress={() => router.push(`/classes/${c.id}`)}
-              style={styles.row}
+              style={[ui.card, ui.accentCard, styles.row, { borderLeftColor: c.studio_accent }]}
             >
-              <Text testID="schedule.class.time" style={[ui.muted, styles.time]}>{timeRange(c)}</Text>
+              <Text testID="schedule.class.time" style={styles.time}>{timeRange(c)}</Text>
               <View style={styles.middle}>
-                <Text testID="schedule.class.name" style={styles.name} numberOfLines={1}>{c.name}</Text>
-                <Text testID="schedule.class.studio" style={ui.muted} numberOfLines={1}>{c.studio_name}</Text>
+                <Text testID="schedule.class.name" style={ui.cardTitle} numberOfLines={1}>{c.name}</Text>
+                <Text testID="schedule.class.studio" style={ui.muted} numberOfLines={1}>{c.studio_name} · {c.studio_neighborhood}</Text>
               </View>
               <View style={styles.right}>
-                <Text testID="schedule.class.spots" style={styles.spots}>{spotsLabel(c)}</Text>
+                <Text testID="schedule.class.spots" style={[styles.spots, { color: toneColor[availabilityTone(c)] }]}>{spotsLabel(c)}</Text>
                 {c.my_booking_id && <Text testID="schedule.class.booked" style={ui.badge}>Booked</Text>}
               </View>
             </Pressable>
@@ -73,12 +79,12 @@ export default function ScheduleScreen() {
 
 const styles = StyleSheet.create({
   dateBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  date: { fontSize: 16, fontWeight: '600', color: colors.text },
-  list: { backgroundColor: colors.surface, borderRadius: 12, borderWidth: 1, borderColor: colors.border },
-  row: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 14, paddingVertical: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-  time: { width: 92 },
-  middle: { flex: 1 },
-  name: { fontSize: 15, fontWeight: '500', color: colors.text },
+  dateButton: { flexDirection: 'row', alignItems: 'center', gap: 2, paddingVertical: 4 },
+  date: { fontSize: 16, fontWeight: '700', color: colors.text },
+  list: { gap: 12 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
+  time: { width: 92, fontSize: 14, fontWeight: '500', color: colors.text },
+  middle: { flex: 1, gap: 2 },
   right: { alignItems: 'flex-end', gap: 4 },
-  spots: { fontSize: 12, fontWeight: '500', color: colors.muted },
+  spots: { fontSize: 12, fontWeight: '600' },
 })

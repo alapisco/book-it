@@ -2,8 +2,8 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { request, type Load, type Schemas } from '../../api'
+import { AppBar, BackIcon, backStyle } from '../../AppBar'
 import { formatTime } from '../../format'
 import { colors, ui } from '../../theme'
 
@@ -13,9 +13,9 @@ type Data = { pass: Pass; studioClass: Schemas['StudioClass'] }
 const POLL_MS = 2000
 
 function statusText(p: Pass): string {
-  if (p.status === 'checked_in' && p.checked_in_at) return `Checked in at ${formatTime(p.checked_in_at)} UTC`
-  if (p.status === 'not_open') return `Check-in opens at ${formatTime(p.window_opens_at)} UTC`
-  if (p.status === 'closed') return `Check-in closed at ${formatTime(p.window_closes_at)} UTC`
+  if (p.status === 'checked_in' && p.checked_in_local) return `Checked in at ${formatTime(p.checked_in_local)}`
+  if (p.status === 'not_open') return `Check-in opens at ${formatTime(p.window_opens_local)}`
+  if (p.status === 'closed') return `Check-in closed at ${formatTime(p.window_closes_local)}`
   return 'Show this code at the front desk'
 }
 
@@ -55,11 +55,23 @@ export default function CheckinScreen() {
 
   const data = state.status === 'ready' ? state.data : null
   return (
-    <SafeAreaView style={ui.screen}>
+    <View style={ui.screen}>
+      <AppBar
+        title="Check-in"
+        back={
+          <Pressable
+            testID="checkin.back.link"
+            accessibilityRole="button"
+            accessibilityLabel="Back"
+            hitSlop={12}
+            style={backStyle}
+            onPress={() => (router.canDismiss() ? router.dismiss() : router.replace('/bookings'))}
+          >
+            <BackIcon />
+          </Pressable>
+        }
+      />
       <View testID="checkin.screen" style={ui.content}>
-        <Pressable testID="checkin.back.link" onPress={() => (router.canDismiss() ? router.dismiss() : router.replace('/bookings'))}>
-          <Text style={ui.link}>← Back</Text>
-        </Pressable>
         {state.status === 'loading' && <Text testID="checkin.loading" style={ui.muted}>Loading check-in code…</Text>}
         {state.status === 'error' && <Text testID="checkin.error" style={ui.error}>{state.error.message}</Text>}
         {data && (
@@ -75,7 +87,7 @@ export default function CheckinScreen() {
           </View>
         )}
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -83,5 +95,5 @@ const styles = StyleSheet.create({
   card: { alignItems: 'center', gap: 16, paddingVertical: 24 },
   qr: { padding: 12, backgroundColor: colors.surface },
   code: { fontSize: 28, fontWeight: '700', letterSpacing: 3, fontFamily: 'monospace', color: colors.text },
-  done: { color: '#047857', fontWeight: '600' },
+  done: { color: colors.green, fontWeight: '600' },
 })
