@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { request, type Load, type Schemas } from '../api'
 import { BookingConfirm } from '../components/BookingConfirm'
+import { flagsFor } from '../flags'
 import { formatDate, timeRange } from '../format'
 import { BottomSheet } from '../ui/BottomSheet'
 import { Modal } from '../ui/Modal'
+import { Spinner } from '../ui/Spinner'
 import { useMediaQuery, WAP_QUERY } from '../useMediaQuery'
 
 type StudioClass = Schemas['StudioClass']
@@ -55,7 +57,12 @@ export function ClassPage() {
             {c.is_full ? 'Full' : `${c.spots_left} of ${c.capacity} spots left`}
           </p>
           <div className="mt-4">
-            <ClassAction studioClass={c} onBook={() => setConfirming(true)} />
+            <ClassAction
+              studioClass={c}
+              waitlist={flagsFor(isWap).waitlist}
+              onBook={() => setConfirming(true)}
+              onChanged={() => setVersion((v) => v + 1)}
+            />
           </div>
         </div>
       )}
@@ -74,7 +81,12 @@ export function ClassPage() {
 }
 
 // Exactly one action, first match wins (docs/design/browse-and-book.md).
-function ClassAction({ studioClass: c, onBook }: { studioClass: StudioClass; onBook: () => void }) {
+function ClassAction({ studioClass: c, waitlist, onBook, onChanged }: {
+  studioClass: StudioClass
+  waitlist: boolean
+  onBook: () => void
+  onChanged: () => void
+}) {
   if (c.my_booking_id) {
     return (
       <div className="flex items-center gap-4">
@@ -87,11 +99,53 @@ function ClassAction({ studioClass: c, onBook }: { studioClass: StudioClass; onB
     return <span data-testid="class.started.badge" className="rounded bg-slate-100 px-3 py-1 text-slate-600">Class has started</span>
   }
   if (c.is_full) {
-    return <span data-testid="class.full.badge" className="rounded bg-slate-100 px-3 py-1 text-slate-600">Class full</span>
+    return (
+      <div className="flex flex-col items-start gap-3">
+        <span data-testid="class.full.badge" className="rounded bg-slate-100 px-3 py-1 text-slate-600">Class full</span>
+        {waitlist && <WaitlistAction studioClass={c} onChanged={onChanged} />}
+      </div>
+    )
   }
   return (
     <button data-testid="class.book.button" onClick={onBook} className="rounded bg-indigo-600 px-5 py-2 font-medium text-white">
       Book
     </button>
+  )
+}
+
+// Only rendered where the waitlist flag is on (docs/design/waitlist.md).
+function WaitlistAction({ studioClass: c, onChanged }: { studioClass: StudioClass; onChanged: () => void }) {
+  const [joining, setJoining] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  if (c.my_waitlist_position) {
+    return (
+      <span data-testid="class.waitlist.position" className="font-medium text-indigo-700">
+        You're #{c.my_waitlist_position} on the waitlist
+      </span>
+    )
+  }
+
+  async function join() {
+    setJoining(true)
+    setError(null)
+    const r = await request<Schemas['WaitlistEntry']>('POST', `/classes/${c.id}/waitlist`)
+    setJoining(false)
+    if (r.ok) onChanged()
+    else setError(r.error.message)
+  }
+
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <button
+        data-testid="class.waitlist.join"
+        disabled={joining}
+        onClick={join}
+        className="rounded bg-indigo-600 px-5 py-2 font-medium text-white disabled:opacity-50"
+      >
+        {joining ? <span data-testid="class.waitlist.loading"><Spinner /></span> : 'Join waitlist'}
+      </button>
+      {error && <p data-testid="class.waitlist.error" className="text-sm text-red-600">{error}</p>}
+    </div>
   )
 }

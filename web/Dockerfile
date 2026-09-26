@@ -1,8 +1,10 @@
+# Build context: repository root (the app bundles fixtures/feature-flags.json).
 FROM node:22-alpine
 WORKDIR /srv/web
-COPY package.json package-lock.json ./
+COPY web/package.json web/package-lock.json ./
 RUN npm ci
-COPY . .
+COPY web/ .
+COPY fixtures/ /srv/fixtures/
 # The browser calls the API directly, so this is the host-facing URL.
 ARG VITE_API_URL=http://localhost:8000
 ENV VITE_API_URL=$VITE_API_URL

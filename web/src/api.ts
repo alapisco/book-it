@@ -1,6 +1,7 @@
 // The only place the web app talks to the API. Shapes come from the
 // generated contract (src/api-schema.ts, `npm run gen:api`), never declared here.
 import type { components } from './api-schema'
+import { WAP_QUERY } from './useMediaQuery'
 
 export type Schemas = components['schemas']
 export type ApiError = { status: number; code: string; message: string }
@@ -23,6 +24,8 @@ export async function request<T>(method: string, path: string, body?: unknown): 
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   const session = localStorage.getItem(SESSION_KEY)
   if (session) headers['X-Test-Session'] = session
+  // The platform matches the tree being rendered right now (feature-flags v2).
+  headers['X-Platform'] = window.matchMedia(WAP_QUERY).matches ? 'wap' : 'web'
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`
 
