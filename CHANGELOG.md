@@ -3,7 +3,26 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased (M3: waitlist)
+## Unreleased (M3: all features)
+
+### Added
+- **Studio policies:**
+  - a public `/policies` page, with tabs on web and an accordion on wap
+  - a Policies webview tab on android and ios
+  - `GET /policies`
+- **Week calendar** (web only):
+  - `/calendar`, a 7-column week grid
+  - `GET /schedule/week`, which returns `403` for other platforms
+- **.ics export** (web only):
+  - an "Export .ics" button per booking
+  - `GET /bookings/{id}/ics`
+- **QR check-in** (android and ios):
+  - a check-in screen with a QR, a backup code and a polled status
+  - a scanner API, `POST /checkins`, with a per-studio `X-Studio-Key`
+  - `scripts/simulate_scan.py` for manual demos
+- **API contract v1.0.0.**
+
+## Waitlist
 
 ### Added
 - **Waitlist** (`docs/prd/waitlist.md` v2) on web, wap and android; absent on ios.

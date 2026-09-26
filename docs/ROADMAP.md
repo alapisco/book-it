@@ -8,7 +8,7 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 | **M0 Foundations** | ADRs 0001–0006; PRDs + tech specs for `domain-and-seed-data`, `test-support`, `feature-flags`, `app-shell` (+ design) | QA lead approves the documents | done: documents approved under defaults, **pending your review** |
 | **M1 Walking skeleton** | API with seed data, schedule generator, flags, test-support; web shell with web/wap trees; Expo app prebuilt with tab shell; `docker compose up` | All four platforms build and launch locally | done for api/web/wap (Docker); android/ios bundle with Metro and are prebuilt, **native build pending on your machine** |
 | **M2 Core flow** | `login`, `browse-and-book`, `my-bookings-and-cancel` on all four platforms | One test body passes on all four platforms; tag `v0.2` | implemented; **gate open** until the framework runs on android/ios; not tagged |
-| **M3 Divergent features** | `studio-policies`, `waitlist`, `week-calendar`, `ics-export`, `qr-check-in` | Framework's parity matrix artifact equals the matrix in `CLAUDE.md`; tag `v1.0` | in progress: `waitlist` done; `studio-policies`, `week-calendar`, `ics-export`, `qr-check-in` not started |
+| **M3 Divergent features** | `studio-policies`, `waitlist`, `week-calendar`, `ics-export`, `qr-check-in` | Framework's parity matrix artifact equals the matrix in `CLAUDE.md`; tag `v1.0` | implemented (all five features); **gate open** until the framework's matrix run, including android/ios builds; not tagged |
 
 ## Documents by feature
 
@@ -22,8 +22,12 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 | browse-and-book | `docs/prd/browse-and-book.md` | `docs/design/browse-and-book.md` | `docs/tech/browse-and-book.md` | api, web, app |
 | my-bookings-and-cancel | `docs/prd/my-bookings-and-cancel.md` | `docs/design/my-bookings-and-cancel.md` | `docs/tech/my-bookings-and-cancel.md` | api, web, app |
 | waitlist | `docs/prd/waitlist.md` (v2) | `docs/design/waitlist.md` | `docs/tech/waitlist.md` | api, fixtures, web, app |
-| studio-policies, week-calendar, ics-export, qr-check-in | — | — | — | — |
+| studio-policies | `docs/prd/studio-policies.md` | `docs/design/studio-policies.md` | `docs/tech/studio-policies.md` | api, fixtures, web, app |
+| week-calendar | `docs/prd/week-calendar.md` | `docs/design/week-calendar.md` | `docs/tech/week-calendar.md` | api, web |
+| ics-export | `docs/prd/ics-export.md` | `docs/design/ics-export.md` | `docs/tech/ics-export.md` | api, web |
+| qr-check-in | `docs/prd/qr-check-in.md` | `docs/design/qr-check-in.md` | `docs/tech/qr-check-in.md` | api, fixtures, app, scripts |
 
-## M3 prerequisites (remaining)
+## Remaining to close M3
 
-- Decide how QR check-in works (does the user show a code, or scan the studio's?) before `/prd qr-check-in`.
+- Build android and ios locally (`app/README.md`), including the new native modules (webview, svg).
+- Run the framework's parity matrix against all four platforms, then tag `v1.0`.

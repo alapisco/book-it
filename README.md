@@ -57,17 +57,13 @@ native apps.
 
 ## Running it
 
-Status: **M2 implemented; M3 in progress** (`waitlist` done).
-- **Core flow** (log in → browse → book → My bookings → cancel): built
-  for all four platforms.
-- **Waitlist:** built for web, wap and android, and deliberately absent
-  on ios.
-- **Verification:** web and wap are verified end to end. The android/ios
-  code typechecks, bundles for both OSes, and has been exercised in a
-  browser via react-native-web, but it hasn't yet been built on an
-  emulator or simulator.
-- **Still to build:** `studio-policies`, `week-calendar`, `ics-export`
-  and `qr-check-in`. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+Status: **every feature in the parity matrix is implemented.**
+- web and wap are verified end to end in a browser.
+- The android/ios code typechecks and bundles for both OSes, and its
+  screens have been exercised via react-native-web. It hasn't yet been
+  built on an emulator or simulator, and the policies webview can only be
+  checked on a device.
+- See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 **API + web/wap**
 
@@ -105,6 +101,8 @@ Without Docker, run the two pieces separately:
 - the `X-Platform` header: server-side feature gating, e.g. waitlist
   returns `403` for `ios`
 - the seed waitlist: two guests on `anchor-full`
+- the QR scanner: `POST /checkins` with `X-Studio-Key: scan-<studio>`.
+  For manual demos, run `python3 scripts/simulate_scan.py <code> --studio harbor`.
 
 A UI joins a test session with `?testSession=<id>` on web, or
 `bookit://login?testSession=<id>` on native.

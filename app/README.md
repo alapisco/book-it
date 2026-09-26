@@ -24,6 +24,12 @@ npm run android             # expo run:android (builds android/ and installs on 
 npm run ios                 # expo run:ios (pod install, builds ios/, runs on the simulator)
 ```
 
+The Policies tab embeds the web app's `/policies` page, so keep
+`docker compose up` running. The app finds the web app at
+`http://10.0.2.2:5173` on android and `http://localhost:5173` on ios; set
+`EXPO_PUBLIC_WEB_URL` to override. The webview is debuggable, so Appium
+can switch to the `WEBVIEW_*` context.
+
 The app finds the API on its own:
 - android uses `http://10.0.2.2:8000`, which is the emulator's alias for the host.
 - ios uses `http://localhost:8000`.
@@ -42,6 +48,19 @@ Android deep link from a shell:
 `adb shell am start -W -a android.intent.action.VIEW -d "bookit://login?testSession=w1" com.bookit.sut`
 
 iOS deep link from a shell: `xcrun simctl openurl booted "bookit://login?testSession=w1"`
+
+## QR check-in demo
+
+1. Log in and open a booked class whose check-in window is open (30
+   minutes before the start until 15 minutes after). To get one, set the
+   clock: `POST /test/clock {"now": "<start_at minus 10 minutes>"}`.
+2. Tap "Show check-in code".
+3. Play the gym's scanner from the repo root:
+   `python3 scripts/simulate_scan.py <code> --studio <studio id> [--session <id>]`.
+4. Within 2 seconds, the app shows "Checked in at HH:MM UTC".
+
+`react-native-webview` and `react-native-svg` are native modules. After
+pulling them, run `npm ci` and rebuild with `npm run android` / `npm run ios`.
 
 ## Scripts
 
