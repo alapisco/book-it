@@ -2,6 +2,7 @@ import { CalendarPlus } from 'lucide-react'
 import type { MouseEvent } from 'react'
 import { useNavigate } from 'react-router'
 import type { Schemas } from '../api'
+import { classPath } from '../back'
 import { dayNumber, formatDateTime } from '../format'
 
 type Booking = Schemas['Booking']
@@ -9,8 +10,8 @@ type Props = { bookings: Booking[]; onCancel: (b: Booking) => void }
 type TableProps = Props & { exporting: string | null; onExport: (b: Booking) => void }
 
 const when = (b: Booking) => formatDateTime(b.studio_class.start_local)
-// The item opens its class (design v3); `from` tells class detail where Back goes.
-const classPath = (b: Booking) => `/classes/${b.studio_class.id}?from=bookings`
+// The item opens its class (design v3); Back there returns to My bookings.
+const open = (b: Booking) => classPath(b.studio_class.id, '/bookings')
 // Buttons inside an item keep their own action and don't open the class.
 const own = (action: () => void) => (e: MouseEvent) => {
   e.stopPropagation()
@@ -43,7 +44,7 @@ export function BookingsTable({ bookings, onCancel, exporting, onExport }: Table
       </thead>
       <tbody className="divide-y divide-slate-200">
         {bookings.map((b) => (
-          <tr key={b.id} data-testid="bookings.item" onClick={() => navigate(classPath(b))} className="cursor-pointer hover:bg-slate-50">
+          <tr key={b.id} data-testid="bookings.item" onClick={() => navigate(open(b))} className="cursor-pointer hover:bg-slate-50">
             <td className="px-4 py-3">
               <span className="flex items-center gap-2 font-medium">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: b.studio_class.studio_accent }} aria-hidden />
@@ -83,7 +84,7 @@ export function BookingsList({ bookings, onCancel }: Props) {
           <li
             key={b.id}
             data-testid="bookings.item"
-            onClick={() => navigate(classPath(b))}
+            onClick={() => navigate(open(b))}
             style={{ borderLeftColor: c.studio_accent }}
             className="flex cursor-pointer gap-4 rounded-xl border-l-4 bg-white p-4 shadow-sm ring-1 ring-slate-200"
           >
