@@ -1,9 +1,9 @@
 # Tech spec: QR check-in
 
-- Version: 1
+- Version: 2
 - Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/qr-check-in.md v1, docs/design/qr-check-in.md v1
+- Date: 2026-09-27
+- Implements: docs/prd/qr-check-in.md v2, docs/design/qr-check-in.md v2; ADR 0007
 
 ## Overview
 
@@ -110,3 +110,10 @@ from `session.checkins`.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): `CheckinPass` gains `window_opens_local`, `window_closes_local` and
+  `checked_in_local` (null until checked in). The status text formats
+  these and drops the "UTC" suffix. The check-in screen uses the pushed
+  `AppBar`, and `class.checkin.link` gets the `QrCode` icon.

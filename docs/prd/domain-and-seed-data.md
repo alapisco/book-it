@@ -1,7 +1,7 @@
 # PRD: Domain and seed data
 
 - Version: 2
-- Status: draft (M4, awaiting review)
+- Status: approved
 - Date: 2026-09-27
 
 ## Summary

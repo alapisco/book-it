@@ -1,9 +1,9 @@
 # Tech spec: Feature flags
 
-- Version: 2
-- Status: approved (defaults)
-- Date: 2026-09-26
-- Implements: docs/prd/feature-flags.md v2 (no design spec: no UI)
+- Version: 3
+- Status: approved
+- Date: 2026-09-27
+- Implements: docs/prd/feature-flags.md v3 (no design spec: no UI)
 
 ## Overview
 
@@ -75,3 +75,4 @@ None.
 ## Changelog
 
 - v2 (2026-09-26): `X-Platform` validation and `require_flag`; client flag modules; the web Docker context moves to the repo root.
+- v3 (M4): `week_calendar` flips to web `false` and wap/android/ios `true` in `fixtures/feature-flags.json`; nothing else changes.

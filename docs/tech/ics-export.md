@@ -1,9 +1,9 @@
 # Tech spec: Export booking to .ics
 
-- Version: 1
+- Version: 2
 - Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/ics-export.md v1, docs/design/ics-export.md v1
+- Date: 2026-09-27
+- Implements: docs/prd/ics-export.md v2, docs/design/ics-export.md v1
 
 ## Overview
 
@@ -60,3 +60,7 @@ The seed booking `bk-ava-open`, the clock for `DTSTAMP`, chaos
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): `LOCATION` is `<studio name>, <neighbourhood>`; the timestamps stay UTC.

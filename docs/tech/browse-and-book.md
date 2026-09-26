@@ -1,9 +1,9 @@
 # Tech spec: Browse and book
 
-- Version: 2
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/browse-and-book.md v1, docs/design/browse-and-book.md v1
+- Version: 3
+- Status: approved
+- Date: 2026-09-27
+- Implements: docs/prd/browse-and-book.md v2, docs/design/browse-and-book.md v2; docs/design/visual-language.md
 
 ## Overview
 
@@ -125,3 +125,16 @@ None.
 ## Changelog
 
 - v2: native back link and bookings link pop instead of replacing, so that the tabs aren't stacked twice.
+- v3 (M4): visual update.
+  - Cards use the local time fields.
+  - `availability.ts` in both clients maps a class to
+    `'muted' | 'amber' | 'green'`, per the visual-language scale. Web maps
+    that to Tailwind classes, and native to hex colours.
+  - Cards get a 4 px left border in `studio_accent`, and the studio line
+    reads `studio_name · studio_neighborhood`.
+  - Class detail shows lucide icon rows.
+  - On wap/native, `ClassAction` renders inside a sticky bottom bar:
+    - wap: `position: sticky; bottom: 0`
+    - native: a `View` outside the `ScrollView`, above the safe-area inset
+  - The web inline back link stays. wap/native move `class.back.link` into
+    the pushed AppBar.

@@ -1,9 +1,9 @@
 # Tech spec: Studio policies
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/studio-policies.md v1, docs/design/studio-policies.md v1
+- Date: 2026-09-27
+- Implements: docs/prd/studio-policies.md v1, docs/design/studio-policies.md v2
 
 ## Overview
 
@@ -81,3 +81,4 @@ None.
 ## Changelog
 
 - v2: the web app derives the API host from the page's host, found when the Android webview couldn't reach the API.
+- v3 (M4): `policies.studio.name` renders only in `StudioTabs` (web); each tab and toggle shows an accent dot and the neighbourhood from `GET /policies` (`StudioPolicies` gains `neighborhood` and `accent`).

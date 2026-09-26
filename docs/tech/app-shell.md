@@ -1,9 +1,9 @@
 # Tech spec: App shell and navigation
 
-- Version: 2
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/app-shell.md v1, docs/design/app-shell.md v1
+- Version: 3
+- Status: approved
+- Date: 2026-09-27
+- Implements: docs/prd/app-shell.md v2, docs/design/app-shell.md v2; ADR 0008
 
 ## Overview
 
@@ -98,3 +98,20 @@ None.
 ## Changelog
 
 - v2: added the native navigation rule (pop, don't push) and the iOS nested-identifier rule, both found while implementing M2. Corrected the native route file names.
+- v3 (M4): navigation per ADR 0008.
+  - **web/wap:**
+    - `shell/WapNav.tsx` is replaced by `shell/AppBar.tsx` (title from a
+      route → title map) and `shell/TabBar.tsx` (a fixed `<nav data-testid="nav.tabs">`
+      with four `NavLink`s and lucide icons).
+    - `Layout` renders `AppBar` + `Outlet` + `TabBar` on wap, and `WebNav`
+      + `Outlet` on web. Pushed routes (`/classes/:id`) render the pushed
+      AppBar with `class.back.link`, and no TabBar.
+    - `WebNav` gains icons and the Policies link, and drops Calendar.
+    - Dependency: `lucide-react`.
+  - **android/ios:**
+    - `(tabs)/_layout.tsx` adds the `week` tab, `tabBarIcon` (from
+      `lucide-react-native`, on the existing `react-native-svg`) and
+      header styling (`primary` background, "BookIt · <title>").
+    - Class detail and check-in render `src/AppBar.tsx` (pushed variant)
+      holding their back identifiers.
+  - No native module is added, so only a JS rebuild is needed.

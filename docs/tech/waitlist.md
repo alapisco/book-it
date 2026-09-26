@@ -1,9 +1,9 @@
 # Tech spec: Waitlist
 
-- Version: 1
+- Version: 2
 - Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/waitlist.md v2, docs/design/waitlist.md v1 (and feature-flags v2 for `X-Platform`)
+- Date: 2026-09-27
+- Implements: docs/prd/waitlist.md v3, docs/design/waitlist.md v2
 
 ## Overview
 
@@ -135,3 +135,7 @@ never matches them.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): waitlist items use the local time fields; the Join waitlist button gets the `ListOrdered` icon and renders in the sticky action area on wap/android.

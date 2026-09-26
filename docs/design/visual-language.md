@@ -1,7 +1,7 @@
 # Design: Visual language
 
 - Version: 1
-- Status: draft (M4, awaiting review)
+- Status: approved
 - Date: 2026-09-27
 - Implements: ADR 0008
 

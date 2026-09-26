@@ -1,9 +1,9 @@
 # Tech spec: Domain and seed data
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/domain-and-seed-data.md v1 (no design spec: no UI)
+- Version: 2
+- Status: approved
+- Date: 2026-09-27
+- Implements: docs/prd/domain-and-seed-data.md v2 (no design spec: no UI); ADR 0007
 
 ## Overview
 
@@ -101,3 +101,21 @@ The anchors and seed users are the hooks. Reset re-runs `seed(now)`.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): studio local time.
+  - `fixtures/studios.json` gains `timezone` (`Europe/Madrid`),
+    `neighborhood` and `accent`.
+  - `bookit/localtime.py` holds `TZ = ZoneInfo(...)`, `to_local(dt) -> str`
+    (naive `YYYY-MM-DDTHH:MM:SS`) and `local_today(now) -> date`.
+  - The generator builds `start_at = datetime.combine(day, time(hour), tzinfo=TZ).astimezone(UTC)`,
+    so `day` and `hour` are local. Ids keep the local date and time.
+  - `classes_on(day)` returns the generated classes for local `day`, plus
+    anchors whose local start date is `day`.
+  - `to_model` adds `start_local`, `end_local`, `studio_neighborhood` and
+    `studio_accent`.
+  - `/schedule` defaults to `local_today(now)`.
+  - `tzdata` is added to `api/requirements.txt`, so slim containers have
+    the zone database.
+  - Renamed anchors, guests and `beach-yoga` → `park-yoga`.

@@ -1,7 +1,7 @@
 # Design: Login
 
 - Version: 2
-- Status: draft (M4, awaiting review)
+- Status: approved
 - Date: 2026-09-27
 - Implements: docs/prd/login.md v1; uses docs/design/visual-language.md
 

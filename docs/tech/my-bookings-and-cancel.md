@@ -1,9 +1,9 @@
 # Tech spec: My bookings and cancel
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/my-bookings-and-cancel.md v1, docs/design/my-bookings-and-cancel.md v1
+- Version: 2
+- Status: approved
+- Date: 2026-09-27
+- Implements: docs/prd/my-bookings-and-cancel.md v2, docs/design/my-bookings-and-cancel.md v2
 
 ## Overview
 
@@ -79,3 +79,7 @@ the seat.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): local time fields; wap/native cards with the accent bar and a date block; web table rows with icon buttons (`CalendarPlus` for export).
