@@ -1,9 +1,9 @@
 # Design: My bookings and cancel
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
-- Implements: docs/prd/my-bookings-and-cancel.md v2; uses docs/design/visual-language.md
+- Date: 2026-09-26
+- Implements: docs/prd/my-bookings-and-cancel.md v3; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -18,7 +18,7 @@
 | BookingsScreen | bookings | Root, titled "My bookings" | all | — |
 | BookingsTable | bookings | `<table>` with Class / Studio / When / (action) columns | web | `GET /me/bookings` |
 | BookingsList | bookings | Stacked cards | wap, android, ios | `GET /me/bookings` |
-| BookingItem | bookings | One booking: name, studio, when, and the Cancel button or "Cancellation closed" | all | `Booking` |
+| BookingItem | bookings | One booking: name, studio, when, and the Cancel button or "Cancellation closed". Tapping it opens class detail | all | `Booking` |
 | CancelConfirm (modal) | bookings | Centred dialog | web | `DELETE /bookings/{id}` |
 | CancelConfirm (sheet) | bookings | Bottom sheet | wap, android, ios | `DELETE /bookings/{id}` |
 
@@ -39,6 +39,18 @@ A booking item contains:
 - `bookings.item.time` (`Sat 26 Sep 2026 · 07:00`, studio local time)
 - one of `bookings.item.cancel` ("Cancel") or
   `bookings.item.cancel-closed` ("Cancellation closed")
+
+**Opening a booking (v3).** The whole `bookings.item` is the tap target
+and opens class detail for `studio_class.id`, like `week.class.card`. It
+has no new identifier: tests tap `bookings.item[n]`. The buttons inside it
+(`bookings.item.cancel`, and `bookings.item.export` on web) stay separate
+targets: tapping one does its own action and doesn't open the class.
+Cards and rows show a pointer cursor on web/wap and a pressed state
+(slight dim) on native; there's no chevron.
+
+On the class opened this way, `class.back.link` returns to
+`bookings.screen`. On web it reads "‹ My bookings" instead of
+"‹ Schedule"; on wap and native it stays the icon-only back control.
 
 **CancelConfirm.** The container is `booking.cancel.modal` on web and
 `booking.cancel.sheet` elsewhere.
@@ -79,6 +91,8 @@ shared.
 | AC-6 | `booking.cancel.confirm`, `booking.cancel.loading` |
 | AC-7 | `bookings.item` count |
 | AC-8, EC-2–EC-4 | `booking.cancel.error` |
+| AC-10 | `bookings.item` → `class.screen`, `class.booked.badge` (+ `class.checkin.link` on android, ios) |
+| AC-11 | `class.back.link` → `bookings.screen` |
 | EC-6 | `bookings.error` |
 
 ## Open questions
@@ -88,3 +102,4 @@ None.
 ## Changelog
 
 - v2 (M4): local times; cards on wap/native get the studio accent bar and a date block (day number and month) on the left; the screen title moves into the app bar on wap/native; web keeps the table with icon buttons.
+- v3: the booking item opens class detail; Back from that class returns to My bookings (web label "‹ My bookings").

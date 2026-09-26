@@ -85,7 +85,7 @@ These identifiers were removed from the registry, so the validator rejects them.
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
 | `class.screen` | container | all | browse-and-book.md | Root; present in every state |
-| `class.back.link` | link | all | browse-and-book.md | "← Schedule"; returns to the class's date |
+| `class.back.link` | link | all | browse-and-book.md | "← Schedule"; returns to the class's date. Opened from My bookings: returns there (web label "← My bookings") |
 | `class.loading` | container | all | browse-and-book.md | Loading state |
 | `class.error` | text | all | browse-and-book.md | API error `message`, e.g. "Class not found." |
 | `class.name.text` | text | all | browse-and-book.md | |
@@ -134,7 +134,7 @@ These identifiers were removed from the registry, so the validator rejects them.
 | `bookings.error` | text | all | my-bookings-and-cancel.md | API error `message` |
 | `bookings.table` | container | web | my-bookings-and-cancel.md | Populated container on web |
 | `bookings.list` | container | wap, android, ios | my-bookings-and-cancel.md | Populated container elsewhere |
-| `bookings.item` | list-item | all | my-bookings-and-cancel.md | Repeated, one per booking, `start_at` order |
+| `bookings.item` | link | all | my-bookings-and-cancel.md | Repeated, one per booking, `start_at` order; tap (outside its buttons) opens class detail (v3) |
 | `bookings.item.name` | text | all | my-bookings-and-cancel.md | Class name |
 | `bookings.item.studio` | text | all | my-bookings-and-cancel.md | Studio name |
 | `bookings.item.time` | text | all | my-bookings-and-cancel.md | "Sat 26 Sep 2026 · 07:00" (studio local time) |
