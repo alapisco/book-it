@@ -1,6 +1,6 @@
 # PRD: Browse and book
 
-- Version: 3
+- Version: 4
 - Status: approved
 - Date: 2026-09-26
 
@@ -52,10 +52,13 @@ conflict code.
   2. "Class has started", if `has_started`
   3. "Class full", if `is_full`
   4. otherwise a "Book" button
-- **AC-8** (US-3) "← Schedule" returns to the schedule for the class's date.
-  Exceptions: a class opened from the week returns to that week
-  (`week-calendar` AC-7), and one opened from My bookings returns to My
-  bookings (`my-bookings-and-cancel` AC-11).
+- **AC-8** (US-3) Back returns to the screen the class was opened from, in
+  the state it was in: the schedule on the same date, the week on the same
+  week and day (`week-calendar` AC-7), or My bookings
+  (`my-bookings-and-cancel` AC-11). This holds even when Back is pressed
+  before class detail has finished loading. A class opened with no origin
+  (a typed or shared link, a cold-start deep link) returns to the schedule
+  for the class's date, or to today's schedule while it is still loading.
 
 **Booking**
 - **AC-9** (US-4) "Book" opens a confirmation showing
@@ -129,3 +132,4 @@ Filtering or searching the schedule in the UI, week views (M3
 
 - v2 (M4): times are shown in studio local time with no zone suffix (ADR 0007); the seat label is colour-coded on every platform with the availability scale in `docs/design/visual-language.md` (it was web-only); the studio line includes the neighbourhood.
 - v3: AC-8 lists its exceptions: a class opened from the week (`week-calendar` AC-7) or from My bookings (`my-bookings-and-cancel` v3).
+- v4: AC-8 is one rule on every platform: Back returns to the origin screen and its state, even before the class has loaded.
