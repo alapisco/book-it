@@ -1,9 +1,9 @@
 # Design: Browse and book
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
-- Implements: docs/prd/browse-and-book.md v2; uses docs/design/visual-language.md
+- Date: 2026-09-26
+- Implements: docs/prd/browse-and-book.md v3; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -46,7 +46,8 @@ A card contains:
 - `schedule.class.booked` ("Booked"), only when `my_booking_id` is set
 
 **Class detail.** The BackLink is visible in every state, as
-`class.back.link`.
+`class.back.link`. When the class was opened from My bookings it returns
+there, and on web reads "‹ My bookings" (`my-bookings-and-cancel.md` v3).
 
 | State | Visible | Identifiers |
 |---|---|---|
@@ -118,3 +119,4 @@ None.
 ## Changelog
 
 - v2 (M4): local times without a suffix; availability colours on all platforms; studio accent bar and neighbourhood; class detail icon rows and a sticky action area on wap/native; back control in the pushed app bar.
+- v3: BackLink returns to My bookings for a class opened from there.

@@ -1,8 +1,8 @@
 # PRD: Browse and book
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
+- Date: 2026-09-26
 
 ## Summary
 
@@ -53,6 +53,8 @@ conflict code.
   3. "Class full", if `is_full`
   4. otherwise a "Book" button
 - **AC-8** (US-3) "← Schedule" returns to the schedule for the class's date.
+  A class opened from My bookings is the exception: Back returns to My
+  bookings (`my-bookings-and-cancel` AC-11).
 
 **Booking**
 - **AC-9** (US-4) "Book" opens a confirmation showing
@@ -125,3 +127,4 @@ Filtering or searching the schedule in the UI, week views (M3
 ## Changelog
 
 - v2 (M4): times are shown in studio local time with no zone suffix (ADR 0007); the seat label is colour-coded on every platform with the availability scale in `docs/design/visual-language.md` (it was web-only); the studio line includes the neighbourhood.
+- v3: AC-8 exception for a class opened from My bookings (`my-bookings-and-cancel` v3).

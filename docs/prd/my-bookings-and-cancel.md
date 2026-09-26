@@ -1,15 +1,16 @@
 # PRD: My bookings and cancel
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
+- Date: 2026-09-26
 
 ## Summary
 
 A logged-in user sees their upcoming bookings and can cancel one after
 confirming. Cancelling is refused inside the final 12 hours before the
 class starts. The list shows which bookings can still be cancelled, and
-the API enforces the rule even if the list is stale.
+the API enforces the rule even if the list is stale. Tapping a booking
+opens its class, which is where the native apps show the check-in code.
 
 ## Platform support
 
@@ -25,6 +26,9 @@ the API enforces the rule even if the list is stale.
 - **US-1** As a user, I want to see my upcoming bookings in time order.
 - **US-2** As a user, I want to cancel a booking, with a confirmation step.
 - **US-3** As a user, I want to know when a booking can no longer be cancelled.
+- **US-4** As a user, I want to open a booked class from my bookings, so
+  that I don't have to find it again in the schedule or week (and, on
+  android and ios, so that I can reach its check-in code).
 
 ## Acceptance criteria
 
@@ -52,6 +56,14 @@ the API enforces the rule even if the list is stale.
   API `message` verbatim.
 - **AC-9** A class that starts while listed drops off the list the next
   time it loads.
+- **AC-10** (US-4) On every platform, tapping a booking anywhere outside
+  its buttons opens class detail for that booking's class
+  (`studio_class.id`), in the booked state ("You're booked"). On android
+  and ios that state includes "Show check-in code" (`qr-check-in` AC-1).
+  "Cancel" and, on web, "Export .ics" keep their own behaviour and don't
+  open the class.
+- **AC-11** (US-4) Back from a class opened from My bookings returns to
+  My bookings. On web the back link reads "‹ My bookings".
 
 ## Error and edge cases
 
@@ -92,7 +104,11 @@ rescheduling.
 2. The confirmation copy is "Cancel booking" / "Keep booking".
 3. The UI hides "Cancel" when `can_cancel` is false, and the API still
    enforces the rule (EC-4). Both paths are testable.
+4. The whole booking is the tap target (like `week.class.card`), not only
+   its name. My bookings has no check-in shortcut of its own: the code is
+   reached through class detail.
 
 ## Changelog
 
 - v2 (M4): local times without a suffix (ADR 0007); renamed anchors ("Barre Sculpt", "Slow Flow").
+- v3: tapping a booking opens its class (US-4, AC-10); Back returns to My bookings (AC-11).

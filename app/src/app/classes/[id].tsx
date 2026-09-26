@@ -56,7 +56,7 @@ export default function ClassScreen() {
             hitSlop={12}
             style={backStyle}
             onPress={() => {
-              // Pop back to the screen we came from (schedule or week, on this class's date).
+              // Pop back to the screen we came from (schedule or week on this class's date, or bookings).
               // After a cold-start deep link there is nothing to pop, so replace instead.
               if (router.canDismiss()) router.dismiss()
               else router.replace(c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule')
