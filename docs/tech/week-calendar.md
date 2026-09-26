@@ -1,8 +1,8 @@
 # Tech spec: Week view
 
-- Version: 2
+- Version: 3
 - Status: approved
-- Date: 2026-09-27
+- Date: 2026-09-26
 - Implements: docs/prd/week-calendar.md v2, docs/design/week-calendar.md v2
 
 ## Overview
@@ -58,6 +58,10 @@ All dates are studio local (ADR 0007).
   - tapping a pill runs `section.scrollIntoView({ block: 'start' })`
 - **Cards:** the same markup and availability helper as the Schedule card,
   but under `week.*` identifiers.
+- **Open and back (AC-7, v3):** a card links to
+  `/classes/<id>?from=week`. `ClassPage` sends `class.back.link` with
+  `from=week` to `/week?week=<class date>`, the week that contains the
+  class. (v2 sent it to the schedule, which broke AC-7 on wap.)
 
 **android / ios** (`(tabs)/week.tsx`):
 - **List:** a `ScrollView` with `stickyHeaderIndices` for the strip.
@@ -104,3 +108,4 @@ None.
 ## Changelog
 
 - v2 (M4): replaces the web-only grid (v1) with a mobile day strip + list; flag flip; `today` field.
+- v3: wap class detail opened from the week returns to that week (`?from=week`).

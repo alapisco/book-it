@@ -53,7 +53,8 @@ conflict code.
   3. "Class full", if `is_full`
   4. otherwise a "Book" button
 - **AC-8** (US-3) "← Schedule" returns to the schedule for the class's date.
-  A class opened from My bookings is the exception: Back returns to My
+  Exceptions: a class opened from the week returns to that week
+  (`week-calendar` AC-7), and one opened from My bookings returns to My
   bookings (`my-bookings-and-cancel` AC-11).
 
 **Booking**
@@ -127,4 +128,4 @@ Filtering or searching the schedule in the UI, week views (M3
 ## Changelog
 
 - v2 (M4): times are shown in studio local time with no zone suffix (ADR 0007); the seat label is colour-coded on every platform with the availability scale in `docs/design/visual-language.md` (it was web-only); the studio line includes the neighbourhood.
-- v3: AC-8 exception for a class opened from My bookings (`my-bookings-and-cancel` v3).
+- v3: AC-8 lists its exceptions: a class opened from the week (`week-calendar` AC-7) or from My bookings (`my-bookings-and-cancel` v3).

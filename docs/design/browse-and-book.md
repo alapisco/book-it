@@ -46,7 +46,8 @@ A card contains:
 - `schedule.class.booked` ("Booked"), only when `my_booking_id` is set
 
 **Class detail.** The BackLink is visible in every state, as
-`class.back.link`. When the class was opened from My bookings it returns
+`class.back.link`. When the class was opened from the week it returns to
+that week (`week-calendar.md`); when opened from My bookings it returns
 there, and on web reads "‹ My bookings" (`my-bookings-and-cancel.md` v3).
 
 | State | Visible | Identifiers |
@@ -119,4 +120,4 @@ None.
 ## Changelog
 
 - v2 (M4): local times without a suffix; availability colours on all platforms; studio accent bar and neighbourhood; class detail icon rows and a sticky action area on wap/native; back control in the pushed app bar.
-- v3: BackLink returns to My bookings for a class opened from there.
+- v3: BackLink returns to the week or to My bookings for a class opened from there.

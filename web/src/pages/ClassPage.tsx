@@ -38,9 +38,14 @@ export function ClassPage() {
     setVersion((v) => v + 1)
   }
   const confirm = c && <BookingConfirm studioClass={c} onBooked={close} onDismiss={close} />
-  // Opened from My bookings (my-bookings-and-cancel v3): Back returns there.
-  const fromBookings = searchParams.get('from') === 'bookings'
-  const backTo = fromBookings ? '/bookings' : c ? `/schedule?date=${c.start_local.slice(0, 10)}` : '/schedule'
+  // Back returns to where the class was opened: My bookings (my-bookings-and-cancel v3),
+  // the week containing the class (week-calendar AC-7), otherwise the schedule on its date.
+  const from = searchParams.get('from')
+  const fromBookings = from === 'bookings'
+  const date = c?.start_local.slice(0, 10)
+  const backTo = fromBookings ? '/bookings'
+    : from === 'week' ? (date ? `/week?week=${date}` : '/week')
+    : date ? `/schedule?date=${date}` : '/schedule'
   const action = c && (
     <ClassAction
       studioClass={c}
@@ -58,7 +63,7 @@ export function ClassPage() {
           <AppBar
             title="Class"
             back={
-              <Link data-testid="class.back.link" to={backTo} aria-label={fromBookings ? 'Back to my bookings' : 'Back to schedule'} className="-ml-1 flex items-center">
+              <Link data-testid="class.back.link" to={backTo} aria-label={fromBookings ? 'Back to my bookings' : from === 'week' ? 'Back to week' : 'Back to schedule'} className="-ml-1 flex items-center">
                 <BackIcon />
               </Link>
             }

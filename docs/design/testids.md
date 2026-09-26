@@ -85,7 +85,7 @@ These identifiers were removed from the registry, so the validator rejects them.
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
 | `class.screen` | container | all | browse-and-book.md | Root; present in every state |
-| `class.back.link` | link | all | browse-and-book.md | "← Schedule"; returns to the class's date. Opened from My bookings: returns there (web label "← My bookings") |
+| `class.back.link` | link | all | browse-and-book.md | "← Schedule"; returns to the class's date. Opened from the week: returns to that week. Opened from My bookings: returns there (web label "← My bookings") |
 | `class.loading` | container | all | browse-and-book.md | Loading state |
 | `class.error` | text | all | browse-and-book.md | API error `message`, e.g. "Class not found." |
 | `class.name.text` | text | all | browse-and-book.md | |
