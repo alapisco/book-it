@@ -64,7 +64,15 @@ export default function BookingsScreen() {
         {bookings && bookings.length > 0 && (
           <View testID="bookings.list" style={styles.list}>
             {bookings.map((b) => (
-              <View key={b.id} testID="bookings.item" style={[ui.card, ui.accentCard, styles.item, { borderLeftColor: b.studio_class.studio_accent }]}>
+              // Opens the class (design v3); Back there pops to this tab. accessible={false}:
+              // otherwise iOS merges the nested identifiers into the card.
+              <Pressable
+                key={b.id}
+                testID="bookings.item"
+                accessible={false}
+                onPress={() => router.push(`/classes/${b.studio_class.id}`)}
+                style={({ pressed }) => [ui.card, ui.accentCard, styles.item, { borderLeftColor: b.studio_class.studio_accent }, pressed && styles.pressed]}
+              >
                 {/* Date block (my-bookings design v2); decorative, no identifier. */}
                 <View style={styles.dateBlock}>
                   <Text style={styles.dateDay}>{dayNumber(b.studio_class.start_local.slice(0, 10))}</Text>
@@ -87,7 +95,7 @@ export default function BookingsScreen() {
                     )}
                   </View>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         )}
@@ -203,6 +211,7 @@ function CancelConfirm({ booking, onCancelled, onDismiss }: {
 const styles = StyleSheet.create({
   empty: { gap: 8 },
   item: { flexDirection: 'row', gap: 14 },
+  pressed: { opacity: 0.7 },
   itemBody: { flex: 1, gap: 2 },
   dateBlock: { width: 48, alignItems: 'center', justifyContent: 'center', alignSelf: 'flex-start', backgroundColor: colors.primarySoft, borderRadius: 10, paddingVertical: 6 },
   dateDay: { fontSize: 20, fontWeight: '800', color: colors.primary },
