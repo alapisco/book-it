@@ -12,6 +12,11 @@ framework pins against these versions.
   My bookings; on web the link reads "‹ My bookings". Registry:
   `bookings.item` is now a `link`; no identifiers added or removed.
 
+### Fixed
+- **wap: Back from a class opened in the week** now returns to that week
+  (`week-calendar` AC-7); it went to the schedule. android and ios were
+  already correct.
+
 ## M4: polish
 
 ### Added
