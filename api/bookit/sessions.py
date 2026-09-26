@@ -3,7 +3,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
-from .fixtures import ANCHORS, SEED_BOOKINGS, USERS
+from .fixtures import ANCHORS, SEED_BOOKINGS, SEED_WAITLIST, USERS
 from .models import ChaosConfig
 from .schedule import ClassSlot
 
@@ -16,6 +16,14 @@ def utcnow() -> datetime:
 
 @dataclass
 class Booking:
+    id: str
+    user_id: str
+    class_id: str
+    created_at: datetime
+
+
+@dataclass
+class WaitlistEntry:
     id: str
     user_id: str
     class_id: str
@@ -35,6 +43,11 @@ class SessionState:
             b["id"]: Booking(b["id"], b["user_id"], b["class_id"], now) for b in SEED_BOOKINGS
         }
         self.next_booking_seq = 1
+        # Queue order: an entry's position is its index among its class's entries + 1.
+        self.waitlist = [
+            WaitlistEntry(w["id"], w["user_id"], w["class_id"], now) for w in SEED_WAITLIST
+        ]
+        self.next_waitlist_seq = 1
         self.filler_overrides: dict[str, int] = {}
         self.chaos = ChaosConfig()
         t0 = now.replace(minute=0, second=0, microsecond=0)

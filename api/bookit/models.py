@@ -43,6 +43,8 @@ class StudioClass(BaseModel):
     is_outdoor: bool
     is_anchor: bool
     my_booking_id: str | None = Field(description="The caller's booking on this class, if any")
+    waitlist_count: int
+    my_waitlist_position: int | None = Field(description="The caller's 1-based waitlist position, if any")
 
 
 class ScheduleDay(BaseModel):
@@ -82,6 +84,15 @@ class Booking(BaseModel):
     created_at: datetime
     can_cancel: bool
     cancel_deadline: datetime
+    studio_class: StudioClass
+
+
+class WaitlistEntry(BaseModel):
+    id: str
+    class_id: str
+    user_id: str
+    position: int = Field(description="1-based and contiguous within the class")
+    created_at: datetime
     studio_class: StudioClass
 
 

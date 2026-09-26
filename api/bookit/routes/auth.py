@@ -15,7 +15,7 @@ router = APIRouter(tags=["auth"], responses=ERROR_RESPONSES)
 async def login(body: LoginRequest, c: Ctx = Depends(ctx)):
     email = body.email.strip().lower()
     user = next((u for u in c.session.users.values() if u["email"] == email), None)
-    if user is None or user["password"] != body.password:
+    if user is None or user.get("password") != body.password:  # guests have no password
         raise ApiError(401, "INVALID_CREDENTIALS")
     token = "tok_" + secrets.token_hex(12)
     c.session.tokens[token] = user["id"]

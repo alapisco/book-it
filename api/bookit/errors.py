@@ -25,10 +25,15 @@ MESSAGES = {
     "CLASS_FULL": "This class is full.",
     "BOOKING_NOT_FOUND": "Booking not found.",
     "CANCELLATION_WINDOW_CLOSED": "Bookings can't be cancelled less than 12 hours before the class starts.",
+    "INVALID_PLATFORM": "X-Platform must be one of web, wap, android, ios.",
+    "FEATURE_UNAVAILABLE": "This feature is not available on this platform.",
+    "ALREADY_WAITLISTED": "You are already on the waitlist for this class.",
+    "CLASS_NOT_FULL": "This class still has spots. Book it instead.",
+    "NOT_WAITLISTED": "You are not on the waitlist for this class.",
 }
 
 # Declared on routers so the generated OpenAPI documents the error body.
-ERROR_RESPONSES = {status: {"model": ErrorBody} for status in (400, 401, 404, 409, 422)}
+ERROR_RESPONSES = {status: {"model": ErrorBody} for status in (400, 401, 403, 404, 409, 422)}
 
 
 class ApiError(Exception):

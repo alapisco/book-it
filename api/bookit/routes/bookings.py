@@ -1,5 +1,6 @@
 """Booking and cancelling. Rule order decides which error a test sees:
-docs/tech/browse-and-book.md and docs/tech/my-bookings-and-cancel.md."""
+docs/tech/browse-and-book.md and docs/tech/my-bookings-and-cancel.md.
+Cancelling also promotes from the waitlist (docs/tech/waitlist.md)."""
 from fastapi import APIRouter, Depends, Response
 
 from ..auth import current_user
@@ -9,6 +10,7 @@ from ..catalog import bookings_on, find_slot, spots_left
 from ..errors import ERROR_RESPONSES, ApiError
 from ..models import Booking, BookingCreate
 from ..sessions import Booking as StoredBooking
+from ..waitlist import promote
 
 router = APIRouter(tags=["bookings"], responses=ERROR_RESPONSES)
 
@@ -53,4 +55,5 @@ async def cancel_booking(booking_id: str, auth=Depends(current_user)):
     if c.now >= slot.start_at - CANCEL_CUTOFF:
         raise ApiError(409, "CANCELLATION_WINDOW_CLOSED")
     del c.session.bookings[booking_id]
+    promote(c.session, slot, c.now)
     return Response(status_code=204)

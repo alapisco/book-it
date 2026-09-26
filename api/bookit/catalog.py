@@ -37,6 +37,11 @@ def bookings_on(session: SessionState, class_id: str):
     return [b for b in session.bookings.values() if b.class_id == class_id]
 
 
+def waitlist_on(session: SessionState, class_id: str):
+    """The class's waitlist entries in queue order."""
+    return [e for e in session.waitlist if e.class_id == class_id]
+
+
 def spots_left(session: SessionState, slot: ClassSlot) -> int:
     filler = session.filler_overrides.get(slot.id, slot.filler)
     return max(0, slot.capacity - filler - len(bookings_on(session, slot.id)))
@@ -46,6 +51,8 @@ def to_model(session: SessionState, slot: ClassSlot, now: datetime,
              user_id: str | None = None) -> StudioClass:
     left = spots_left(session, slot)
     mine = next((b.id for b in bookings_on(session, slot.id) if b.user_id == user_id), None)
+    queue = waitlist_on(session, slot.id)
+    position = next((i for i, e in enumerate(queue, 1) if e.user_id == user_id), None)
     return StudioClass(
         id=slot.id,
         studio_id=slot.studio_id,
@@ -63,4 +70,6 @@ def to_model(session: SessionState, slot: ClassSlot, now: datetime,
         is_outdoor=slot.is_outdoor,
         is_anchor=slot.is_anchor,
         my_booking_id=mine,
+        waitlist_count=len(queue),
+        my_waitlist_position=position,
     )

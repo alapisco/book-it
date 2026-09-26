@@ -7,16 +7,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .errors import error_response, install_error_handlers
 from .models import Health
-from .routes import auth, bookings, catalog, flags, testsupport
+from .fixtures import FEATURE_FLAGS
+from .routes import auth, bookings, catalog, flags, testsupport, waitlist
 from .sessions import SESSION_ID, get_session
 
 app = FastAPI(
     title="BookIt SUT API",
-    version="0.2.0",
+    version="0.3.0",
     description=(
         "System Under Test for the BookIt automation framework. "
         "All state is namespaced by the X-Test-Session header; "
-        "X-Test-Now overrides the clock for one request."
+        "X-Test-Now overrides the clock for one request; "
+        "X-Platform (web, wap, android, ios) enables server-side feature gating."
     ),
 )
 install_error_handlers(app)
@@ -38,6 +40,11 @@ async def test_context(request: Request, call_next):
             return error_response(400, "INVALID_TEST_NOW")
         if header_now.tzinfo is None:
             header_now = header_now.replace(tzinfo=timezone.utc)
+
+    platform = request.headers.get("x-platform")
+    if platform is not None and platform not in FEATURE_FLAGS:
+        return error_response(400, "INVALID_PLATFORM")
+    request.state.platform = platform
 
     session = get_session(name, header_now or datetime.now(timezone.utc))
     request.state.session = session
@@ -68,6 +75,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 app.include_router(auth.router)
 app.include_router(catalog.router)
 app.include_router(bookings.router)
+app.include_router(waitlist.router)
 app.include_router(flags.router)
 app.include_router(testsupport.router)
 
