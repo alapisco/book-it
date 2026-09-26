@@ -1,9 +1,9 @@
 # Tech spec: Browse and book
 
-- Version: 4
+- Version: 5
 - Status: approved
 - Date: 2026-09-26
-- Implements: docs/prd/browse-and-book.md v3, docs/design/browse-and-book.md v3; docs/design/visual-language.md
+- Implements: docs/prd/browse-and-book.md v4, docs/design/browse-and-book.md v4; docs/design/visual-language.md
 
 ## Overview
 
@@ -92,6 +92,24 @@ spec).
     `router.replace('/schedule?date=<class date>')` instead (see
     `app-shell` tech spec v2).
   - `class.bookings.link` calls `router.dismissTo('/bookings')`.
+
+- **`class.back.link` origin (v5):** every link into class detail adds
+  `back=<origin path and query>`, URL-encoded:
+  - Schedule cards: the schedule's current `pathname + search`
+    (e.g. `/schedule?date=2026-09-28`, or `/schedule` for today)
+  - Week cards (wap): `/week?week=<week_start>&day=<the class's date>`
+  - Booking items: `/bookings`
+
+  `ClassPage` uses `back` as the link target when it matches
+  `^/(schedule|week|bookings)(\?.*)?$`, and ignores it otherwise (no
+  open redirect). The target never depends on the loaded class, so Back
+  works in the loading and error states. The web label and wap
+  `aria-label` come from the path (Schedule / Week / My bookings). With no
+  valid `back`, the v3 rule applies: `/schedule?date=<class date>`, or
+  `/schedule` while loading. This replaces the v4 `?from=` values.
+- **Native:** unchanged. `class.back.link` calls `router.dismiss()`,
+  which returns to the screen underneath as it was; the class date is only
+  used after a cold-start deep link.
 - **Refresh:** `useFocusEffect` reloads data when the screen regains
   focus, e.g. after cancelling in My bookings.
 
@@ -139,3 +157,4 @@ None.
   - The web inline back link stays. wap/native move `class.back.link` into
     the pushed AppBar.
 - v4: web/wap `class.back.link` honours `?from=bookings` (`my-bookings-and-cancel` tech spec v3) and `?from=week` (`week-calendar` tech spec v3).
+- v5: `class.back.link` returns to the exact origin via `?back=` on web/wap (replaces `?from=`); loading-state Back no longer falls back to today.

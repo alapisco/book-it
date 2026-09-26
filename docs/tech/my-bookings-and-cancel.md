@@ -1,6 +1,6 @@
 # Tech spec: My bookings and cancel
 
-- Version: 3
+- Version: 4
 - Status: approved
 - Date: 2026-09-26
 - Implements: docs/prd/my-bookings-and-cancel.md v3, docs/design/my-bookings-and-cancel.md v3
@@ -49,15 +49,14 @@ the seat.
   as `booking.cancel.modal` (web) or `booking.cancel.sheet` (wap). On
   `204` the confirmation closes and the list reloads.
 - **Opening a booking (v3):** the `<tr>` (web) and the `<li>` card (wap)
-  navigate on click to `/classes/<studio_class.id>?from=bookings`. They
+  navigate on click to `/classes/<studio_class.id>?back=%2Fbookings`. They
   use `onClick` + `useNavigate`, not a wrapping `<Link>`, because an
   `<a>` can't contain the Cancel / Export buttons. Those buttons call
   `stopPropagation()`.
-- **Back (`ClassPage`):** reads `from` from the query string. With
-  `from=bookings`, `class.back.link` goes to `/bookings` (web label
-  "My bookings", wap `aria-label` "Back to my bookings"); otherwise it's
-  unchanged (`/schedule?date=<class date>`). A query parameter rather than
-  router state so a deep link or reload keeps the origin.
+- **Back (`ClassPage`):** `back=/bookings` sends `class.back.link` to
+  `/bookings` (web label "My bookings", wap `aria-label` "Back to my
+  bookings"); see `browse-and-book` tech spec v5. A query parameter rather
+  than router state so a deep link or reload keeps the origin.
 
 **android / ios:**
 - **`(tabs)/bookings.tsx`:** `useFocusEffect` reloads on focus, with a
@@ -92,7 +91,7 @@ the seat.
 |---|---|
 | AC-1–AC-4, AC-9, EC-6 | `GET /me/bookings`, `BookingsPage` / `bookings.tsx` |
 | AC-5–AC-8, EC-1–EC-5 | `DELETE /bookings/{id}` rules, `CancelConfirm` |
-| AC-10, AC-11 | `components/Bookings.tsx`, `ClassPage` (`from=bookings`) / `bookings.tsx`, `router.dismiss()` |
+| AC-10, AC-11 | `components/Bookings.tsx`, `ClassPage` (`back=/bookings`) / `bookings.tsx`, `router.dismiss()` |
 
 ## Open questions
 
@@ -102,3 +101,4 @@ None.
 
 - v2 (M4): local time fields; wap/native cards with the accent bar and a date block; web table rows with icon buttons (`CalendarPlus` for export).
 - v3: booking items open class detail (`?from=bookings` on web/wap, `router.push` on native); no API change.
+- v4: the origin is passed as `?back=/bookings` (replaces `?from=bookings`).
