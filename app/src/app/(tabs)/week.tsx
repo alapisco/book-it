@@ -2,7 +2,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 // Per-icon imports: Metro does not tree-shake, so the barrel would bundle every icon.
 import ChevronLeft from 'lucide-react-native/icons/chevron-left'
 import ChevronRight from 'lucide-react-native/icons/chevron-right'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { request, type Load, type Schemas } from '../../api'
 import { availabilityTone, toneColor } from '../../availability'
@@ -23,6 +23,7 @@ export default function WeekScreen() {
   const state: Load<Week> = result && result.week === week ? result.load : { status: 'loading' }
   const scrollRef = useRef<ScrollView>(null)
   const offsets = useRef<Record<string, number>>({})
+  const listY = useRef(0) // week.list's y inside the ScrollView content; section ys are relative to it
   const pendingJump = useRef<string | null>(null)
 
   useFocusEffect(
@@ -49,7 +50,7 @@ export default function WeekScreen() {
   function jump(date: string, animated = true) {
     setSelected(date)
     const y = offsets.current[date]
-    if (y !== undefined) scrollRef.current?.scrollTo({ y, animated })
+    if (y !== undefined) scrollRef.current?.scrollTo({ y: listY.current + y, animated })
   }
 
   // A section reports its y; if it is the pending initial day, jump there.
@@ -57,13 +58,9 @@ export default function WeekScreen() {
     offsets.current[date] = y
     if (pendingJump.current === date) {
       pendingJump.current = null
-      scrollRef.current?.scrollTo({ y, animated: false })
+      scrollRef.current?.scrollTo({ y: listY.current + y, animated: false })
     }
   }
-
-  useEffect(() => {
-    offsets.current = {}
-  }, [data])
 
   return (
     <View testID="week.screen" style={ui.screen}>
@@ -113,7 +110,7 @@ export default function WeekScreen() {
         {state.status === 'error' && <Text testID="week.error" style={ui.error}>{state.error.message}</Text>}
         {empty && <Text testID="week.empty" style={ui.muted}>No classes this week.</Text>}
         {data && !empty && (
-          <View testID="week.list" style={styles.list}>
+          <View testID="week.list" style={styles.list} onLayout={(e) => (listY.current = e.nativeEvent.layout.y)}>
             {data.days.map((d) => (
               <View key={d.date} testID="week.section" style={styles.section} onLayout={(e) => onSectionLayout(d.date, e.nativeEvent.layout.y)}>
                 <Text testID="week.section.header" style={styles.sectionHeader}>{formatSectionHeader(d.date, d.classes.length)}</Text>
