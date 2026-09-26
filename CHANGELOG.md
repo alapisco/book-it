@@ -3,7 +3,21 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased (developer experience)
+## Unreleased (M4: polish, documents only so far)
+
+### Decided
+- ADR 0007: users see studio local time (Europe/Madrid) with no zone
+  suffix; the API stays UTC and adds `*_local` fields.
+- ADR 0008: wap follows the native apps (app bar + bottom tabs); desktop
+  web is the outlier.
+- The week view moves from web-only to wap, android and ios, as a day
+  strip + list (`week-calendar` v2).
+- `docs/design/visual-language.md`: colours, the availability scale,
+  studio accents, lucide icons, layout patterns.
+- Realistic anchor, guest and outdoor-class names.
+- `nav.menu.*` and `calendar.*` identifiers are retiring.
+
+## Developer experience
 
 ### Added
 - `app/`: `npm run build:android`, `build:android:debug` and `build:ios`

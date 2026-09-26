@@ -1,8 +1,8 @@
 # PRD: My bookings and cancel
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -31,17 +31,17 @@ the API enforces the rule even if the list is stale.
 - **AC-1** (US-1) "My bookings" lists every booking from
   `GET /me/bookings`: the user's bookings whose class `start_at` is after
   now, in `start_at` order. Each shows the class name, the studio name,
-  and `Sat 26 Sep 2026 · 07:00 UTC`.
-- **AC-2** (US-1) After a reset, `u-ava` sees exactly 2 bookings: "Late
-  Cancel Barre" first, then "Early Cancel Yoga".
+  and `Sat 26 Sep 2026 · 07:00` (studio local time).
+- **AC-2** (US-1) After a reset, `u-ava` sees exactly 2 bookings: "Barre
+  Sculpt" first, then "Slow Flow".
 - **AC-3** (US-1) `u-ben` after a reset sees "You have no upcoming
   bookings." and a "Browse schedule" link that opens the schedule.
 - **AC-4** (US-3) A booking with `can_cancel: true` shows a "Cancel"
   button. A booking with `can_cancel: false` shows "Cancellation closed"
-  and no button. After a reset, `u-ava`'s "Late Cancel Barre" shows
+  and no button. After a reset, `u-ava`'s "Barre Sculpt" shows
   "Cancellation closed".
 - **AC-5** (US-2) "Cancel" opens a confirmation showing
-  `<name> · <date> · <HH:MM> UTC`, with "Cancel booking" and "Keep
+  `<name> · <date> · <HH:MM>`, with "Cancel booking" and "Keep
   booking". "Keep booking" closes it without any API call.
 - **AC-6** (US-2) "Cancel booking" sends `DELETE /bookings/{id}`. While
   it's in flight, the confirm button is disabled and a loading indicator
@@ -92,3 +92,7 @@ rescheduling.
 2. The confirmation copy is "Cancel booking" / "Keep booking".
 3. The UI hides "Cancel" when `can_cancel` is false, and the API still
    enforces the rule (EC-4). Both paths are testable.
+
+## Changelog
+
+- v2 (M4): local times without a suffix (ADR 0007); renamed anchors ("Barre Sculpt", "Slow Flow").

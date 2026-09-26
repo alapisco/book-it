@@ -1,9 +1,9 @@
 # Design: Login
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/login.md v1
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/login.md v1; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -16,7 +16,7 @@
 | Component | Screen | Purpose | Platforms | Data source |
 |---|---|---|---|---|
 | LoginScreen | login | Root, without the app shell | all | — |
-| Title | login | "Log in to BookIt" | all | — |
+| Brand | login | `primary` block: the `Dumbbell` icon + "BookIt" wordmark (`on-primary`), then "Log in to book your classes" | all | — |
 | EmailField | login | Label "Email", keyboard type email, no autocapitalize | all | — |
 | PasswordField | login | Label "Password", masked | all | — |
 | SubmitButton | login | "Log in" | all | `POST /auth/login` |
@@ -39,9 +39,13 @@ The next submit clears it.
 
 ## Breakpoint behaviour (web vs wap)
 
-One shared tree: a centred card, max 400 px wide on web, full-width on
-wap. There's no modal, grid or nav on this screen, so ADR 0003 requires
-no swap. The root still carries `data-platform`.
+One shared tree: the brand block above a white form card.
+- **web:** the card is centred, max 400 px wide.
+- **wap:** the brand block is full-bleed, with the card overlapping its
+  lower edge.
+
+There's no modal, grid or nav on this screen, so ADR 0003 requires no
+swap. The root still carries `data-platform`.
 
 ## Native behaviour (android / ios)
 
@@ -61,3 +65,7 @@ android and ios don't differ.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): branded login: the wordmark, icon and `primary` colour; the form is unchanged, with the same identifiers.

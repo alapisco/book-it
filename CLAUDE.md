@@ -19,13 +19,16 @@ Read `docs/WORKFLOW.md` for the per-feature loop (PRD → design → implement �
 | Login | yes | yes | yes | yes |
 | Browse + book | yes | yes | yes | yes |
 | My bookings + cancel | yes | yes | yes | yes |
-| Week calendar grid | yes | no | no | no |
+| Week view (day strip + list) | **no** | yes | yes | yes |
 | Export booking to .ics | yes | no | no | no |
 | Waitlist when class full | yes | yes | yes | **no** |
 | QR check-in | no | no | yes | yes |
 | Studio policies page | yes | yes | webview | webview |
 
 "webview" = the native app embeds the same HTML page `wap` renders.
+The week view moved from web-only to wap/android/ios in M4 (`docs/prd/week-calendar.md` v2).
+wap follows the native apps' patterns; desktop web is the outlier (ADR 0008).
+All times shown to users are studio local time, Europe/Madrid, with no zone suffix (ADR 0007).
 Feature flags vary by **platform only**, never by studio.
 
 ## Ownership
@@ -91,7 +94,7 @@ own request or response shapes.
 
 Below the mobile breakpoint the web app renders a **different component
 tree** — bottom sheet instead of modal, stacked list instead of grid,
-hamburger instead of nav bar — chosen by a `useMediaQuery` hook. Tailwind
+bottom tabs instead of nav bar — chosen by a `useMediaQuery` hook. Tailwind
 responsive classes alone are insufficient: the same DOM with different
 styling gives the test framework nothing to abstract over.
 

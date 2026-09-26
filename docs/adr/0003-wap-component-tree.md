@@ -1,6 +1,6 @@
 # ADR 0003: wap is a separate component tree, not a responsive layout
 
-- Status: accepted
+- Status: accepted; patterns amended by [0008](0008-wap-mirrors-native.md)
 - Date: 2026-09-25
 
 ## Context

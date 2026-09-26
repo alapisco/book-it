@@ -1,8 +1,8 @@
 # PRD: Waitlist
 
-- Version: 2
-- Status: approved
-- Date: 2026-09-26
+- Version: 3
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -52,7 +52,7 @@ exist only in seed data and cannot log in.
   control is shown on any platform.
 - **AC-5** (US-2) "My bookings" on web, wap and android shows a "Waitlist"
   section when the user has at least one entry. Each entry shows the class
-  name, `Sat 26 Sep 2026 · 07:00 UTC` and "#N on the waitlist". The
+  name, `Sat 26 Sep 2026 · 07:00` (studio local time) and "#N on the waitlist". The
   section is separate from confirmed bookings and absent when the user has
   no entries.
 - **AC-6** (US-3) "Leave waitlist" on an entry sends
@@ -161,3 +161,4 @@ None.
   - The error body follows ADR 0004.
   - Added `studio_class` to `WaitlistEntry`, fixed the join rule order,
     and made the ACs concrete against seed data.
+- v3 (M4): local time format (ADR 0007); guests renamed per domain-and-seed-data v2.

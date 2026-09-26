@@ -27,14 +27,16 @@ genuinely different component tree), `android` and `ios` (native).
 | Login | yes | yes | yes | yes |
 | Browse + book | yes | yes | yes | yes |
 | My bookings + cancel | yes | yes | yes | yes |
-| Week calendar grid | yes | no | no | no |
+| Week view (day strip + list) | **no** | yes | yes | yes |
 | Export booking to .ics | yes | no | no | no |
 | Waitlist when class full | yes | yes | yes | **no** |
 | QR check-in | no | no | yes | yes |
 | Studio policies page | yes | yes | webview | webview |
 
-Divergence runs deliberately in both directions: some features are
-web-only, some are mobile-only, and one is missing only on iOS. The last
+Divergence runs deliberately in both directions: `.ics` export is
+web-only, the week view is on every platform *except* desktop web, QR
+check-in is native-only, and waitlist is missing only on iOS. The week
+view moved from web-only to the mobile surfaces in M4. The last
 row is a webview that renders the same HTML page as `wap`, embedded in both
 native apps.
 

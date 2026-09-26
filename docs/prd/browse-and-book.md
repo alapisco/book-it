@@ -1,8 +1,8 @@
 # PRD: Browse and book
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -31,8 +31,8 @@ conflict code.
 ## Acceptance criteria
 
 **Schedule**
-- **AC-1** (US-1) Opening the schedule without a date shows the session clock's current UTC date.
-- **AC-2** (US-1) The schedule lists every class returned by `GET /schedule` for that date, in `start_at` order. Each entry shows the name, the studio name, the time as `HH:MM–HH:MM UTC`, and a seat label:
+- **AC-1** (US-1) Opening the schedule without a date shows today's date in studio local time (ADR 0007).
+- **AC-2** (US-1) The schedule lists every class returned by `GET /schedule` for that date, in `start_at` order. Each entry shows the name, the studio name and neighbourhood, the local time as `HH:MM–HH:MM`, and a seat label:
   - "Started" when `has_started`
   - "Full" when `is_full`
   - "1 spot left" when `spots_left` = 1
@@ -45,7 +45,7 @@ conflict code.
 - **AC-6** (US-3) Selecting a class opens class detail, showing:
   - the name and studio name
   - "with <instructor>"
-  - `Sat 26 Sep 2026 · 07:00–08:00 UTC`
+  - `Sat 26 Sep 2026 · 07:00–08:00` (studio local time)
   - "N of C spots left" or "Full"
 - **AC-7** (US-3) The action area shows exactly one of these, checked in order:
   1. "You're booked" plus a "View my bookings" link, if `my_booking_id` is set
@@ -56,7 +56,7 @@ conflict code.
 
 **Booking**
 - **AC-9** (US-4) "Book" opens a confirmation showing
-  `<name> · <date> · <HH:MM> UTC · <studio>`, with "Confirm booking" and
+  `<name> · <date> · <HH:MM> · <studio>`, with "Confirm booking" and
   "Not now". "Not now" closes it without any API call.
 - **AC-10** (US-4) "Confirm booking" sends `POST /bookings`. While it's in
   flight, the confirm button is disabled and a loading indicator shows.
@@ -121,3 +121,7 @@ Filtering or searching the schedule in the UI, week views (M3
    avoided, so it isn't confused with cancelling a booking.
 3. There's no success toast. Class detail changing to "You're booked" is
    the success signal.
+
+## Changelog
+
+- v2 (M4): times are shown in studio local time with no zone suffix (ADR 0007); the seat label is colour-coded on every platform with the availability scale in `docs/design/visual-language.md` (it was web-only); the studio line includes the neighbourhood.

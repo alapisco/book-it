@@ -9,6 +9,7 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 | **M1 Walking skeleton** | API with seed data, schedule generator, flags, test-support; web shell with web/wap trees; Expo app prebuilt with tab shell; `docker compose up` | All four platforms build and launch locally | done for api/web/wap (Docker); android/ios bundle with Metro and are prebuilt, **native build pending on your machine** |
 | **M2 Core flow** | `login`, `browse-and-book`, `my-bookings-and-cancel` on all four platforms | One test body passes on all four platforms; tag `v0.2` | implemented; **gate open** until the framework runs on android/ios; not tagged |
 | **M3 Divergent features** | `studio-policies`, `waitlist`, `week-calendar`, `ics-export`, `qr-check-in` | Framework's parity matrix artifact equals the matrix in `CLAUDE.md`; tag `v1.0` | implemented (all five features); **gate open** until the framework's matrix run, including android/ios builds; not tagged |
+| **M4 Polish** | ADRs 0007 (studio local time) and 0008 (wap mirrors native); visual language; week view moves to wap/android/ios; realistic names; bottom tabs on wap; icons | QA lead approves the documents, then all suites pass on all platforms with screenshots | documents drafted, **awaiting review**; code not started |
 
 ## Documents by feature
 

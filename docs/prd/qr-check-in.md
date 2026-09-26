@@ -1,8 +1,8 @@
 # PRD: QR check-in
 
-- Version: 1
-- Status: approved
-- Date: 2026-09-26
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -50,17 +50,17 @@ close).
 - **AC-3** (US-1) The code is static per booking. Opening the screen
   again shows the same code.
 - **AC-4** (US-1) The status line is one of the following (times are the
-  UTC `HH:MM`):
-  - "Check-in opens at 06:30 UTC" before the window
+  studio local `HH:MM`, from the pass's `*_local` fields):
+  - "Check-in opens at 06:30" before the window
   - "Show this code at the front desk" during the window
-  - "Check-in closed at 07:15 UTC" after it
-  - "Checked in at 06:41 UTC", once checked in; this overrides the others
+  - "Check-in closed at 07:15" after it
+  - "Checked in at 06:41", once checked in; this overrides the others
 - **AC-5** (US-3) `POST /checkins {code}` with a valid `X-Studio-Key`,
   during the window, returns `201`. The body has `booking_id`,
   `class_id`, `class_name`, `user_name` and `checked_in_at` (= now).
 - **AC-6** (US-2) While the check-in screen is open with status
   "not open" or "open", it re-reads the status every 2 seconds. Within
-  4 seconds of a successful scan, it shows "Checked in at HH:MM UTC".
+  4 seconds of a successful scan, it shows "Checked in at HH:MM".
 - **AC-7** (US-2) On android and ios, My bookings shows "Checked in" on a
   checked-in booking that is still listed.
 - **AC-8** `GET /bookings/{id}/checkin` returns the pass:
@@ -124,3 +124,7 @@ Both endpoints honour `X-Test-Session`.
 5. The entry point is class detail (booked state), not My bookings. Class
    detail stays reachable from the schedule after the class starts, which
    the check-in window needs; My bookings drops a booking at `start_at`.
+
+## Changelog
+
+- v2 (M4): status times in studio local time; `CheckinPass` gains `window_opens_local`, `window_closes_local`, `checked_in_local` (ADR 0007).

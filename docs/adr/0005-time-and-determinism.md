@@ -1,6 +1,6 @@
 # ADR 0005: UTC everywhere, a controllable clock, a pure schedule
 
-- Status: accepted
+- Status: accepted; display rule superseded by [0007](0007-studio-local-time.md)
 - Date: 2026-09-25
 
 ## Context

@@ -1,9 +1,9 @@
 # Design: My bookings and cancel
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/my-bookings-and-cancel.md v1
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/my-bookings-and-cancel.md v2; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -36,7 +36,7 @@
 A booking item contains:
 - `bookings.item.name`
 - `bookings.item.studio`
-- `bookings.item.time` (`Sat 26 Sep 2026 · 07:00 UTC`)
+- `bookings.item.time` (`Sat 26 Sep 2026 · 07:00`, studio local time)
 - one of `bookings.item.cancel` ("Cancel") or
   `bookings.item.cancel-closed` ("Cancellation closed")
 
@@ -84,3 +84,7 @@ shared.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): local times; cards on wap/native get the studio accent bar and a date block (day number and month) on the left; the screen title moves into the app bar on wap/native; web keeps the table with icon buttons.

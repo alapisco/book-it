@@ -1,9 +1,9 @@
 # Design: Studio policies
 
-- Version: 1
-- Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/studio-policies.md v1
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/studio-policies.md v1; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -35,7 +35,11 @@
 | populated, web | tabs and the selected panel | `policies.tabs`, `policies.studio.tab` × 3, `policies.panel` |
 | populated, wap | toggles, and at most one panel | `policies.accordion`, `policies.studio.toggle` × 3, `policies.panel` (only while expanded) |
 
-A panel contains `policies.studio.name` and `policies.rule.item` × N. Each
+A panel contains `policies.rule.item` × N and, **on web only**,
+`policies.studio.name` as its heading. On wap the expanded toggle already
+shows the studio name directly above the rules, so repeating it was
+redundant; the web tab row sits apart from the panel, so the heading still
+orients the reader there. Each
 rule item contains `policies.rule.title` and `policies.rule.text`.
 
 On web, the selected tab has `aria-selected="true"`. On wap, an expanded
@@ -72,14 +76,18 @@ toggle has `aria-expanded="true"`.
 | PRD AC | Identifiers |
 |---|---|
 | AC-2 | `nav.policies.link`, `policies.screen` |
-| AC-3 | `policies.tabs`, `policies.studio.tab`, `policies.panel`, `policies.studio.name` |
+| AC-3 | `policies.tabs`, `policies.studio.tab`, `policies.panel`, `policies.studio.name` (web only) |
 | AC-4 | `policies.accordion`, `policies.studio.toggle`, `policies.panel` |
 | AC-5 | `policies.rule.item`, `policies.rule.title`, `policies.rule.text` |
 | AC-6, AC-7 | `policies.webview`, then the wap identifiers in the web context |
-| AC-8 | absence of `nav.bar` and `nav.menu.toggle` |
+| AC-8 | absence of `nav.bar` and `nav.tabs` |
 | EC-1, EC-3 | `policies.error`, `policies.loading` |
 | EC-2 | `policies.webview.error` |
 
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): `policies.studio.name` becomes web-only, removing the duplicated studio name on wap (and so inside the native webview); each studio toggle and tab shows its accent dot and neighbourhood.

@@ -1,9 +1,9 @@
 # Design: QR check-in
 
-- Version: 1
-- Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/qr-check-in.md v1
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/qr-check-in.md v2; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -17,7 +17,7 @@
 |---|---|---|---|---|
 | CheckinLink | class | "Show check-in code", next to the booked badge | android, ios | `StudioClass.my_booking_id` |
 | CheckinScreen | checkin | Full screen over the tabs | android, ios | `GET /bookings/{id}/checkin`, polled |
-| BackLink | checkin | "← Back" | android, ios | — |
+| BackLink | checkin | `ChevronLeft` in the pushed app bar (title "Check-in") | android, ios | — |
 | QrImage | checkin | 220 × 220 QR of `qr_payload` | android, ios | `CheckinPass` |
 | CodeText | checkin | The code in large monospace | android, ios | `CheckinPass` |
 | StatusText | checkin | One status sentence | android, ios | `CheckinPass` |
@@ -72,3 +72,7 @@ identifier.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): status times in studio local time without a suffix ("Check-in opens at 06:30"); the back control moves into the pushed app bar; `class.checkin.link` uses the `QrCode` icon.

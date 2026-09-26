@@ -1,8 +1,8 @@
 # PRD: Feature flags
 
-- Version: 2
-- Status: approved (defaults)
-- Date: 2026-09-26
+- Version: 3
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -34,7 +34,7 @@ framework reads it from the API to build its expected parity matrix.
   | `login` | true | true | true | true |
   | `browse_and_book` | true | true | true | true |
   | `my_bookings` | true | true | true | true |
-  | `week_calendar` | true | false | false | false |
+  | `week_calendar` | false | true | true | true |
   | `ics_export` | true | false | false | false |
   | `waitlist` | true | true | true | false |
   | `qr_check_in` | false | false | true | true |
@@ -88,3 +88,4 @@ design.
 ## Changelog
 
 - v2 (2026-09-26): added the `X-Platform` request header and server-side enforcement (`403 FEATURE_UNAVAILABLE`), first used by `waitlist` v2.
+- v3 (M4): `week_calendar` moves from web-only to wap, android and ios; web is now `false` (`week-calendar` v2). The parity matrix in `CLAUDE.md` and the README changes with it.

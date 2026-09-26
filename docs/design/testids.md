@@ -45,13 +45,15 @@ humans.
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
 | `nav.bar` | container | web | app-shell.md | Top navigation bar on every logged-in screen |
-| `nav.menu.toggle` | button | wap | app-shell.md | Opens the drawer |
-| `nav.menu.drawer` | container | wap | app-shell.md | Present only while open |
-| `nav.menu.close` | button | wap | app-shell.md | Closes the drawer |
-| `nav.schedule.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
-| `nav.bookings.link` | link | all | app-shell.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
-| `nav.calendar.link` | link | web | week-calendar.md | In `nav.bar` only |
-| `nav.policies.link` | link | all | studio-policies.md | web: in `nav.bar`; wap: in the open drawer; native: tab button |
+| `nav.tabs` | container | wap | app-shell.md | Bottom tab bar (M4); native tab bars have no container identifier |
+| `nav.menu.toggle` | button | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Opens the drawer |
+| `nav.menu.drawer` | container | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Present only while open |
+| `nav.menu.close` | button | wap | app-shell.md | **Retiring (M4)**: replaced by `nav.tabs`. Closes the drawer |
+| `nav.schedule.link` | link | all | app-shell.md | web: in `nav.bar`; wap: tab in `nav.tabs`; native: tab button |
+| `nav.bookings.link` | link | all | app-shell.md | web: in `nav.bar` ("My bookings"); wap: tab "Bookings"; native: tab button |
+| `nav.calendar.link` | link | web | week-calendar.md | **Retiring (M4)**: replaced by `nav.week.link` |
+| `nav.week.link` | link | wap, android, ios | week-calendar.md | Week tab (M4); absent on web |
+| `nav.policies.link` | link | all | studio-policies.md | web: in `nav.bar`; wap: tab in `nav.tabs`; native: tab button |
 
 ## Screen: schedule
 
@@ -69,7 +71,7 @@ humans.
 | `schedule.class.card` | list-item | all | browse-and-book.md | Repeated, one per class, in `start_at` order; tap opens class detail |
 | `schedule.class.name` | text | all | browse-and-book.md | Inside a card |
 | `schedule.class.studio` | text | all | browse-and-book.md | Inside a card |
-| `schedule.class.time` | text | all | browse-and-book.md | "07:00–08:00 UTC" |
+| `schedule.class.time` | text | all | browse-and-book.md | "07:00–08:00" (studio local time) |
 | `schedule.class.spots` | text | all | browse-and-book.md | "Started" / "Full" / "1 spot left" / "N spots left" |
 | `schedule.class.booked` | text | all | browse-and-book.md | "Booked"; only when the user holds a booking |
 
@@ -84,7 +86,7 @@ humans.
 | `class.name.text` | text | all | browse-and-book.md | |
 | `class.studio.text` | text | all | browse-and-book.md | |
 | `class.instructor.text` | text | all | browse-and-book.md | "with <instructor>" |
-| `class.time.text` | text | all | browse-and-book.md | "Sat 26 Sep 2026 · 07:00–08:00 UTC" |
+| `class.time.text` | text | all | browse-and-book.md | "Sat 26 Sep 2026 · 07:00–08:00" (studio local time) |
 | `class.spots.text` | text | all | browse-and-book.md | "N of C spots left" / "Full" |
 | `class.book.button` | button | all | browse-and-book.md | Only when bookable |
 | `class.booked.badge` | text | all | browse-and-book.md | "You're booked" |
@@ -103,14 +105,14 @@ humans.
 |---|---|---|---|---|
 | `booking.confirm.modal` | modal | web | browse-and-book.md | Confirmation container on web |
 | `booking.confirm.sheet` | sheet | wap, android, ios | browse-and-book.md | Confirmation container elsewhere |
-| `booking.confirm.summary` | text | all | browse-and-book.md | "<name> · <date> · <HH:MM> UTC · <studio>" |
+| `booking.confirm.summary` | text | all | browse-and-book.md | "<name> · <date> · <HH:MM> · <studio>" |
 | `booking.confirm.submit` | button | all | browse-and-book.md | "Confirm booking"; disabled while loading |
 | `booking.confirm.dismiss` | button | all | browse-and-book.md | "Not now" |
 | `booking.confirm.loading` | container | all | browse-and-book.md | Spinner inside submit |
 | `booking.confirm.error` | text | all | browse-and-book.md | API error `message` |
 | `booking.cancel.modal` | modal | web | my-bookings-and-cancel.md | Cancel confirmation container on web |
 | `booking.cancel.sheet` | sheet | wap, android, ios | my-bookings-and-cancel.md | Cancel confirmation container elsewhere |
-| `booking.cancel.summary` | text | all | my-bookings-and-cancel.md | "<name> · <date> · <HH:MM> UTC" |
+| `booking.cancel.summary` | text | all | my-bookings-and-cancel.md | "<name> · <date> · <HH:MM>" |
 | `booking.cancel.confirm` | button | all | my-bookings-and-cancel.md | "Cancel booking"; disabled while loading |
 | `booking.cancel.dismiss` | button | all | my-bookings-and-cancel.md | "Keep booking" |
 | `booking.cancel.loading` | container | all | my-bookings-and-cancel.md | Spinner inside confirm |
@@ -130,7 +132,7 @@ humans.
 | `bookings.item` | list-item | all | my-bookings-and-cancel.md | Repeated, one per booking, `start_at` order |
 | `bookings.item.name` | text | all | my-bookings-and-cancel.md | Class name |
 | `bookings.item.studio` | text | all | my-bookings-and-cancel.md | Studio name |
-| `bookings.item.time` | text | all | my-bookings-and-cancel.md | "Sat 26 Sep 2026 · 07:00 UTC" |
+| `bookings.item.time` | text | all | my-bookings-and-cancel.md | "Sat 26 Sep 2026 · 07:00" (studio local time) |
 | `bookings.item.cancel` | button | all | my-bookings-and-cancel.md | Only when `can_cancel` |
 | `bookings.item.cancel-closed` | text | all | my-bookings-and-cancel.md | "Cancellation closed"; only when not `can_cancel` |
 | `bookings.item.export` | button | web | ics-export.md | "Export .ics"; in every table row |
@@ -148,7 +150,7 @@ Rendered inside the bookings screen, only where the `waitlist` flag is true.
 | `waitlist.list` | container | wap, android | waitlist.md | Entries container elsewhere |
 | `waitlist.item` | list-item | web, wap, android | waitlist.md | Repeated, one per entry, class `start_at` order |
 | `waitlist.item.name` | text | web, wap, android | waitlist.md | Class name |
-| `waitlist.item.time` | text | web, wap, android | waitlist.md | "Sat 26 Sep 2026 · 07:00 UTC" |
+| `waitlist.item.time` | text | web, wap, android | waitlist.md | "Sat 26 Sep 2026 · 07:00" (studio local time) |
 | `waitlist.item.position` | text | web, wap, android | waitlist.md | "#N on the waitlist" |
 | `waitlist.item.leave` | button | web, wap, android | waitlist.md | "Leave waitlist" |
 | `waitlist.leave.loading` | container | web, wap, android | waitlist.md | Spinner inside the leave button |
@@ -169,7 +171,7 @@ On android and ios, the page identifiers (all except `policies.webview*`) appear
 | `policies.accordion` | container | wap | studio-policies.md | Accordion |
 | `policies.studio.toggle` | button | wap | studio-policies.md | Repeated, one per studio; expanded has `aria-expanded="true"` |
 | `policies.panel` | container | web, wap | studio-policies.md | The selected or expanded studio's rules |
-| `policies.studio.name` | text | web, wap | studio-policies.md | Studio name inside the panel |
+| `policies.studio.name` | text | web | studio-policies.md | Panel heading, web only from M4 (on wap the toggle already names the studio) |
 | `policies.rule.item` | list-item | web, wap | studio-policies.md | Repeated, one per rule |
 | `policies.rule.title` | text | web, wap | studio-policies.md | Rule title |
 | `policies.rule.text` | text | web, wap | studio-policies.md | Rule text |
@@ -177,24 +179,26 @@ On android and ios, the page identifiers (all except `policies.webview*`) appear
 | `policies.webview.loading` | container | android, ios | studio-policies.md | Webview loading |
 | `policies.webview.error` | text | android, ios | studio-policies.md | "Could not load the policies page." |
 
-## Screen: calendar
+## Screen: calendar (retiring in M4)
+
+The web-only grid is replaced by the week view (`week.*`, wap, android and ios). These rows are removed in the same change that removes them from `web/`.
 
 | id | element | platforms | spec | notes |
 |---|---|---|---|---|
-| `calendar.screen` | container | web | week-calendar.md | Root; present in every state |
-| `calendar.week.prev` | button | web | week-calendar.md | "‹ Previous week" |
-| `calendar.week.text` | text | web | week-calendar.md | "Mon 21 Sep – Sun 27 Sep 2026" |
-| `calendar.week.next` | button | web | week-calendar.md | "Next week ›" |
-| `calendar.loading` | container | web | week-calendar.md | Loading state |
-| `calendar.empty` | text | web | week-calendar.md | "No classes this week." |
-| `calendar.error` | text | web | week-calendar.md | API error `message` |
-| `calendar.grid` | container | web | week-calendar.md | 7-column grid |
-| `calendar.day.column` | container | web | week-calendar.md | Repeated ×7, Mon→Sun; today has `aria-current="date"` |
-| `calendar.day.header` | text | web | week-calendar.md | "Mon 21" |
-| `calendar.class.block` | link | web | week-calendar.md | Repeated per class; opens class detail |
-| `calendar.class.time` | text | web | week-calendar.md | "07:00" |
-| `calendar.class.name` | text | web | week-calendar.md | Class name |
-| `calendar.class.booked` | text | web | week-calendar.md | "Booked"; only when booked |
+| `calendar.screen` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Root; present in every state |
+| `calendar.week.prev` | button | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "‹ Previous week" |
+| `calendar.week.text` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Mon 21 Sep – Sun 27 Sep 2026" |
+| `calendar.week.next` | button | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Next week ›" |
+| `calendar.loading` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Loading state |
+| `calendar.empty` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "No classes this week." |
+| `calendar.error` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. API error `message` |
+| `calendar.grid` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. 7-column grid |
+| `calendar.day.column` | container | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Repeated ×7, Mon→Sun; today has `aria-current="date"` |
+| `calendar.day.header` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Mon 21" |
+| `calendar.class.block` | link | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Repeated per class; opens class detail |
+| `calendar.class.time` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "07:00" |
+| `calendar.class.name` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. Class name |
+| `calendar.class.booked` | text | web | week-calendar.md | **Retiring (M4)**: replaced by `week.*`. "Booked"; only when booked |
 
 ## Screen: checkin
 
@@ -208,3 +212,32 @@ On android and ios, the page identifiers (all except `policies.webview*`) appear
 | `checkin.qr.image` | container | android, ios | qr-check-in.md | QR of `bookit:checkin:<code>` |
 | `checkin.code.text` | text | android, ios | qr-check-in.md | "XXXX-XXXX" |
 | `checkin.status.text` | text | android, ios | qr-check-in.md | Status sentence (PRD AC-4) |
+
+## Screen: week
+
+The day strip + list (M4). Present on wap, android and ios; absent on web.
+
+| id | element | platforms | spec | notes |
+|---|---|---|---|---|
+| `week.screen` | container | wap, android, ios | week-calendar.md | Root; present in every state |
+| `week.range.prev` | button | wap, android, ios | week-calendar.md | Previous week (`ChevronLeft`) |
+| `week.range.text` | text | wap, android, ios | week-calendar.md | "21 – 27 Sep 2026" |
+| `week.range.next` | button | wap, android, ios | week-calendar.md | Next week (`ChevronRight`) |
+| `week.loading` | container | wap, android, ios | week-calendar.md | Loading state |
+| `week.error` | text | wap, android, ios | week-calendar.md | API error `message` |
+| `week.empty` | text | wap, android, ios | week-calendar.md | "No classes this week." |
+| `week.strip` | container | wap, android, ios | week-calendar.md | Day strip |
+| `week.day.pill` | button | wap, android, ios | week-calendar.md | Repeated ×7, Mon→Sun; selected / today states per design |
+| `week.day.name` | text | wap, android, ios | week-calendar.md | "Mon" |
+| `week.day.number` | text | wap, android, ios | week-calendar.md | "21" |
+| `week.day.count` | text | wap, android, ios | week-calendar.md | Class count, e.g. "14" |
+| `week.day.booked` | container | wap, android, ios | week-calendar.md | Dot; only when the user has a booking that day |
+| `week.list` | container | wap, android, ios | week-calendar.md | Scrollable list of the 7 sections |
+| `week.section` | container | wap, android, ios | week-calendar.md | Repeated ×7 |
+| `week.section.header` | text | wap, android, ios | week-calendar.md | "MONDAY 21 SEP · 14 classes" |
+| `week.class.card` | link | wap, android, ios | week-calendar.md | Repeated; opens class detail |
+| `week.class.time` | text | wap, android, ios | week-calendar.md | "07:00–08:00" |
+| `week.class.name` | text | wap, android, ios | week-calendar.md | Class name |
+| `week.class.studio` | text | wap, android, ios | week-calendar.md | "Harbor Yoga · Chamberí" |
+| `week.class.spots` | text | wap, android, ios | week-calendar.md | Seat label, availability scale |
+| `week.class.booked` | text | wap, android, ios | week-calendar.md | "Booked"; only when booked |

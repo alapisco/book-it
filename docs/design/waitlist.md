@@ -1,9 +1,9 @@
 # Design: Waitlist
 
-- Version: 1
-- Status: approved
-- Date: 2026-09-26
-- Implements: docs/prd/waitlist.md v2
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/waitlist.md v3; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -57,7 +57,7 @@ shares their loading state (`bookings.loading`) and error state
 
 A waitlist item contains:
 - `waitlist.item.name`
-- `waitlist.item.time` (`Sat 26 Sep 2026 · 07:00 UTC`)
+- `waitlist.item.time` (`Sat 26 Sep 2026 · 07:00`, studio local time)
 - `waitlist.item.position` ("#2 on the waitlist")
 - `waitlist.item.leave` ("Leave waitlist")
 
@@ -104,3 +104,7 @@ Leaving calls the API directly, without a confirmation dialog:
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): local times; the Join waitlist button uses the `ListOrdered` icon and lives in the class detail sticky action area on wap/android.

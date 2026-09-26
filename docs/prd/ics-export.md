@@ -1,8 +1,8 @@
 # PRD: Export booking to .ics
 
-- Version: 1
-- Status: approved
-- Date: 2026-09-26
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
 
 ## Summary
 
@@ -45,12 +45,12 @@ Flag: `ics_export` is true on web only. The API returns
   | `DTSTAMP` | the session clock, `YYYYMMDDTHHMMSSZ` |
   | `DTSTART` / `DTEND` | the class `start_at` / `end_at`, UTC, `YYYYMMDDTHHMMSSZ` |
   | `SUMMARY` | the class name |
-  | `LOCATION` | the studio name |
+  | `LOCATION` | `<studio name>, <neighbourhood>` |
   | `DESCRIPTION` | `with <instructor>` |
 
   Lines end with CRLF.
 - **AC-4** After a reset, exporting `bk-ava-open` as `u-ava` gives
-  `SUMMARY:Early Cancel Yoga` and `LOCATION:Harbor Yoga`.
+  `SUMMARY:Slow Flow` and `LOCATION:Harbor Yoga, Chamberí`.
 
 ## Error and edge cases
 
@@ -79,3 +79,7 @@ Exporting all bookings at once, calendar subscription feeds, alarms.
 1. One event per file.
 2. The download is fetched with the bearer token and saved from a blob.
    A plain link can't carry the `Authorization` header.
+
+## Changelog
+
+- v2 (M4): renamed anchor; `LOCATION` includes the neighbourhood. `DTSTART`/`DTEND` stay UTC (`Z`), which calendar apps convert (ADR 0007).

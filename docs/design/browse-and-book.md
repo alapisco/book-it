@@ -1,9 +1,9 @@
 # Design: Browse and book
 
-- Version: 1
-- Status: approved (defaults)
-- Date: 2026-09-25
-- Implements: docs/prd/browse-and-book.md v1
+- Version: 2
+- Status: draft (M4, awaiting review)
+- Date: 2026-09-27
+- Implements: docs/prd/browse-and-book.md v2; uses docs/design/visual-language.md
 
 ## Platforms
 
@@ -16,14 +16,14 @@
 | Component | Screen | Purpose | Platforms | Data source |
 |---|---|---|---|---|
 | ScheduleScreen | schedule | Root | all | — |
-| DateBar | schedule | "‹ Previous day", date text, "Next day ›" | all | `ScheduleDay.date/previous_date/next_date` |
+| DateBar | schedule | `ChevronLeft` "Previous day", date text, "Next day" `ChevronRight` | all | `ScheduleDay.date/previous_date/next_date` |
 | ScheduleGrid | schedule | 3-column grid of class cards | web | `GET /schedule` |
-| ScheduleList | schedule | Stacked full-width rows | wap, android, ios | `GET /schedule` |
-| ClassCard | schedule | Name, studio, time, seat label, "Booked" badge; the whole card is tappable | all | `StudioClass` |
+| ScheduleList | schedule | Stacked separated cards (12 px gap) | wap, android, ios | `GET /schedule` |
+| ClassCard | schedule | 4 px studio accent bar on the left; name, "Studio · Neighbourhood", time range, seat label (availability colours), "Booked" badge; the whole card is tappable | all | `StudioClass` |
 | ClassScreen | class | Root | all | `GET /classes/{id}` |
-| BackLink | class | "← Schedule" | all | — |
-| ClassDetails | class | Name, studio, instructor, time, seats | all | `StudioClass` |
-| ClassAction | class | Exactly one of: Book button, booked badge + bookings link, started badge, full badge | all | `StudioClass` |
+| BackLink | class | web: inline "‹ Schedule" link. wap/native: the `ChevronLeft` control in the pushed app bar (title "Class") | all | — |
+| ClassDetails | class | Name as the heading, then icon rows: `MapPin` "Studio · Neighbourhood", `User` "with Instructor", `Clock` date and time range, `Users` seats (availability colours) | all | `StudioClass` |
+| ClassAction | class | Exactly one of: Book button, booked badge + bookings link, started badge, full badge. On wap/native it sits in the sticky bottom action area, with a full-width Book button; on web it sits under the details | all | `StudioClass` |
 | BookingConfirm (modal) | class | Centred dialog over a dimmed backdrop | web | `POST /bookings` |
 | BookingConfirm (sheet) | class | Panel anchored to the bottom edge, full width, over a dimmed backdrop | wap, android, ios | `POST /bookings` |
 
@@ -41,8 +41,8 @@
 A card contains:
 - `schedule.class.name`
 - `schedule.class.studio`
-- `schedule.class.time` (`07:00–08:00 UTC`)
-- `schedule.class.spots` ("Started" / "Full" / "1 spot left" / "N spots left")
+- `schedule.class.time` (`07:00–08:00`, studio local time)
+- `schedule.class.spots` ("Started" / "Full" / "1 spot left" / "N spots left"), coloured by the availability scale on **every** platform
 - `schedule.class.booked` ("Booked"), only when `my_booking_id` is set
 
 **Class detail.** The BackLink is visible in every state, as
@@ -78,7 +78,7 @@ Actions, with the first match winning:
 | Component | web (≥ 768 px) | wap (< 768 px) |
 |---|---|---|
 | Schedule container | `ScheduleGrid`: `<div role="list">` in 3 columns, as `schedule.grid` | `ScheduleList`: `<ul>`, one row per class, as `schedule.list` |
-| ClassCard | Tile: name on top, meta below, seat label bottom-right | Row: time on the left, name and studio in the middle, seat label on the right |
+| ClassCard | Tile in a 3-column grid: name on top, meta below, seat label bottom-right | Full-width card: time on the left, name and studio in the middle, seat label and badge on the right |
 | Confirmation | `Modal`, as `booking.confirm.modal` | `BottomSheet`, as `booking.confirm.sheet` |
 | DateBar, class detail | Shared components | Shared components |
 
@@ -89,8 +89,7 @@ shared. Only the containers differ.
 
 - **Schedule:** a `ScrollView` with every row rendered, so that Appium sees
   all cards without virtualisation.
-- **Class detail:** a stack screen over the tabs, without a header. It
-  uses `class.back.link`.
+- **Class detail:** a stack screen over the tabs, with the pushed app bar. Its back control is `class.back.link`. The action area is pinned to the bottom above the safe area.
 - **Confirmation:** a React Native `Modal` (`transparent`,
   `animationType="slide"`). Its content view is `booking.confirm.sheet`,
   anchored to the bottom.
@@ -115,3 +114,7 @@ shared. Only the containers differ.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2 (M4): local times without a suffix; availability colours on all platforms; studio accent bar and neighbourhood; class detail icon rows and a sticky action area on wap/native; back control in the pushed app bar.
