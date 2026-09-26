@@ -9,7 +9,10 @@ export type Result<T> = { ok: true; data: T } | { ok: false; error: ApiError }
 // State of a data-bound component; the empty state is `ready` with no items.
 export type Load<T> = { status: 'loading' } | { status: 'error'; error: ApiError } | { status: 'ready'; data: T }
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+// Default: port 8000 on whichever host served this page. Desktop gets localhost;
+// the native webviews load the page from 10.0.2.2 (Android emulator) or localhost
+// (iOS simulator), so they reach the API the same way (docs/tech/studio-policies.md).
+const API_URL = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.hostname}:8000`
 const SESSION_KEY = 'bookit.testSession'
 const TOKEN_KEY = 'bookit.token'
 

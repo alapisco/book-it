@@ -1,6 +1,6 @@
 # Tech spec: Studio policies
 
-- Version: 1
+- Version: 2
 - Status: approved
 - Date: 2026-09-26
 - Implements: docs/prd/studio-policies.md v1, docs/design/studio-policies.md v1
@@ -44,6 +44,11 @@ Static fixture data, independent of the session.
   - Tabs: `useState(selectedIndex = 0)`.
   - Accordion: `useState(expanded: string | null = null)`.
 
+- **API address.** The web app calls
+  `${location.protocol}//${location.hostname}:8000` unless `VITE_API_URL`
+  is set. The embedded page is served from `10.0.2.2` on the Android
+  emulator, so a fixed `localhost` would point at the emulator itself.
+
 **android / ios:**
 - `src/config.ts` exports `WEB_URL`: `EXPO_PUBLIC_WEB_URL`, or
   `http://10.0.2.2:5173` on android and `http://localhost:5173` on ios.
@@ -72,3 +77,7 @@ Chaos applies to `/policies`, which isn't under `/test`.
 ## Open questions
 
 None.
+
+## Changelog
+
+- v2: the web app derives the API host from the page's host, found when the Android webview couldn't reach the API.

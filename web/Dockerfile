@@ -5,8 +5,9 @@ COPY web/package.json web/package-lock.json ./
 RUN npm ci
 COPY web/ .
 COPY fixtures/ /srv/fixtures/
-# The browser calls the API directly, so this is the host-facing URL.
-ARG VITE_API_URL=http://localhost:8000
+# Optional. Unset, the app calls port 8000 on the host that served the page,
+# which also works inside the native apps' policies webview.
+ARG VITE_API_URL=
 ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 EXPOSE 5173
