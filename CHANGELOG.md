@@ -3,19 +3,70 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased (M4: polish, documents only so far)
+## M4: polish
 
-### Decided
-- ADR 0007: users see studio local time (Europe/Madrid) with no zone
-  suffix; the API stays UTC and adds `*_local` fields.
-- ADR 0008: wap follows the native apps (app bar + bottom tabs); desktop
-  web is the outlier.
-- The week view moves from web-only to wap, android and ios, as a day
-  strip + list (`week-calendar` v2).
-- `docs/design/visual-language.md`: colours, the availability scale,
-  studio accents, lucide icons, layout patterns.
-- Realistic anchor, guest and outdoor-class names.
-- `nav.menu.*` and `calendar.*` identifiers are retiring.
+### Added
+- **API contract v1.1.0:**
+  - studio local time fields, `YYYY-MM-DDTHH:MM:SS` with no zone
+    (ADR 0007): `StudioClass.start_local` and `end_local`;
+    `CheckinPass.window_opens_local`, `window_closes_local` and
+    `checked_in_local`. Every `*_at` field stays UTC.
+  - `Studio.neighborhood`, `accent` and `timezone` (`Europe/Madrid`);
+    `StudioClass.studio_neighborhood` and `studio_accent`;
+    `StudioPolicies.neighborhood` and `accent`.
+  - `ScheduleWeek.today`, the studio's local date.
+- **Week view** (`week-calendar` v2) on wap, android and ios:
+  - a Week tab with a day strip (class counts, today marker, booked dots)
+    and a list of day sections
+  - tapping a day scrolls the list to it; it doesn't filter
+- **Bottom tabs on wap** (ADR 0008): an app bar and Schedule · Week ·
+  Bookings · Policies tabs replace the hamburger and drawer.
+- **Visual language** (`docs/design/visual-language.md`) on every
+  platform: availability colours, studio accents and neighbourhoods on
+  cards, lucide icons, a branded login.
+- **Identifiers:** `nav.tabs`, `nav.week.link`, and `week.screen`,
+  `week.range.prev`, `week.range.text`, `week.range.next`,
+  `week.loading`, `week.error`, `week.empty`, `week.strip`,
+  `week.day.pill`, `week.day.name`, `week.day.number`, `week.day.count`,
+  `week.day.booked`, `week.list`, `week.section`, `week.section.header`,
+  `week.class.card`, `week.class.time`, `week.class.name`,
+  `week.class.studio`, `week.class.spots`, `week.class.booked`.
+
+### Changed
+- Times shown to users are studio local time (Europe/Madrid) with no
+  `" UTC"` suffix: "07:00–08:00", "Checked in at HH:MM".
+- `date` and the default "today" on `GET /schedule` and
+  `GET /schedule/week` are the studio's local date. Class templates are
+  local times, so a class's UTC `start_at` moves by an hour when daylight
+  saving changes. Class ids use the local date and time.
+- `GET /schedule/week` serves wap, android and ios, and returns
+  `403 FEATURE_UNAVAILABLE` for `X-Platform: web` (`week_calendar` flag).
+- **Seed data renamed:**
+  - anchors: `anchor-full` is Sunset Spin, `anchor-last-seat` Reformer
+    Pilates, `anchor-cancel-closed` Barre Sculpt, `anchor-cancel-open`
+    Slow Flow
+  - Beach Yoga is Park Yoga (ids end in `-park-yoga`)
+  - waitlist guests: Lucía Ortega (`lucia.ortega@bookit.test`) and Marco
+    Silva (`marco.silva@bookit.test`)
+- The `.ics` `LOCATION` includes the neighbourhood, e.g.
+  "Harbor Yoga, Chamberí".
+- `policies.studio.name` renders on web only; on wap the toggle already
+  names the studio.
+
+### Removed
+- The web-only week grid. `/calendar` and `/week` on web redirect to
+  `/schedule`.
+- **Retired identifiers**, now rejected by the validator:
+  `nav.menu.toggle`, `nav.menu.drawer`, `nav.menu.close`,
+  `nav.calendar.link`, and `calendar.screen`, `calendar.week.prev`,
+  `calendar.week.text`, `calendar.week.next`, `calendar.loading`,
+  `calendar.empty`, `calendar.error`, `calendar.grid`,
+  `calendar.day.column`, `calendar.day.header`, `calendar.class.block`,
+  `calendar.class.time`, `calendar.class.name`, `calendar.class.booked`.
+
+### Fixed
+- Tapping a Week day pill scrolls the list to that day on ios and
+  android.
 
 ## Developer experience
 
