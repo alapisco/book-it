@@ -32,6 +32,7 @@ export const setToken = (t: string) => {
 export async function request<T>(method: string, path: string, body?: unknown): Promise<Result<T>> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (testSession) headers['X-Test-Session'] = testSession
+  headers['X-Platform'] = Platform.OS // feature-flags v2
   if (token) headers.Authorization = `Bearer ${token}`
 
   let res: Response

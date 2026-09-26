@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { request, type Load, type Schemas } from '../../api'
+import { flags } from '../../flags'
 import { formatDate, formatTime, timeRange } from '../../format'
 import { Sheet } from '../../Sheet'
 import { colors, ui } from '../../theme'
@@ -60,7 +61,7 @@ export default function ClassScreen() {
               {c.is_full ? 'Full' : `${c.spots_left} of ${c.capacity} spots left`}
             </Text>
             <View style={styles.action}>
-              <ClassAction studioClass={c} onBook={() => setConfirming(true)} />
+              <ClassAction studioClass={c} onBook={() => setConfirming(true)} onChanged={() => setVersion((v) => v + 1)} />
             </View>
           </View>
         )}
@@ -78,7 +79,11 @@ export default function ClassScreen() {
 }
 
 // Exactly one action, first match wins (docs/design/browse-and-book.md).
-function ClassAction({ studioClass: c, onBook }: { studioClass: StudioClass; onBook: () => void }) {
+function ClassAction({ studioClass: c, onBook, onChanged }: {
+  studioClass: StudioClass
+  onBook: () => void
+  onChanged: () => void
+}) {
   if (c.my_booking_id) {
     return (
       <View style={styles.bookedRow}>
@@ -90,11 +95,57 @@ function ClassAction({ studioClass: c, onBook }: { studioClass: StudioClass; onB
     )
   }
   if (c.has_started) return <Text testID="class.started.badge" style={ui.muted}>Class has started</Text>
-  if (c.is_full) return <Text testID="class.full.badge" style={ui.muted}>Class full</Text>
+  if (c.is_full) {
+    return (
+      <View style={styles.fullColumn}>
+        <Text testID="class.full.badge" style={ui.muted}>Class full</Text>
+        {/* ios: flag is false, so no waitlist element exists at all (waitlist PRD AC-10). */}
+        {flags.waitlist && <WaitlistAction studioClass={c} onChanged={onChanged} />}
+      </View>
+    )
+  }
   return (
     <Pressable testID="class.book.button" onPress={onBook} style={[ui.button, styles.bookButton]}>
       <Text style={ui.buttonText}>Book</Text>
     </Pressable>
+  )
+}
+
+function WaitlistAction({ studioClass: c, onChanged }: { studioClass: StudioClass; onChanged: () => void }) {
+  const [joining, setJoining] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  if (c.my_waitlist_position) {
+    return <Text testID="class.waitlist.position" style={styles.position}>You're #{c.my_waitlist_position} on the waitlist</Text>
+  }
+
+  async function join() {
+    setJoining(true)
+    setError(null)
+    const r = await request<Schemas['WaitlistEntry']>('POST', `/classes/${c.id}/waitlist`)
+    setJoining(false)
+    if (r.ok) onChanged()
+    else setError(r.error.message)
+  }
+
+  return (
+    <View style={styles.fullColumn}>
+      {/* accessible={false}: otherwise iOS merges the nested loading testID into the button. */}
+      <Pressable
+        testID="class.waitlist.join"
+        accessible={false}
+        disabled={joining}
+        onPress={join}
+        style={[ui.button, styles.bookButton, joining && ui.buttonDisabled]}
+      >
+        {joining ? (
+          <ActivityIndicator testID="class.waitlist.loading" color={colors.primaryText} />
+        ) : (
+          <Text style={ui.buttonText}>Join waitlist</Text>
+        )}
+      </Pressable>
+      {error && <Text testID="class.waitlist.error" style={ui.error}>{error}</Text>}
+    </View>
   )
 }
 
@@ -146,6 +197,8 @@ const styles = StyleSheet.create({
   action: { marginTop: 16 },
   bookedRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
   bookButton: { alignSelf: 'flex-start' },
+  fullColumn: { gap: 10, alignItems: 'flex-start' },
+  position: { fontSize: 15, fontWeight: '600', color: colors.primary },
   sheetBody: { gap: 14 },
   sheetTitle: { fontSize: 18, fontWeight: '600', color: colors.text },
   sheetButtons: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },

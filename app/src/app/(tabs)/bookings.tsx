@@ -2,16 +2,19 @@ import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { request, type Load, type Schemas } from '../../api'
+import { flags } from '../../flags'
 import { formatDate, formatTime } from '../../format'
 import { Sheet } from '../../Sheet'
 import { colors, ui } from '../../theme'
 
 type Booking = Schemas['Booking']
+type Entry = Schemas['WaitlistEntry']
+type Data = { bookings: Booking[]; waitlist: Entry[] }
 
-const when = (b: Booking) => `${formatDate(b.studio_class.start_at)} · ${formatTime(b.studio_class.start_at)} UTC`
+const when = (b: Booking | Entry) => `${formatDate(b.studio_class.start_at)} · ${formatTime(b.studio_class.start_at)} UTC`
 
 export default function BookingsScreen() {
-  const [state, setState] = useState<Load<Booking[]>>({ status: 'loading' })
+  const [state, setState] = useState<Load<Data>>({ status: 'loading' })
   const [cancelling, setCancelling] = useState<Booking | null>(null)
   const [version, setVersion] = useState(0) // bump to reload
 
@@ -19,8 +22,16 @@ export default function BookingsScreen() {
   useFocusEffect(
     useCallback(() => {
       let current = true
-      request<Booking[]>('GET', '/me/bookings').then((r) => {
-        if (current) setState(r.ok ? { status: 'ready', data: r.data } : { status: 'error', error: r.error })
+      // Bookings and waitlist load together and share one loading/error state.
+      // ios never calls /me/waitlist (waitlist PRD AC-11).
+      Promise.all([
+        request<Booking[]>('GET', '/me/bookings'),
+        flags.waitlist ? request<Entry[]>('GET', '/me/waitlist') : Promise.resolve({ ok: true as const, data: [] }),
+      ]).then(([b, w]) => {
+        if (!current) return
+        if (!b.ok) setState({ status: 'error', error: b.error })
+        else if (!w.ok) setState({ status: 'error', error: w.error })
+        else setState({ status: 'ready', data: { bookings: b.data, waitlist: w.data } })
       })
       return () => {
         current = false
@@ -28,10 +39,12 @@ export default function BookingsScreen() {
     }, [version]),
   )
 
-  const bookings = state.status === 'ready' ? state.data : null
+  const bookings = state.status === 'ready' ? state.data.bookings : null
+  const waitlist = state.status === 'ready' ? state.data.waitlist : []
+  const reload = () => setVersion((v) => v + 1)
   const cancelled = () => {
     setCancelling(null)
-    setVersion((v) => v + 1)
+    reload()
   }
 
   return (
@@ -67,6 +80,7 @@ export default function BookingsScreen() {
             ))}
           </View>
         )}
+        {flags.waitlist && waitlist.length > 0 && <WaitlistSection entries={waitlist} onChanged={reload} />}
       </ScrollView>
 
       {cancelling && (
@@ -76,6 +90,53 @@ export default function BookingsScreen() {
           </View>
         </Sheet>
       )}
+    </View>
+  )
+}
+
+// Only rendered where the waitlist flag is on; leaving is immediate (docs/design/waitlist.md).
+function WaitlistSection({ entries, onChanged }: { entries: Entry[]; onChanged: () => void }) {
+  const [leaving, setLeaving] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function leave(e: Entry) {
+    setLeaving(e.id)
+    setError(null)
+    const r = await request<void>('DELETE', `/classes/${e.class_id}/waitlist`)
+    setLeaving(null)
+    if (r.ok) onChanged()
+    else setError(r.error.message)
+  }
+
+  return (
+    <View testID="waitlist.section" style={styles.section}>
+      <Text style={styles.sectionTitle}>Waitlist</Text>
+      {error && <Text testID="waitlist.leave.error" style={ui.error}>{error}</Text>}
+      <View testID="waitlist.list" style={styles.list}>
+        {entries.map((e) => (
+          <View key={e.id} testID="waitlist.item" style={ui.card}>
+            <Text testID="waitlist.item.name" style={styles.name}>{e.studio_class.name}</Text>
+            <Text testID="waitlist.item.time" style={ui.muted}>{when(e)}</Text>
+            <Text testID="waitlist.item.position" style={ui.muted}>#{e.position} on the waitlist</Text>
+            <View style={styles.action}>
+              {/* accessible={false}: otherwise iOS merges the nested loading testID into the button. */}
+              <Pressable
+                testID="waitlist.item.leave"
+                accessible={false}
+                disabled={leaving === e.id}
+                onPress={() => leave(e)}
+                style={styles.leave}
+              >
+                {leaving === e.id ? (
+                  <ActivityIndicator testID="waitlist.leave.loading" color={colors.muted} />
+                ) : (
+                  <Text style={ui.ghostText}>Leave waitlist</Text>
+                )}
+              </Pressable>
+            </View>
+          </View>
+        ))}
+      </View>
     </View>
   )
 }
@@ -130,6 +191,9 @@ function CancelConfirm({ booking, onCancelled, onDismiss }: {
 
 const styles = StyleSheet.create({
   empty: { gap: 8 },
+  section: { gap: 10, marginTop: 8 },
+  sectionTitle: { fontSize: 17, fontWeight: '600', color: colors.text },
+  leave: { borderWidth: 1, borderColor: colors.border, borderRadius: 6, paddingHorizontal: 12, paddingVertical: 6 },
   list: { gap: 12 },
   name: { fontSize: 16, fontWeight: '600', color: colors.text },
   action: { marginTop: 8, alignItems: 'flex-start' },

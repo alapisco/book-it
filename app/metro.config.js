@@ -1,0 +1,7 @@
+// fixtures/ (feature flags) lives outside app/, so Metro must watch it.
+const { getDefaultConfig } = require('expo/metro-config')
+const path = require('path')
+
+const config = getDefaultConfig(__dirname)
+config.watchFolders = [...(config.watchFolders ?? []), path.resolve(__dirname, '../fixtures')]
+module.exports = config
