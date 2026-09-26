@@ -9,6 +9,7 @@ export default function TabsLayout() {
     <Tabs screenOptions={{ tabBarActiveTintColor: colors.primary }}>
       <Tabs.Screen name="schedule" options={{ title: 'Schedule', tabBarButtonTestID: 'nav.schedule.link' }} />
       <Tabs.Screen name="bookings" options={{ title: 'My bookings', tabBarButtonTestID: 'nav.bookings.link' }} />
+      <Tabs.Screen name="policies" options={{ title: 'Policies', tabBarButtonTestID: 'nav.policies.link' }} />
     </Tabs>
   )
 }

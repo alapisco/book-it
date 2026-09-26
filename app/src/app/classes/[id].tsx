@@ -91,6 +91,11 @@ function ClassAction({ studioClass: c, onBook, onChanged }: {
         <Pressable testID="class.bookings.link" onPress={() => router.dismissTo('/bookings')}>
           <Text style={ui.link}>View my bookings</Text>
         </Pressable>
+        {flags.qr_check_in && (
+          <Pressable testID="class.checkin.link" onPress={() => router.push(`/checkin/${c.my_booking_id}`)}>
+            <Text style={ui.link}>Show check-in code</Text>
+          </Pressable>
+        )}
       </View>
     )
   }
@@ -195,7 +200,7 @@ function BookingConfirm({ studioClass: c, onDone }: { studioClass: StudioClass; 
 const styles = StyleSheet.create({
   spots: { fontWeight: '600' },
   action: { marginTop: 16 },
-  bookedRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  bookedRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 16 },
   bookButton: { alignSelf: 'flex-start' },
   fullColumn: { gap: 10, alignItems: 'flex-start' },
   position: { fontSize: 15, fontWeight: '600', color: colors.primary },

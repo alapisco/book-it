@@ -67,6 +67,9 @@ export default function BookingsScreen() {
                 <Text testID="bookings.item.name" style={styles.name}>{b.studio_class.name}</Text>
                 <Text testID="bookings.item.studio" style={ui.muted}>{b.studio_class.studio_name}</Text>
                 <Text testID="bookings.item.time" style={ui.muted}>{when(b)}</Text>
+                {flags.qr_check_in && b.checked_in_at && (
+                  <Text testID="bookings.item.checked-in" style={ui.badge}>Checked in</Text>
+                )}
                 <View style={styles.action}>
                   {b.can_cancel ? (
                     <Pressable testID="bookings.item.cancel" onPress={() => setCancelling(b)} style={styles.cancel}>
