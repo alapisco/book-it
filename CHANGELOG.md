@@ -3,6 +3,15 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
+## Unreleased
+
+### Changed
+- **My bookings opens the class** (`my-bookings-and-cancel` v3) on every
+  platform: tapping a booking (outside its buttons) opens class detail, so
+  android and ios reach "Show check-in code" from there. Back returns to
+  My bookings; on web the link reads "‹ My bookings". Registry:
+  `bookings.item` is now a `link`; no identifiers added or removed.
+
 ## M4: polish
 
 ### Added
