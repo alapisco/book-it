@@ -9,7 +9,7 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 | **M1 Walking skeleton** | API with seed data, schedule generator, flags, test-support; web shell with web/wap trees; Expo app prebuilt with tab shell; `docker compose up` | All four platforms build and launch locally | done for api/web/wap (Docker); android/ios bundle with Metro and are prebuilt, **native build pending on your machine** |
 | **M2 Core flow** | `login`, `browse-and-book`, `my-bookings-and-cancel` on all four platforms | One test body passes on all four platforms; tag `v0.2` | implemented; **gate open** until the framework runs on android/ios; not tagged |
 | **M3 Divergent features** | `studio-policies`, `waitlist`, `week-calendar`, `ics-export`, `qr-check-in` | Framework's parity matrix artifact equals the matrix in `CLAUDE.md`; tag `v1.0` | implemented (all five features); **gate open** until the framework's matrix run, including android/ios builds; not tagged |
-| **M4 Polish** | ADRs 0007 (studio local time) and 0008 (wap mirrors native); visual language; week view moves to wap/android/ios; realistic names; bottom tabs on wap; icons | QA lead approves the documents, then all suites pass on all platforms with screenshots | documents drafted, **awaiting review**; code not started |
+| **M4 Polish** | ADRs 0007 (studio local time) and 0008 (wap mirrors native); visual language; week view moves to wap/android/ios; realistic names; bottom tabs on wap; icons | QA lead approves the documents, then all suites pass on all platforms with screenshots | done: documents approved; implemented and tested on web, wap, android and ios |
 
 ## Documents by feature
 
@@ -24,7 +24,7 @@ Milestones for building the BookIt SUT. Each feature follows the loop in
 | my-bookings-and-cancel | `docs/prd/my-bookings-and-cancel.md` | `docs/design/my-bookings-and-cancel.md` | `docs/tech/my-bookings-and-cancel.md` | api, web, app |
 | waitlist | `docs/prd/waitlist.md` (v2) | `docs/design/waitlist.md` | `docs/tech/waitlist.md` | api, fixtures, web, app |
 | studio-policies | `docs/prd/studio-policies.md` | `docs/design/studio-policies.md` | `docs/tech/studio-policies.md` | api, fixtures, web, app |
-| week-calendar | `docs/prd/week-calendar.md` | `docs/design/week-calendar.md` | `docs/tech/week-calendar.md` | api, web |
+| week-calendar | `docs/prd/week-calendar.md` (v2) | `docs/design/week-calendar.md` | `docs/tech/week-calendar.md` | api, fixtures, web, app |
 | ics-export | `docs/prd/ics-export.md` | `docs/design/ics-export.md` | `docs/tech/ics-export.md` | api, web |
 | qr-check-in | `docs/prd/qr-check-in.md` | `docs/design/qr-check-in.md` | `docs/tech/qr-check-in.md` | api, fixtures, app, scripts |
 

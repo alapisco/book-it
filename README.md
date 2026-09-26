@@ -59,12 +59,10 @@ native apps.
 
 ## Running it
 
-Status: **every feature in the parity matrix is implemented.**
-- web and wap are verified end to end in a browser.
-- The android/ios code typechecks and bundles for both OSes, and its
-  screens have been exercised via react-native-web. It hasn't yet been
-  built on an emulator or simulator, and the policies webview can only be
-  checked on a device.
+Status: **every feature in the parity matrix is implemented**, and M4 is
+tested on web, wap, android and ios.
+- Desktop web has a top nav bar; wap, android and ios have bottom tabs:
+  Schedule · Week · Bookings · Policies (ADR 0008).
 - See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 **API + web/wap**
