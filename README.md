@@ -1,16 +1,14 @@
-# BookIt — System Under Test
+# BookIt - System Under Test
 
 BookIt is a studio class booking app. It exists to be **tested**, not
-used. It is the System Under Test for a separate multi-platform test
-automation framework (Python, pytest, pydantic, requests,
-Selenium/Playwright, Appium). It is a **test fixture, not a product**.
+used. It is the System Under Test for a separate multi platform test
+automation framework. It is a **test fixture, not a product**.
 
 The main thing the framework shows is a **platform parity model**. It
 declares which platforms support which features, runs one test body on
 every supporting platform, auto-skips the others with a stated reason,
 and publishes a parity matrix. To show that, the SUT needs deliberate,
-documented divergence between platforms. Providing that divergence is
-the most important job of this repo.
+documented divergence between platforms. 
 
 **Domain:** Studios → Classes (capacity, start time, instructor) → Bookings → Users.
 
@@ -36,9 +34,8 @@ genuinely different component tree), `android` and `ios` (native).
 Divergence runs deliberately in both directions: `.ics` export is
 web-only, the week view is on every platform *except* desktop web, QR
 check-in is native-only, and waitlist is missing only on iOS. The week
-view moved from web-only to the mobile surfaces in M4. The last
-row is a webview that renders the same HTML page as `wap`, embedded in both
-native apps.
+view is mobile only. The last row is a webview that renders the same 
+HTML page as `wap`, embedded in both native apps.
 
 ## Layout
 
