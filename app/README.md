@@ -265,10 +265,13 @@ one per milestone, not per commit. Versions follow the milestone tags
 5. **Package and rename** both apps with the version:
    ```sh
    V=v1.1
-   cp android/app/build/outputs/apk/release/app-release.apk ../bookit-$V.apk
-   (cd ios/build/Build/Products/Release-iphonesimulator && zip -qry ../../../../../../bookit-$V-ios-simulator-arm64.zip BookIt.app)
+   OUT=~/bookit-release/$V && mkdir -p "$OUT"   # outside the repo
+   cp android/app/build/outputs/apk/release/app-release.apk "$OUT/bookit-$V.apk"
+   (cd ios/build/Build/Products/Release-iphonesimulator && zip -qry "$OUT/bookit-$V-ios-simulator-arm64.zip" BookIt.app)
    ```
-   Zip the `.app` because it is a folder; `-y` keeps its symlinks.
+   Zip the `.app` because it is a folder; `-y` keeps its symlinks. The
+   files go outside the repo so they can't be committed by accident: they
+   belong on the release page, never in git.
 6. **Smoke-test the files**, not the build folders: with
    `docker compose up` running, uninstall any previous BookIt, install
    both files as in the root README's quick start, and log in.
@@ -289,5 +292,6 @@ one per milestone, not per commit. Versions follow the milestone tags
    - The iOS build runs on the iOS simulator on Apple Silicon Macs
      only: not on Intel Macs or physical iPhones.
 
-Delete the two files from the repo root afterwards; they aren't
-git-ignored there.
+The tag adds nothing to the repository: it only names the commit you
+built. The two files live on the release page alone. Keep or delete
+`~/bookit-release/` as you like.
