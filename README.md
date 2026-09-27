@@ -136,8 +136,8 @@ the UI on each platform.
 
 ## Quick start for testers
 
-You need Docker, and an Android emulator or iOS simulator (macOS) for the
-native apps.
+You need Docker, and an Android emulator or the iOS simulator on an
+Apple Silicon Mac for the native apps.
 
 1. **Start the backend and web app** at the tag that matches the apps you
    download:
@@ -149,12 +149,13 @@ native apps.
 2. **Install the apps** from [Releases](https://github.com/alapisco/book-it/releases/latest):
    ```sh
    adb install -r bookit-v1.1.apk                   # running Android emulator
-   unzip bookit-v1.1-ios-simulator.zip              # contains BookIt.app
+   unzip bookit-v1.1-ios-simulator-arm64.zip              # contains BookIt.app
    xcrun simctl install booted BookIt.app           # booted iOS simulator
    ```
    They need no configuration: they reach the API on your machine
    (`10.0.2.2` from the emulator, `localhost` from the simulator). The
-   iOS build runs on simulators only, not physical iPhones; the APK is
+   iOS build runs on the **iOS simulator on Apple Silicon Macs** (M1 or
+   later) only: not on Intel Macs or physical iPhones. The APK is
    debug-signed, for emulators.
 3. **Open web or wap** at http://localhost:5173. Resize the window below
    768 px to get `wap`.
