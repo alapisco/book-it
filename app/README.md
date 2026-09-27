@@ -45,9 +45,12 @@ export ANDROID_HOME="$HOME/Android/Sdk"
 export PATH="$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools"
 
 # JDK 17 for Gradle, React Native and Expo
-export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk   # adjust to your JDK 17 path (see below)
+export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk   # Linux: adjust to your JDK 17 path (see below)
+# export JAVA_HOME=$(/usr/libexec/java_home -v 17)   # macOS: use this line instead
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
+
+On macOS, set `ANDROID_HOME="$HOME/Library/Android/sdk"` too.
 
 Then pin Gradle to the same JDK in your **user-level** Gradle file,
 `~/.gradle/gradle.properties`. Create it if it's missing; it isn't the
@@ -55,6 +58,8 @@ file inside `app/android/`.
 
 ```properties
 org.gradle.java.home=/usr/lib/jvm/temurin-17-jdk
+# macOS: the path printed by /usr/libexec/java_home -v 17, e.g.
+# org.gradle.java.home=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home
 ```
 
 This matters when several Java versions are installed. Without it, Gradle
@@ -67,8 +72,10 @@ may auto-detect a newer runtime-only Java and fail (see
   [Adoptium repo](https://adoptium.net/installation/linux/).
   Installed JDKs are under `/usr/lib/jvm/`.
 - **Ubuntu/Debian:** `sudo apt install openjdk-17-jdk`.
-- **macOS:** `brew install --cask zulu@17`. Then
-  `export JAVA_HOME=$(/usr/libexec/java_home -v 17)`.
+- **macOS:** `brew install --cask temurin@17`, then
+  `export JAVA_HOME=$(/usr/libexec/java_home -v 17)` (put it in
+  `~/.zshrc`). macOS doesn't ship a JDK, and the Android build needs 17
+  specifically, not a newer one.
 - **Any OS:** [SDKMAN](https://sdkman.io): `sdk install java 17.0.13-tem`.
 
 > **About `local.properties`.** If `ANDROID_HOME` isn't set, Gradle stops
@@ -240,6 +247,10 @@ one per milestone, not per commit. Versions follow the milestone tags
    ```
    Remove or rename `app/.env.local`: its values are baked into the build,
    and the released apps must use the defaults (`10.0.2.2` / `localhost`).
+   Check `java -version` prints 17; if not, see
+   [Machine setup](#1-machine-setup-once) (on macOS:
+   `brew install --cask temurin@17` and
+   `export JAVA_HOME=$(/usr/libexec/java_home -v 17)`).
 3. **Build both apps** in `app/`:
    ```sh
    npm ci
