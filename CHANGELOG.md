@@ -3,7 +3,18 @@
 User-visible changes to the BookIt SUT, by milestone. The automation
 framework pins against these versions.
 
-## Unreleased
+## v1.1
+
+Tagged `v1.1`: M4 (below) plus these changes. The first release with
+installable apps attached: an Android APK and an iOS simulator build
+(Apple Silicon).
+
+### Added
+- **Apps on GitHub Releases:** testers install the APK and the iOS
+  simulator build without building them (`app/README.md` §7).
+- **License:** 0BSD.
+- **README** rewritten for testers: what the app is, who it's for, test
+  hooks, the specs you can test against, and a quick start.
 
 ### Changed
 - **My bookings opens the class** (`my-bookings-and-cancel` v3) on every

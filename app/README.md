@@ -18,6 +18,7 @@ Contents:
 4. [Configuration](#4-configuration)
 5. [Test hooks](#5-test-hooks)
 6. [Troubleshooting](#6-troubleshooting)
+7. [Cutting a release](#7-cutting-a-release)
 
 ## 1. Machine setup (once)
 
@@ -134,7 +135,8 @@ JavaScript bundle and run without Metro. Settings from `.env.local` (see
 - **Signing.** The release APK is signed with the debug keystore that ships
   in the project, which is fine for emulators. It isn't meant for Play
   Store upload.
-- **Simulator only.** The iOS `.app` runs only on simulators. A physical
+- **Simulator only, Apple Silicon.** The released iOS `.app` is built
+  for the arm64 simulator, so it runs on Apple Silicon Macs only. A physical
   iPhone needs a signed `.ipa`, which is out of scope here.
 - **Not committed.** Both output folders are git-ignored.
 
@@ -217,3 +219,64 @@ xcrun simctl openurl booted "bookit://login?testSession=w1"
 | "Could not reach the server." | Backend not running, or wrong URL on a physical device | `docker compose up`; on a device, set `EXPO_PUBLIC_API_URL` / `EXPO_PUBLIC_WEB_URL` to your machine's LAN IP |
 | Problems Report with "deprecated" warnings | Deprecations inside the React Native and Expo Gradle plugins | Harmless; check the terminal for `BUILD SUCCESSFUL` |
 | New native module missing after `git pull` | `react-native-webview` / `react-native-svg` need a native rebuild | `npm ci`, then rebuild (`npm run android` / `ios`, or `build:*`) |
+
+## 7. Cutting a release
+
+Testers install the apps from
+[GitHub Releases](https://github.com/alapisco/book-it/releases), so they
+need neither Node nor the Android SDK nor Xcode. There is no CI: a release
+is built on one Mac (it needs both toolchains) and uploaded by hand. Cut
+one per milestone, not per commit. Versions follow the milestone tags
+(`v0.2` = M2, `v1.0` = M3, `v1.1` = M4).
+
+1. **Prepare the release in a PR.** In `CHANGELOG.md`, turn
+   `## Unreleased` into the version heading (for example `## v1.1`), and
+   note "tagged v1.1" in the milestone's row of `docs/ROADMAP.md`. Merge
+   the PR into `main`, so the tag will point at a commit that already
+   describes itself.
+2. **Start clean** on the Mac:
+   ```sh
+   git checkout main && git pull
+   ```
+   Remove or rename `app/.env.local`: its values are baked into the build,
+   and the released apps must use the defaults (`10.0.2.2` / `localhost`).
+3. **Build both apps** in `app/`:
+   ```sh
+   npm ci
+   npm run build:android
+   npm run build:ios
+   ```
+4. **Check the iOS architecture:**
+   ```sh
+   lipo -archs ios/build/Build/Products/Release-iphonesimulator/BookIt.app/BookIt
+   ```
+   It must list `arm64`. The release is labelled Apple Silicon only.
+5. **Package and rename** both apps with the version:
+   ```sh
+   V=v1.1
+   cp android/app/build/outputs/apk/release/app-release.apk ../bookit-$V.apk
+   (cd ios/build/Build/Products/Release-iphonesimulator && zip -qry ../../../../../../bookit-$V-ios-simulator-arm64.zip BookIt.app)
+   ```
+   Zip the `.app` because it is a folder; `-y` keeps its symlinks.
+6. **Smoke-test the files**, not the build folders: with
+   `docker compose up` running, uninstall any previous BookIt, install
+   both files as in the root README's quick start, and log in.
+7. **Tag the commit you built and push the tag**, annotated like the
+   existing tags:
+   ```sh
+   git tag -a v1.1 -m "v1.1: M4 polish; apps attached to the GitHub release"
+   git push origin v1.1
+   ```
+8. **Publish on GitHub:** Releases → *Draft a new release* → choose the
+   `v1.1` tag → title `v1.1 — M4 polish` → paste that version's changelog
+   section → attach `bookit-v1.1.apk` and
+   `bookit-v1.1-ios-simulator-arm64.zip` → tick *Set as the latest
+   release* → *Publish release*.
+9. **Add these notes** at the top of the release description:
+   - Run the backend from the same tag: `git checkout v1.1 && docker compose up --build`.
+   - The APK is signed with the debug keystore, for emulators.
+   - The iOS build runs on the iOS simulator on Apple Silicon Macs
+     only: not on Intel Macs or physical iPhones.
+
+Delete the two files from the repo root afterwards; they aren't
+git-ignored there.
