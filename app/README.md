@@ -18,6 +18,7 @@ Contents:
 4. [Configuration](#4-configuration)
 5. [Test hooks](#5-test-hooks)
 6. [Troubleshooting](#6-troubleshooting)
+7. [Cutting a release](#7-cutting-a-release)
 
 ## 1. Machine setup (once)
 
@@ -217,3 +218,51 @@ xcrun simctl openurl booted "bookit://login?testSession=w1"
 | "Could not reach the server." | Backend not running, or wrong URL on a physical device | `docker compose up`; on a device, set `EXPO_PUBLIC_API_URL` / `EXPO_PUBLIC_WEB_URL` to your machine's LAN IP |
 | Problems Report with "deprecated" warnings | Deprecations inside the React Native and Expo Gradle plugins | Harmless; check the terminal for `BUILD SUCCESSFUL` |
 | New native module missing after `git pull` | `react-native-webview` / `react-native-svg` need a native rebuild | `npm ci`, then rebuild (`npm run android` / `ios`, or `build:*`) |
+
+## 7. Cutting a release
+
+Testers install the apps from
+[GitHub Releases](https://github.com/alapisco/book-it/releases), so they
+need neither Node nor the Android SDK nor Xcode. There is no CI: a release
+is built on one Mac (it needs both toolchains) and uploaded by hand. Cut
+one per milestone, not per commit. Versions follow the milestone tags
+(`v0.2` = M2, `v1.0` = M3, `v1.1` = M4).
+
+1. **Start clean.** Check out `main` at the commit to release. Remove or
+   rename `app/.env.local`: its values are baked into the build, and the
+   released apps must use the defaults (`10.0.2.2` / `localhost`).
+2. **Build both apps** in `app/`:
+   ```sh
+   npm ci
+   npm run build:android
+   npm run build:ios
+   ```
+3. **Package and rename** them with the version:
+   ```sh
+   V=v1.1
+   cp android/app/build/outputs/apk/release/app-release.apk ../bookit-$V.apk
+   (cd ios/build/Build/Products/Release-iphonesimulator && zip -qry ../../../../../../bookit-$V-ios-simulator.zip BookIt.app)
+   ```
+   Zip the `.app` because it is a folder; `-y` keeps its symlinks.
+4. **Smoke-test the files**, not the build folders: with
+   `docker compose up` running, install both on a fresh emulator and
+   simulator (see the root README's quick start) and log in.
+5. **Update `CHANGELOG.md`:** rename `## Unreleased` to the milestone and
+   version (for example `## M4: polish (v1.1)`), and note "tagged v1.1"
+   in the milestone's row of `docs/ROADMAP.md`. Commit.
+6. **Tag and push**, annotated like the existing tags:
+   ```sh
+   git tag -a v1.1 -m "M4 polish: apps attached to the GitHub release"
+   git push origin v1.1
+   ```
+7. **Publish on GitHub:** Releases → *Draft a new release* → choose the
+   tag → title `v1.1 — M4 polish` → paste that version's changelog
+   section → attach `bookit-v1.1.apk` and `bookit-v1.1-ios-simulator.zip`
+   → *Publish release*.
+8. **Add these notes** to the release description:
+   - Run the backend from the same tag: `git checkout v1.1 && docker compose up --build`.
+   - The APK is signed with the debug keystore, for emulators.
+   - The iOS build runs on simulators only, not on physical iPhones.
+
+Delete the two files from the repo root afterwards; they aren't
+git-ignored there.
